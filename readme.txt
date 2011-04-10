@@ -15,29 +15,29 @@ WP MVC fills this gap. The basic idea is that you create an app/ directory that 
 
 == Installation ==
 
-1. Upload `wp_mvc` to the `/wp-content/plugins/` directory
+1. Upload `wp-mvc` to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Either set up the example application to see how WP MVC works or start creating an application using the code generation utility `wpmvc`:
 
 #### Setting up the example application:
 
-1. Run the example application's SQL script (`wp_mvc/examples/events_calendar/create_tables_and_insert_data.sql`) to create its tables and insert some example data.
+1. Run the example application's SQL script (`wp-mvc/examples/events_calendar/create_tables_and_insert_data.sql`) to create its tables and insert some example data.
 
-1. Copy the app/ directory (`wp_mvc/examples/events_calendar/app/`) into the root of this plugin's directory (so that it's at `wp_mvc/app/`). After doing so, there will be administrative menus for each model in WordPress, and you'll be able to browse to URLs like /events/, /events/1/, /venues/, etc to see the public-facing views.
+1. Copy the app/ directory (`wp-mvc/examples/events_calendar/app/`) into the root of this plugin's directory (so that it's at `wp-mvc/app/`). After doing so, there will be administrative menus for each model in WordPress, and you'll be able to browse to URLs like /events/, /events/1/, /venues/, etc to see the public-facing views.
 
 #### Creating an application using the WP MVC console to generate initial code
 
 1. Create the table in the database that will be used for a resource (e.g. for a resource named MyVenue, create a table named `my_venues`).
 1. Make sure that `wpmvc` is executable
 
-	`cd path/to/plugins/wp_mvc`
+	`cd path/to/plugins/wp-mvc`
 	`chmod +x wpmvc`
 
 1. Create the initial code for a resource's model, view, and controllers.
 
 	`./wpmvc generate scaffold MyVenue`
 
-1. The generated code will be in plugins/wp_mvc/app/ and assumes that a database column named `name` is present and will be used to represent the resource in views. (See the example application for examples of how to modify this.) There will now be an administrative menu (`My Venues`) for this resource in WordPress, and you'll be able to browse to URLs like /my_venues/ and /my_venues/1/ to see the public-facing views.
+1. The generated code will be in `plugins/wp-mvc/app/` and assumes that a database column named `name` is present and will be used to represent the resource in views. (See the example application for examples of how to modify this.) There will now be an administrative menu (`My Venues`) for this resource in WordPress, and you'll be able to browse to URLs like /my_venues/ and /my_venues/1/ to see the public-facing views.
 1. Flesh out the code or create code for more resources using the `generate scaffold` command as shown above.
 
 == Frequently Asked Questions ==
