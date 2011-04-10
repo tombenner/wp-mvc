@@ -3,10 +3,18 @@
 class MvcLoader {
 
 	private $action_key = 'mvc_action';
+	private $app_directory = '';
+	private $core_directory = '';
+	private $dispatcher = null;
+	private $file_includer = null;
 
 	function __construct() {
 	
-		$this->core_directory = MVC_PLUGIN_PATH.'core/';
+		if (!defined('MVC_CORE_PATH')) {
+			define('MVC_CORE_PATH', MVC_PLUGIN_PATH.'core/');
+		}
+	
+		$this->core_directory = MVC_CORE_PATH;
 	
 		$this->load_core();
 		
@@ -22,17 +30,17 @@ class MvcLoader {
 			
 			if (is_dir($theme_filepath.'app/')) {
 				$this->app_directory = $theme_filepath.'app/';
-			} else if (is_dir(MVC_PLUGIN_PATH.'app/')) {
-				$this->app_directory = MVC_PLUGIN_PATH.'app/';
 			} else {
-				MvcError::fatal('No "app" directory found.');
+				$this->app_directory = MVC_PLUGIN_PATH.'app/';
 			}
 			
 			define('MVC_APP_PATH', $this->app_directory);
 		
 		}
 		
-		$this->require_file_if_exists($this->app_directory.'config/bootstrap.php');
+		$this->file_includer = new MvcFileIncluder();
+		
+		$this->file_includer->require_app_file_if_exists('config/bootstrap.php');
 		
 		$this->dispatcher = new MvcDispatcher();
 		
@@ -43,9 +51,13 @@ class MvcLoader {
 		$files = array(
 			'mvc_error',
 			'mvc_configuration',
+			'mvc_directory',
 			'mvc_dispatcher',
+			'mvc_file',
+			'mvc_file_includer',
 			'mvc_model_registry',
 			'mvc_object_registry',
+			'mvc_templater',
 			'inflector',
 			'router',
 			'controllers/mvc_controller',
@@ -57,6 +69,8 @@ class MvcLoader {
 			'helpers/mvc_helper',
 			'helpers/mvc_form_helper',
 			'helpers/mvc_html_helper',
+			'shells/mvc_shell',
+			'shells/mvc_shell_dispatcher'
 		);
 		
 		foreach($files as $file) {
@@ -75,19 +89,19 @@ class MvcLoader {
 	
 	private function load_controllers() {
 	
-		$this->require_app_or_core_file('controllers/admin_controller.php');
-		$this->require_app_or_core_file('controllers/public_controller.php');
+		$this->file_includer->require_app_or_core_file('controllers/admin_controller.php');
+		$this->file_includer->require_app_or_core_file('controllers/public_controller.php');
 		
-		$this->require_php_files_in_directory($this->app_directory.'controllers/admin/');
-		$this->require_php_files_in_directory($this->app_directory.'controllers/');
+		$this->file_includer->require_php_files_in_directory($this->app_directory.'controllers/admin/');
+		$this->file_includer->require_php_files_in_directory($this->app_directory.'controllers/');
 	
 	}
 	
 	private function load_models() {
 		
-		$this->require_app_or_core_file('models/app_model.php');
+		$this->file_includer->require_app_or_core_file('models/app_model.php');
 		
-		$model_filenames = $this->require_php_files_in_directory($this->app_directory.'models/');
+		$model_filenames = $this->file_includer->require_php_files_in_directory($this->app_directory.'models/');
 		
 		$models = array();
 		
@@ -108,7 +122,7 @@ class MvcLoader {
 	
 	private function load_functions() {
 	
-		$this->require_php_files_in_directory($this->core_directory.'functions/');
+		$this->file_includer->require_php_files_in_directory($this->core_directory.'functions/');
 	
 	}
 	
@@ -266,71 +280,6 @@ class MvcLoader {
 		if ($routing_params) {
 			$this->dispatcher->dispatch($routing_params);
 		}
-	}
-	
-	private function is_php_file($filename) {
-		return preg_match('/.+\.php$/', $filename);
-	}
-	
-	private function require_file_if_exists($filepath) {
-		if (file_exists($filepath)) {
-			require $filepath;
-			return true;
-		}
-		return false;
-	}
-	
-	private function require_app_or_core_file($relative_filepath) {
-		if (!$this->require_file_if_exists($this->app_directory.$relative_filepath)) {
-			if (!$this->require_file_if_exists($this->core_directory.'pluggable/'.$relative_filepath)) {
-				require_once $this->core_directory.$relative_filepath;
-			}
-		}
-	}
-	
-	private function get_php_files_in_directory($directory, $options=array()) {
-		
-		if (isset($options['recursive'])) {
-			$filenames = $this->scandir_recursive($directory);
-		} else {
-			$filenames = scandir($directory);
-		}
-		$filenames = array_filter($filenames, array($this, 'is_php_file'));
-		
-		return $filenames;
-	
-	}
-	
-	private function require_php_files_in_directory($directory, $options=array()) {
-	
-		$filenames = $this->get_php_files_in_directory($directory);
-		$filepaths = array();
-		
-		foreach($filenames as $filename) {
-			$filepath = $directory.$filename;
-			$filepaths[] = $filepath;
-			require_once $filepath;
-		}
-		
-		return $filenames;
-		
-	}
-	
-	private function scandir_recursive($directory) {
-	
-		$file_tmp = glob($directory.'*', GLOB_MARK | GLOB_NOSORT);
-		$files = array();
-		
-		foreach($file_tmp as $item){
-			if (substr($item, -1) != DIRECTORY_SEPARATOR) {
-				$files[] = $item;
-			} else {
-				$files = array_merge($files, $this->scandir_recursive($item));
-			}
-		}
-	
-		return $files;
-	
 	}
 
 }

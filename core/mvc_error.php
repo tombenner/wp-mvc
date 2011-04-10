@@ -23,11 +23,21 @@ class MvcError {
 		$line = $context['line'];
 		$file = $context['file'];
 		
-		echo '
-			<br />
-			<strong>[MVC] '.$type_name.'</strong>: '.$message.'
-			<br />
-			Thrown on line '.$line.' of '.$file.' <br />';
+		$execution_context = MvcConfiguration::get('ExecutionContext');
+		
+		if ($execution_context == 'shell') {
+		
+			echo '-- '.$type_name.': '.$message."\n".'   (Thrown on line '.$line.' of '.$file.")\n";
+		
+		} else {
+		
+			echo '
+				<br />
+				<strong>[MVC] '.$type_name.'</strong>: '.$message.'
+				<br />
+				Thrown on line '.$line.' of '.$file.' <br />';
+				
+		}
 	
 	}
 	

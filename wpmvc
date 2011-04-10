@@ -1,0 +1,3 @@
+#!/bin/bash
+mvc_core_path="$(dirname $0)/core/"
+php -q "${mvc_core_path}wpmvc.php" "$@"

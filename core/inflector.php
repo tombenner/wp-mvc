@@ -36,7 +36,7 @@ class Inflector {
 	
 	public function titleize($string) {
 		$string = preg_replace('/[A-Z]/', ' $0', $string);
-		$string = str_replace('_', ' ', $string);
+		$string = trim(str_replace('_', ' ', $string));
 		$string = ucwords($string);
 		return $string;
 	}

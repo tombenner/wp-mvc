@@ -51,6 +51,7 @@ class MvcModel {
 		$model_data = $data[$this->name];
 		$id = $this->insert($model_data);
 		$this->update_associations($id, $model_data);
+		return $id;
 	}
 	
 	public function save($data) {
@@ -64,7 +65,11 @@ class MvcModel {
 			$this->update($id, $model_data);
 			$this->update_associations($id, $model_data);
 		} else {
-			$this->create($data);
+			$id = $this->create($data);
+		}
+		if (method_exists($this, 'after_save')) {
+			$object = $this->find_by_id($id);
+			$this->after_save($object);
 		}
 	}
 	

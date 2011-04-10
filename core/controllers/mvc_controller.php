@@ -1,15 +1,17 @@
 <?php
 
 class MvcController {
-
+	
+	protected $file_includer = null;
+	public $is_controller = true;
 	public $name = '';
 	public $view_rendered = false;
 	public $view_vars = array();
-	public $is_controller = true;
 	
 	function __construct() {
 	
 		$this->set_meta();
+		$this->file_includer = new MvcFileIncluder();
 	
 	}
 	
@@ -79,12 +81,7 @@ class MvcController {
 		$helper_name = $helper_name.'Helper';
 		$helper_underscore = Inflector::underscore($helper_name);
 		
-		$app_path = MVC_PLUGIN_PATH.'app/helpers/'.$helper_underscore.'.php';
-		if (file_exists($app_path)) {
-			require_once $app_path;
-		} else {
-			require_once MVC_PLUGIN_PATH.'core/pluggable/helpers/'.$helper_underscore.'.php';
-		}
+		$this->file_includer->require_app_or_core_file('helpers/'.$helper_underscore.'.php');
 		
 		if (class_exists($helper_name)) {
 			$helper_method_name = str_replace('_helper', '', $helper_underscore);
@@ -102,12 +99,7 @@ class MvcController {
 	protected function load_model($model_name) {
 		$model_underscore = Inflector::underscore($model_name);
 		
-		$app_path = MVC_PLUGIN_PATH.'app/models/'.$model_underscore.'.php';
-		if (file_exists($app_path)) {
-			require_once $app_path;
-		} else {
-			require_once MVC_PLUGIN_PATH.'core/pluggable/models/'.$model_underscore.'.php';
-		}
+		$this->file_includer->require_app_or_core_file('models/'.$model_underscore.'.php');
 		
 		if (class_exists($model_name)) {
 			$this->{$model_name} = new $model_name();
