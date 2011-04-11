@@ -57,7 +57,6 @@ class GenerateShell extends MvcShell {
 	
 	private function generate_controllers($name) {
 	
-		$name_camelized = Inflector::camelize($name);
 		$name_tableized = Inflector::tableize($name);
 		$name_pluralized = Inflector::pluralize($name);
 		
@@ -81,7 +80,6 @@ class GenerateShell extends MvcShell {
 	
 	private function generate_views($name) {
 	
-		$name_camelized = Inflector::camelize($name);
 		$name_tableized = Inflector::tableize($name);
 		$name_titleized = Inflector::titleize($name);
 		$name_titleized_pluralized = Inflector::pluralize($name_titleized);

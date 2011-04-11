@@ -38,11 +38,9 @@ class MvcTemplater {
 		} else {
 			MvcError::fatal('A template at "'.$template_path.'" could not be found.');
 		}
-		return '';
 	}
 	
 	private function create_file($path, $content) {
-//echo $path;die();
 		$file = new MvcFile($path);
 		$file->write($content);
 		
