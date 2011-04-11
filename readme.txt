@@ -30,9 +30,11 @@ The most recent version will always be in the [GitHub repo](http://github.com/to
 #### Creating an application using the WP MVC console to generate initial code
 
 1. Create the table in the database that will be used for a resource (e.g. for a resource named MyVenue, create a table named `my_venues`).
+
 1. Make sure that `wpmvc` is executable
 
 	`cd path/to/plugins/wp-mvc`
+	
 	`chmod +x wpmvc`
 
 1. Create the initial code for a resource's model, view, and controllers.
@@ -40,6 +42,7 @@ The most recent version will always be in the [GitHub repo](http://github.com/to
 	`./wpmvc generate scaffold MyVenue`
 
 1. The generated code will be in `plugins/wp-mvc/app/` and assumes that a database column named `name` is present and will be used to represent the resource in views. (See the example application for examples of how to modify this.) There will now be an administrative menu (`My Venues`) for this resource in WordPress, and you'll be able to browse to URLs like /my_venues/ and /my_venues/1/ to see the public-facing views.
+
 1. Flesh out the code or create code for more resources using the `generate scaffold` command as shown above.
 
 == Frequently Asked Questions ==
