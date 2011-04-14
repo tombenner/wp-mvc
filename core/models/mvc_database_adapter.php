@@ -106,7 +106,7 @@ class MvcDatabaseAdapter {
 	
 	public function get_order_sql($options=array()) {
 		$order = empty($options['order']) ? $this->defaults['order'] : $options['order'];
-		return $order ? 'ORDER BY '.$order : '';
+		return $order ? 'ORDER BY '.$this->db->escape($order) : '';
 	}
 	
 	public function get_limit_sql($options=array()) {
@@ -114,10 +114,10 @@ class MvcDatabaseAdapter {
 			$per_page = empty($options['per_page']) ? $this->defaults['per_page'] : $options['per_page'];
 			$page = $options['page'];
 			$offset = ($page - 1) * $per_page;
-			return 'LIMIT '.$offset.', '.$per_page;
+			return 'LIMIT '.$this->db->escape($offset).', '.$this->db->escape($per_page);
 		}
 		$limit = empty($options['limit']) ? $this->defaults['limit'] : $options['limit'];
-		return $limit ? 'LIMIT '.$limit : '';
+		return $limit ? 'LIMIT '.$this->db->escape($limit) : '';
 	}
 	
 	public function get_set_sql($data) {
