@@ -508,18 +508,6 @@ class MvcModel {
 			}
 		}
 	}
-	
-	protected function add_includes(&$object, $includes=array()) {
-	
-		if (!empty($includes)) {
-			foreach($includes as $include) {
-				$include_method = 'get_'.$include;
-				if (method_exists($this, $include_method)) {
-					$object->{str_replace('simple_', '', $include)} = $this->{$include_method}($object->id);
-				}
-			}
-		}
-	}
 
 }
 
