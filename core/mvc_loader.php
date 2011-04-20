@@ -2,11 +2,14 @@
 
 class MvcLoader {
 
-	private $action_key = 'mvc_action';
+	private $admin_controller_names = array();
 	private $app_directory = '';
 	private $core_directory = '';
 	private $dispatcher = null;
 	private $file_includer = null;
+	private $model_names = array();
+	private $public_controller_names = array();
+	private $query_vars = array();
 
 	function __construct() {
 	
@@ -41,6 +44,7 @@ class MvcLoader {
 		$this->file_includer = new MvcFileIncluder();
 		
 		$this->file_includer->require_app_file_if_exists('config/bootstrap.php');
+		$this->file_includer->require_app_file_if_exists('config/routes.php');
 		
 		$this->dispatcher = new MvcDispatcher();
 		
@@ -92,9 +96,21 @@ class MvcLoader {
 		$this->file_includer->require_app_or_core_file('controllers/admin_controller.php');
 		$this->file_includer->require_app_or_core_file('controllers/public_controller.php');
 		
-		$this->file_includer->require_php_files_in_directory($this->app_directory.'controllers/admin/');
-		$this->file_includer->require_php_files_in_directory($this->app_directory.'controllers/');
-	
+		$admin_controller_filenames = $this->file_includer->require_php_files_in_directory($this->app_directory.'controllers/admin/');
+		$public_controller_filenames = $this->file_includer->require_php_files_in_directory($this->app_directory.'controllers/');
+		
+		foreach($admin_controller_filenames as $filename) {
+			if (preg_match('/admin_([^\/]+)_controller\.php/', $filename, $match)) {
+				$this->admin_controller_names[] = $match[1];
+			}
+		}
+		
+		foreach($public_controller_filenames as $filename) {
+			if (preg_match('/([^\/]+)_controller\.php/', $filename, $match)) {
+				$this->public_controller_names[] = $match[1];
+			}
+		}
+		
 	}
 	
 	private function load_models() {
@@ -229,19 +245,72 @@ class MvcLoader {
 		
 		$new_rules = array();
 		
-		foreach($this->model_names as $model_name) {
+		$routes = Router::get_public_routes();
+		
+		// Use default routes if none have been defined
+		if (empty($routes)) {
+			Router::public_connect('{:controller}', array('action' => 'index'));
+			Router::public_connect('{:controller}/{:id:[\d]+}', array('action' => 'show'));
+			Router::public_connect('{:controller}/{:action}/{:id:[\d]+}');
+			$routes = Router::get_public_routes();
+		}
+		
+		foreach($routes as $route) {
 			
-			$controller = Inflector::tableize($model_name);
+			$route_path = $route[0];
+			$route_defaults = $route[1];
 			
-			$wp_rewrite->add_rewrite_tag('%'.$controller.'%', '(.+)', $controller.'=');
-			
-			$url_structure = $wp_rewrite->root.$controller.'/%action%';
-			$controller_rules = $wp_rewrite->generate_rewrite_rules($url_structure);
-			$controller_rules[$controller.'/(.*?)$'] = 'index.php?mvc_controller='.$controller.'&mvc_params_string=$matches[1]';
-			$controller_rules[$controller.'$'] = 'index.php?mvc_controller='.$controller.'&mvc_params_string=';
-			
-			$new_rules = array_merge($new_rules, $controller_rules);
-			
+			if (strpos($route_path, '{:controller}') !== false) {
+				foreach($this->public_controller_names as $controller) {
+
+					add_rewrite_tag('%'.$controller.'%', '(.+)');
+					
+					$rewrite_path = $route_path;
+					$query_vars = array();
+					$query_var_counter = 0;
+					$query_var_match_string = '';
+					
+					// Add any route params from the route path (e.g. '{:controller}/{:id:[\d]+}') to $query_vars
+					// and append them to the match string for use in a WP rewrite rule
+					preg_match_all('/{:(.+?)(:.*?)?}/', $rewrite_path, $matches);
+					foreach($matches[1] as $query_var) {
+						$query_var = 'mvc_'.$query_var;
+						if ($query_var != 'mvc_controller') {
+							$query_var_match_string .= '&'.$query_var.'=$matches['.$query_var_counter.']';
+						}
+						$query_vars[] = $query_var;
+						$query_var_counter++;
+					}
+					
+					// Do the same as above for route params that defined as route defaults (e.g. array('action' => 'show'))
+					if (!empty($route_defaults)) {
+						foreach($route_defaults as $query_var => $value) {
+							$query_var = 'mvc_'.$query_var;
+							if ($query_var != 'mvc_controller') {
+								$query_var_match_string .= '&'.$query_var.'='.$value;
+								$query_vars[] = $query_var;
+							}
+						}
+					}
+					
+					$this->query_vars = array_unique(array_merge($this->query_vars, $query_vars));
+					$rewrite_path = str_replace('{:controller}', $controller, $route_path);
+					
+					// Replace any route params (e.g. {:param_name}) in the route path with the default pattern ([^/]+)
+					$rewrite_path = preg_replace('/({:[\w_-]+})/', '([^/]+)', $rewrite_path);
+					// Replace any route params with defined patterns (e.g. {:param_name:[\d]+}) in the route path with
+					// their pattern (e.g. ([\d]+))
+					$rewrite_path = preg_replace('/({:[\w_-]+:)(.*?)}/', '(\2)', $rewrite_path);
+					$rewrite_path = '^'.$rewrite_path.'/?$';
+					
+					$controller_value = empty($route_defaults['controller']) ? $controller : $route_defaults['controller'];
+					$controller_rules = array();
+					$controller_rules[$rewrite_path] = 'index.php?mvc_controller='.$controller_value.$query_var_match_string;
+					
+					$new_rules = array_merge($new_rules, $controller_rules);
+				
+				}
+			}
 		}
 		
 		$rules = array_merge($new_rules, $rules);
@@ -250,25 +319,25 @@ class MvcLoader {
 	}
 	
 	public function add_query_vars($vars) {
-		$vars[] = 'mvc_controller';
-		$vars[] = 'mvc_params_string';
+		$vars = array_merge($vars, $this->query_vars);
 		return $vars;
 	}
 	
 	public function get_routing_params() {
 		global $wp_query;
+		
 		$controller = $wp_query->get('mvc_controller');
-		$mvc_params_string = $wp_query->get('mvc_params_string');
+		
 		if ($controller) {
-			$params = array('controller' => $controller);
-			if (!$mvc_params_string) {
-				$params['action'] = 'index';
-			} else if (ctype_digit($mvc_params_string)) {
-				$params['action'] = 'show';
-				$params['id'] = $mvc_params_string;
+			$query_params = $wp_query->query;
+			$params = array();
+			foreach($query_params as $key => $value) {
+				$key = preg_replace('/^(mvc_)/', '', $key);
+				$params[$key] = $value;
 			}
 			return $params;
 		}
+		
 		return false;
 	}
 	

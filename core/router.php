@@ -1,6 +1,8 @@
 <?php
 
 class Router {
+	
+	public $routes = array();
 
 	public function public_url($options=array()) {
 		$url = site_url().'/'.$options['controller'].'/';
@@ -32,6 +34,45 @@ class Router {
 			$params['id'] = $options['id'];
 		}
 		return $params;
+	}
+
+	public function public_connect($route, $defaults=array()) {
+		$_this =& Router::get_instance();
+		$_this->add_public_route($route, $defaults);
+	}
+
+	private function &get_instance() {
+		static $instance = array();
+		if (!$instance) {
+			$instance[0] =& new Router();
+			$instance[0]->routes = array(
+				'public' => array(),
+				'admin' => array()
+			);
+		}
+		return $instance[0];
+	}
+
+	public function &get_public_routes() {
+		$_this =& self::get_instance();
+		$return =& $_this->routes['public'];
+		return $return;
+	}
+
+	public function &get_admin_routes() {
+		$_this =& self::get_instance();
+		$return =& $_this->routes['admin'];
+		return $return;
+	}
+	
+	public function add_public_route($route, $defaults) {
+		$_this =& self::get_instance();
+		$_this->routes['public'][] = array($route, $defaults);
+	}
+	
+	public function add_admin_route($route, $defaults) {
+		$_this =& self::get_instance();
+		$_this->routes['admin'][] = array($route, $defaults);
 	}
 
 }
