@@ -22,7 +22,7 @@ class MvcShell {
 	}
 
 	public function main($args) {
-		echo 'To handle commands without any arguments, please define a main() method in the shell.';
+		$this->out('To handle commands without any arguments, please define a main() method in the shell.');
 	}
 	
 	public function out($string) {
