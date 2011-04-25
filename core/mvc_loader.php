@@ -315,6 +315,8 @@ class MvcLoader {
 		
 		$rules = array_merge($new_rules, $rules);
 		
+		$rules = apply_filters('mvc_public_rewrite_rules', $rules);
+		
 		return $rules;
 	}
 	
