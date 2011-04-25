@@ -19,8 +19,8 @@ class MvcAdminController extends MvcController {
 	public function edit() {
 		
 		$this->verify_id_param();
-		$this->set_object();
 		$this->create_or_save();
+		$this->set_object();
 	
 	}
 	
@@ -60,9 +60,12 @@ class MvcAdminController extends MvcController {
 					$this->flash('notice', 'Successfully created!');
 					$this->redirect($url);
 				} else {
-					$this->model->save($this->params['data']);
-					$this->flash('notice', 'Successfully saved!');
-					$this->refresh();
+					if ($this->model->save($this->params['data'])) {
+						$this->flash('notice', 'Successfully saved!');
+						$this->refresh();
+					} else {
+						$this->flash('error', $this->model->validation_error_html);
+					}
 				}
 			}
 		}

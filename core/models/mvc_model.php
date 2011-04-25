@@ -9,6 +9,9 @@ class MvcModel {
 	public $has_and_belongs_to_many = null;
 	public $associations = null;
 	public $admin_pages = null;
+	public $validation_error = null;
+	public $validation_error_html = null;
+	private $data_validator = null;
 	private $db_adapter = null;
 	
 	function __construct() {
@@ -27,7 +30,8 @@ class MvcModel {
 			'conditions' => empty($this->conditions) ? null : $this->conditions,
 			'limit' => empty($this->limit) ? null : $this->limit,
 			'includes' => empty($this->includes) ? null : $this->includes,
-			'per_page' => empty($this->per_page) ? 10 : $this->per_page
+			'per_page' => empty($this->per_page) ? 10 : $this->per_page,
+			'validate' => empty($this->validate) ? null : $this->validate
 		);
 		
 		foreach($defaults as $key => $value) {
@@ -37,11 +41,22 @@ class MvcModel {
 		$this->db_adapter = new MvcDatabaseAdapter();
 		$this->db_adapter->set_defaults($defaults);
 		
+		$this->data_validator = new MvcDataValidator();
+		
 		$this->init_admin_pages();
 		$this->init_admin_columns();
 		$this->init_associations();
 		$this->init_schema();
 	
+	}
+	
+	public function new_object($data) {
+		$object = false;
+		foreach($data as $field => $value) {
+			$object->{$field} = $value;
+		}
+		$object = $this->process_objects($object);
+		return $object;
 	}
 	
 	public function create($data) {
@@ -62,6 +77,18 @@ class MvcModel {
 			$model_data = $data[$this->name];
 			$id = $model_data['id'];
 			unset($model_data['id']);
+			$valid = $this->validate_data($model_data);
+			if ($valid !== true) {
+				$this->validation_error = $valid;
+				$this->validation_error_html = $this->validation_error->get_html();
+				$this->invalid_data = $model_data;
+				return false;
+			}
+			if (method_exists($this, 'before_save')) {
+				if (!$this->before_save($model_data)) {
+					return false;
+				}
+			}
 			$this->update($id, $model_data);
 			$this->update_associations($id, $model_data);
 		} else {
@@ -71,6 +98,7 @@ class MvcModel {
 			$object = $this->find_by_id($id);
 			$this->after_save($object);
 		}
+		return true;
 	}
 	
 	public function insert($data) {
@@ -251,6 +279,21 @@ class MvcModel {
 				}
 			}
 		}
+	}
+	
+	private function validate_data($data) {
+		$rules = $this->validate;
+		if (!empty($rules)) {
+			foreach($rules as $field => $rule) {
+				if (isset($data[$field])) {
+					$valid = $this->data_validator->validate($field, $data[$field], $rule);
+					if ($valid !== true) {
+						return $valid;
+					}
+				}
+			}
+		}
+		return true;
 	}
 	
 	private function init_admin_pages() {
