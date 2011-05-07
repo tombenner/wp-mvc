@@ -6,89 +6,121 @@ class GenerateShell extends MvcShell {
 
 	public function init() {
 		$this->templater = new MvcTemplater();
-		$this->templater->set_template_directory($this->core_path.'templates/');
+		$this->templater->set_template_directory($this->core_path.'templates/plugin/app/');
+	}
+	
+	public function plugin($args) {
+		if (empty($args[0])) {
+			MvcError::fatal('Please specify a name for the plugin (e.g. "wpmvc generate plugin MyPlugin").');
+		}
+		$plugin = $args[0];
+		$this->generate_app($plugin);
 	}
 
 	public function controllers($args) {
-	
-		if (empty($args[0])) {
-			MvcError::fatal('Please specify a name for the model.');
-		}
-		
-		$name = $args[0];
-		$this->generate_controllers($name);
-		
+		list($plugin, $name) = $this->get_plugin_model_args($args);
+		$this->generate_controllers($plugin, $name);
 	}
 
 	public function model($args) {
-	
-		if (empty($args[0])) {
-			MvcError::fatal('Please specify a name for the model.');
-		}
-		
-		$name = $args[0];
-		$this->generate_model($name);
-		
+		list($plugin, $name) = $this->get_plugin_model_args($args);
+		$this->generate_model($plugin, $name);
 	}
 
 	public function scaffold($args) {
-	
-		if (empty($args[0])) {
-			MvcError::fatal('Please specify a name for the model.');
-		}
-		
-		$name = $args[0];
-		$this->generate_controllers($name);
-		$this->generate_model($name);
-		$this->generate_views($name);
-		
+		list($plugin, $name) = $this->get_plugin_model_args($args);
+		$this->generate_controllers($plugin, $name);
+		$this->generate_model($plugin, $name);
+		$this->generate_views($plugin, $name);
 	}
 
 	public function views($args) {
+		list($plugin, $name) = $this->get_plugin_model_args($args);
+		$this->generate_views($plugin, $name);
+	}
 	
-		if (empty($args[0])) {
-			MvcError::fatal('Please specify a name for the model.');
+	private function generate_app($plugin) {
+	
+		$plugin_camelized = MvcInflector::camelize($plugin);
+		$plugin_titleized = MvcInflector::titleize($plugin);
+		$plugin_underscored = MvcInflector::underscore($plugin);
+		$plugin_hyphenized = str_replace('_', '-', $plugin_underscored);
+		
+		$plugin_path = WP_PLUGIN_DIR.'/'.$plugin_hyphenized.'/';
+		$plugin_app_path = $plugin_path.'app/';
+		
+		$directory = new MvcDirectory();
+		$app_directories = array(
+			'config',
+			'controllers',
+			'controllers/admin',
+			'models',
+			'public',
+			'public/css',
+			'public/js',
+			'views',
+			'views/admin'
+		);
+		foreach($app_directories as $path) {
+			$directory->create($plugin_app_path.$path.'/');
 		}
 		
-		$name = $args[0];
-		$this->generate_views($name);
+		$vars = array(
+			'name_camelized' => $plugin_camelized,
+			'name_humanized' => $plugin_hyphenized,
+			'name_titleized' => $plugin_titleized,
+			'name_underscored' => $plugin_underscored
+		);
+		
+		$this->templater->set_template_directory($this->core_path.'templates/plugin/');
+		
+		$target_path = $plugin_path.$plugin_underscored.'.php';
+		$this->templater->create('plugin', $target_path, $vars);
+		
+		$target_path = $plugin_path.$plugin_underscored.'_loader.php';
+		$this->templater->create('plugin_loader', $target_path, $vars);
 		
 	}
 	
-	private function generate_controllers($name) {
+	private function generate_controllers($plugin, $name) {
+		
+		$plugin_app_path = mvc_plugin_app_path($plugin);
 	
-		$name_tableized = Inflector::tableize($name);
-		$name_pluralized = Inflector::pluralize($name);
+		$name_tableized = MvcInflector::tableize($name);
+		$name_pluralized = MvcInflector::pluralize($name);
 		
 		$vars = array('name_pluralized' => $name_pluralized);
 		
-		$target_path = $this->app_path.'controllers/'.$name_tableized.'_controller.php';
+		$target_path = $plugin_app_path.'controllers/'.$name_tableized.'_controller.php';
 		$this->templater->create('public_controller', $target_path, $vars);
 		
-		$target_path = $this->app_path.'controllers/admin/admin_'.$name_tableized.'_controller.php';
+		$target_path = $plugin_app_path.'controllers/admin/admin_'.$name_tableized.'_controller.php';
 		$this->templater->create('admin_controller', $target_path, $vars);
 		
 	}
 	
-	private function generate_model($name) {
-		$name_camelized = Inflector::camelize($name);
-		$name_underscored = Inflector::underscore($name);
-		$target_path = $this->app_path.'models/'.$name_underscored.'.php';
+	private function generate_model($plugin, $name) {
+		$plugin_app_path = mvc_plugin_app_path($plugin);
+		$name_camelized = MvcInflector::camelize($name);
+		$name_underscored = MvcInflector::underscore($name);
+		$target_path = $plugin_app_path.'models/'.$name_underscored.'.php';
 		$vars = array('name' => $name_camelized);
 		$this->templater->create('model', $target_path, $vars);
 	}
 	
-	private function generate_views($name) {
+	private function generate_views($plugin, $name) {
+		
+		$plugin_app_path = mvc_plugin_app_path($plugin);
 	
-		$name_tableized = Inflector::tableize($name);
-		$name_titleized = Inflector::titleize($name);
-		$name_titleized_pluralized = Inflector::pluralize($name_titleized);
-		$name_underscored = Inflector::underscore($name);
+		$name_tableized = MvcInflector::tableize($name);
+		$name_titleized = MvcInflector::titleize($name);
+		$name_titleized_pluralized = MvcInflector::pluralize($name_titleized);
+		$name_underscored = MvcInflector::underscore($name);
 		
 		$directory = new MvcDirectory();
-		$public_directory = $this->app_path.'views/'.$name_tableized.'/';
+		$public_directory = $plugin_app_path.'views/'.$name_tableized.'/';
 		$directory->create($public_directory);
-		$admin_directory = $this->app_path.'views/admin/'.$name_tableized.'/';
+		$admin_directory = $plugin_app_path.'views/admin/'.$name_tableized.'/';
 		$directory->create($admin_directory);
 		
 		$vars = array(
@@ -105,6 +137,14 @@ class GenerateShell extends MvcShell {
 		$this->templater->create('views/admin/add', $admin_directory.'/add.php', $vars);
 		$this->templater->create('views/admin/edit', $admin_directory.'/edit.php', $vars);
 		
+	}
+	
+	private function get_plugin_model_args($args) {
+		if (empty($args[0]) || empty($args[1])) {
+			MvcError::fatal('Please specify a plugin and name for the model.');
+		}
+		$args[0] = str_replace('_', '-', MvcInflector::underscore($args[0]));
+		return $args;
 	}
 
 }

@@ -8,7 +8,7 @@ class MvcDispatcher {
 		$action = $options['action'];
 		$object_id = empty($options['id']) ? null : $options['id'];
 		
-		$controller_class = Inflector::camelize($controller_name).'Controller';
+		$controller_class = MvcInflector::camelize($controller_name).'Controller';
 		
 		$controller = new $controller_class();
 		

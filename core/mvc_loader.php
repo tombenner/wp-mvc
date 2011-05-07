@@ -3,8 +3,7 @@
 class MvcLoader {
 
 	private $admin_controller_names = array();
-	private $app_directory = '';
-	private $core_directory = '';
+	private $core_path = '';
 	private $dispatcher = null;
 	private $file_includer = null;
 	private $model_names = array();
@@ -16,35 +15,15 @@ class MvcLoader {
 		if (!defined('MVC_CORE_PATH')) {
 			define('MVC_CORE_PATH', MVC_PLUGIN_PATH.'core/');
 		}
-	
-		$this->core_directory = MVC_CORE_PATH;
-	
+		
+		$this->core_path = MVC_CORE_PATH;
+		
 		$this->load_core();
-		
-		if (defined('MVC_APP_PATH')) {
-		
-			$this->app_directory = MVC_APP_PATH;
-		
-		} else {
-			
-			$abspath = rtrim(ABSPATH, '/').'/';
-		
-			$theme_filepath = $abspath.get_theme_root().'/'.get_template().'/';
-			
-			if (is_dir($theme_filepath.'app/')) {
-				$this->app_directory = $theme_filepath.'app/';
-			} else {
-				$this->app_directory = MVC_PLUGIN_PATH.'app/';
-			}
-			
-			define('MVC_APP_PATH', $this->app_directory);
-		
-		}
+		$this->load_plugins();
 		
 		$this->file_includer = new MvcFileIncluder();
-		
-		$this->file_includer->require_app_file_if_exists('config/bootstrap.php');
-		$this->file_includer->require_app_file_if_exists('config/routes.php');
+		$this->file_includer->include_all_app_files('config/bootstrap.php');
+		$this->file_includer->include_all_app_files('config/routes.php');
 		
 		$this->dispatcher = new MvcDispatcher();
 		
@@ -61,9 +40,10 @@ class MvcLoader {
 			'mvc_file_includer',
 			'mvc_model_registry',
 			'mvc_object_registry',
+			'mvc_plugin_loader',
 			'mvc_templater',
-			'inflector',
-			'router',
+			'mvc_inflector',
+			'mvc_router',
 			'controllers/mvc_controller',
 			'controllers/mvc_admin_controller',
 			'controllers/mvc_public_controller',
@@ -80,8 +60,54 @@ class MvcLoader {
 		);
 		
 		foreach($files as $file) {
-			require_once $this->core_directory.$file.'.php';
+			require_once $this->core_path.$file.'.php';
 		}
+		
+	}
+	
+	private function load_plugins() {
+	
+		$plugins = $this->get_ordered_plugins();
+		$plugin_app_paths = array();
+		foreach($plugins as $plugin) {
+			$plugin_app_paths[$plugin] = rtrim(WP_PLUGIN_DIR, '/').'/'.$plugin.'/app/';
+		}
+
+		MvcConfiguration::set(array(
+			'Plugins' => $plugins,
+			'PluginAppPaths' => $plugin_app_paths
+		));
+
+		$this->plugin_app_paths = $plugin_app_paths;
+	
+	}
+	
+	private function get_ordered_plugins() {
+	
+		$plugins = get_option('mvc_plugins', array());
+		$plugin_app_paths = array();
+		
+		// Allow plugins to be loaded in a specific order by setting a PluginOrder config value like
+		// this ('all' is an optional token; it includes all unenumerated plugins):
+		// MvcConfiguration::set(array(
+		//		'PluginOrder' => array('my-first-plugin', 'my-second-plugin', 'all', 'my-last-plugin')
+		// );
+		$plugin_order = MvcConfiguration::get('PluginOrder');
+		if (!empty($plugin_order)) {
+			$ordered_plugins = array();
+			$index_of_all = array_search('all', $plugin_order);
+			if ($index_of_all !== false) {
+				$first_plugins = array_slice($ordered_plugins, 0, $index_of_all - 1);
+				$last_plugins = array_slice($ordered_plugins, $index_of_all);
+				$middle_plugins = array_diff($plugins, $first_plugins, $last_plugins);
+				$plugins = array_merge($first_plugins, $middle_plugins, $last_plugins);
+			} else {
+				$unordered_plugins = array_diff($plugins, $ordered_plugins);
+				$plugins = array_merge($ordered_plugins, $unordered_plugins);
+			}
+		}
+		
+		return $plugins;
 		
 	}
 	
@@ -95,43 +121,46 @@ class MvcLoader {
 	
 	private function load_controllers() {
 	
-		$this->file_includer->require_app_or_core_file('controllers/admin_controller.php');
-		$this->file_includer->require_app_or_core_file('controllers/public_controller.php');
+		foreach($this->plugin_app_paths as $plugin_app_path) {
 		
-		$admin_controller_filenames = $this->file_includer->require_php_files_in_directory($this->app_directory.'controllers/admin/');
-		$public_controller_filenames = $this->file_includer->require_php_files_in_directory($this->app_directory.'controllers/');
-		
-		foreach($admin_controller_filenames as $filename) {
-			if (preg_match('/admin_([^\/]+)_controller\.php/', $filename, $match)) {
-				$this->admin_controller_names[] = $match[1];
+			$admin_controller_filenames = $this->file_includer->require_php_files_in_directory($plugin_app_path.'controllers/admin/');
+			$public_controller_filenames = $this->file_includer->require_php_files_in_directory($plugin_app_path.'controllers/');
+			
+			foreach($admin_controller_filenames as $filename) {
+				if (preg_match('/admin_([^\/]+)_controller\.php/', $filename, $match)) {
+					$this->admin_controller_names[] = $match[1];
+				}
 			}
-		}
-		
-		foreach($public_controller_filenames as $filename) {
-			if (preg_match('/([^\/]+)_controller\.php/', $filename, $match)) {
-				$this->public_controller_names[] = $match[1];
+			
+			foreach($public_controller_filenames as $filename) {
+				if (preg_match('/([^\/]+)_controller\.php/', $filename, $match)) {
+					$this->public_controller_names[] = $match[1];
+				}
 			}
+		
 		}
 		
 	}
 	
 	private function load_models() {
 		
-		$this->file_includer->require_app_or_core_file('models/app_model.php');
-		
-		$model_filenames = $this->file_includer->require_php_files_in_directory($this->app_directory.'models/');
-		
 		$models = array();
 		
-		foreach($model_filenames as $filename) {
-			$models[] = Inflector::class_name_from_filename($filename);
+		foreach($this->plugin_app_paths as $plugin_app_path) {
+		
+			$model_filenames = $this->file_includer->require_php_files_in_directory($plugin_app_path.'models/');
+			
+			foreach($model_filenames as $filename) {
+				$models[] = MvcInflector::class_name_from_filename($filename);
+			}
+		
 		}
 		
 		$this->model_names = array();
 		
 		foreach($models as $model) {
-			$this->model_names[] = $model;			
-			$model_class = Inflector::camelize($model);
+			$this->model_names[] = $model;
+			$model_class = MvcInflector::camelize($model);
 			$model_instance = new $model_class();
 			MvcModelRegistry::add_model($model, &$model_instance);
 		}
@@ -140,7 +169,7 @@ class MvcLoader {
 	
 	private function load_functions() {
 	
-		$this->file_includer->require_php_files_in_directory($this->core_directory.'functions/');
+		$this->file_includer->require_php_files_in_directory($this->core_path.'functions/');
 	
 	}
 	
@@ -179,9 +208,9 @@ class MvcLoader {
 		foreach($this->model_names as $model_name) {
 		
 			$model = MvcModelRegistry::get_model($model_name);
-			$tableized = Inflector::tableize($model_name);
-			$pluralized = Inflector::pluralize($model_name);
-			$titleized = Inflector::titleize($model_name);
+			$tableized = MvcInflector::tableize($model_name);
+			$pluralized = MvcInflector::pluralize($model_name);
+			$titleized = MvcInflector::titleize($model_name);
 		
 			$controller_name = 'admin_'.$tableized;
 			
@@ -247,14 +276,14 @@ class MvcLoader {
 		
 		$new_rules = array();
 		
-		$routes = Router::get_public_routes();
+		$routes = MvcRouter::get_public_routes();
 		
 		// Use default routes if none have been defined
 		if (empty($routes)) {
-			Router::public_connect('{:controller}', array('action' => 'index'));
-			Router::public_connect('{:controller}/{:id:[\d]+}', array('action' => 'show'));
-			Router::public_connect('{:controller}/{:action}/{:id:[\d]+}');
-			$routes = Router::get_public_routes();
+			MvcRouter::public_connect('{:controller}', array('action' => 'index'));
+			MvcRouter::public_connect('{:controller}/{:id:[\d]+}', array('action' => 'show'));
+			MvcRouter::public_connect('{:controller}/{:action}/{:id:[\d]+}');
+			$routes = MvcRouter::get_public_routes();
 		}
 		
 		foreach($routes as $route) {

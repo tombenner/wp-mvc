@@ -21,9 +21,9 @@ class MvcShellDispatcher {
 		$shell_name = $args[1];
 	
 		$shell_name .= '_shell';
-		$shell_class_name = Inflector::camelize($shell_name);
+		$shell_class_name = MvcInflector::camelize($shell_name);
 	
-		$this->file_includer->require_app_or_core_file('shells/'.$shell_name.'.php');
+		$this->file_includer->require_first_app_file_or_core_file('shells/'.$shell_name.'.php');
 		
 		$args = array_slice($args, 2);
 		

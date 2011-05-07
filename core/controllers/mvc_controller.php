@@ -21,8 +21,8 @@ class MvcController {
 		
 		$models = MvcModelRegistry::get_models();
 		foreach($models as $model_name => $model) {
-			$underscore = Inflector::underscore($model_name);
-			$tableize = Inflector::tableize($model_name);
+			$underscore = MvcInflector::underscore($model_name);
+			$tableize = MvcInflector::tableize($model_name);
 			// Add dynamicly created methods to HtmlHelper in the form speaker_url($object), speaker_link($object)
 			$method = $underscore.'_url';
 			$this->html->{$method} = create_function('$object, $options=array()', '
@@ -62,15 +62,15 @@ class MvcController {
 	private function set_meta() {
 		$model = get_class($this);
 		$model = preg_replace('/Controller$/', '', $model);
-		$this->name = Inflector::underscore($model);
+		$this->name = MvcInflector::underscore($model);
 		$this->views_path = '';
 		if (preg_match('/^Admin[A-Z]/', $model)) {
 			$this->views_path = 'admin/';
 			$model = preg_replace('/^Admin/', '', $model);
 		}
 		
-		$model = Inflector::singularize($model);
-		$this->views_path .= Inflector::tableize($model).'/';
+		$model = MvcInflector::singularize($model);
+		$this->views_path .= MvcInflector::tableize($model).'/';
 		$this->model_name = $model;
 		// To do: remove the necessity of this redundancy
 		$this->model = new $model();
@@ -79,9 +79,9 @@ class MvcController {
 	
 	protected function load_helper($helper_name) {
 		$helper_name = $helper_name.'Helper';
-		$helper_underscore = Inflector::underscore($helper_name);
+		$helper_underscore = MvcInflector::underscore($helper_name);
 		
-		$this->file_includer->require_app_or_core_file('helpers/'.$helper_underscore.'.php');
+		$this->file_includer->require_first_app_file_or_core_file('helpers/'.$helper_underscore.'.php');
 		
 		if (class_exists($helper_name)) {
 			$helper_method_name = str_replace('_helper', '', $helper_underscore);
@@ -97,9 +97,9 @@ class MvcController {
 	}
 	
 	protected function load_model($model_name) {
-		$model_underscore = Inflector::underscore($model_name);
+		$model_underscore = MvcInflector::underscore($model_name);
 		
-		$this->file_includer->require_app_or_core_file('models/'.$model_underscore.'.php');
+		$this->file_includer->require_first_app_file_or_core_file('models/'.$model_underscore.'.php');
 		
 		if (class_exists($model_name)) {
 			$this->{$model_name} = new $model_name();
@@ -218,23 +218,16 @@ class MvcController {
 	}
 	
 	protected function include_view($path, $view_vars=array()) {
-		
 		extract($view_vars);
-		
-		$include_path = MVC_PLUGIN_PATH.'app/views/'.$path.'.php';
-		
-		if (file_exists($include_path)) {
-			require $include_path;
-		} else {
+		$filepath = $this->file_includer->find_first_app_file_or_core_file('views/'.$path.'.php');
+		if (!$filepath) {
 			$path = preg_replace('/admin\/(?!layouts)([\w_]+)/', 'admin', $path);
-			$include_path = MVC_PLUGIN_PATH.'core/pluggable/views/'.$path.'.php';
-			if (file_exists($include_path)) {
-				require $include_path;
-			} else {
+			$filepath = $this->file_includer->find_first_app_file_or_core_file('views/'.$path.'.php');
+			if (!$filepath) {
 				MvcError::warning('View "'.$path.'" not found.');
 			}
 		}
-	
+		require $filepath;
 	}
 	
 	private function set_view_var($key, $value) {

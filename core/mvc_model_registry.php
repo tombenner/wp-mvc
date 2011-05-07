@@ -14,7 +14,7 @@ class MvcModelRegistry {
 
 	public function &get_model($key) {
 		$_this =& self::get_instance();
-		$key = Inflector::camelize($key);
+		$key = MvcInflector::camelize($key);
 		$return = false;
 		if (isset($_this->__models[$key])) {
 			$return =& $_this->__models[$key];
@@ -30,7 +30,7 @@ class MvcModelRegistry {
 	
 	public function add_model($key, &$model) {
 		$_this =& self::get_instance();
-		$key = Inflector::camelize($key);
+		$key = MvcInflector::camelize($key);
 		if (!isset($_this->__models[$key])) {
 			$_this->__models[$key] = $model;
 			return true;

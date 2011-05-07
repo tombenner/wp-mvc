@@ -50,7 +50,7 @@ class MvcPublicController extends MvcController {
 	public function set_pagination($collection) {
 		$params = $this->params;
 		unset($params['page']);
-		$url = Router::public_url(array('controller' => $this->name));
+		$url = MvcRouter::public_url(array('controller' => $this->name));
 		$this->pagination = array(
 			'base' => $url.'%_%',
 			'format' => '?page=%#%',
@@ -74,7 +74,7 @@ class MvcPublicController extends MvcController {
 	
 	public function set_wp_title($original_title) {
 		$separator = ' | ';
-		$controller_name = Inflector::titleize($this->name);
+		$controller_name = MvcInflector::titleize($this->name);
 		$object_name = null;
 		$object = null;
 		if ($this->action) {

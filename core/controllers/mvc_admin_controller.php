@@ -32,9 +32,9 @@ class MvcAdminController extends MvcController {
 			$this->model->delete($this->params['id']);
 			$this->flash('notice', 'Successfully deleted!');
 		} else {
-			$this->flash('warning', 'A '.Inflector::humanize($this->model->name).' with ID "'.$this->params['id'].'" couldn\'t be found.');
+			$this->flash('warning', 'A '.MvcInflector::humanize($this->model->name).' with ID "'.$this->params['id'].'" couldn\'t be found.');
 		}
-		$url = Router::admin_url(array('controller' => $this->name, 'action' => 'index'));
+		$url = MvcRouter::admin_url(array('controller' => $this->name, 'action' => 'index'));
 		$this->redirect($url);
 	
 	}
@@ -56,7 +56,7 @@ class MvcAdminController extends MvcController {
 					$model = $this->model;
 					$model->create($this->params['data']);
 					$id = $model->insert_id;
-					$url = Router::admin_url(array('controller' => $this->name, 'action' => 'edit', 'id' => $id));
+					$url = MvcRouter::admin_url(array('controller' => $this->name, 'action' => 'edit', 'id' => $id));
 					$this->flash('notice', 'Successfully created!');
 					$this->redirect($url);
 				} else {
@@ -100,7 +100,7 @@ class MvcAdminController extends MvcController {
 	
 	public function set_pagination($collection) {
 	
-		$url_params = Router::admin_url_params(array('controller' => $this->name));
+		$url_params = MvcRouter::admin_url_params(array('controller' => $this->name));
 		$params = $this->params;
 		unset($params['page_num']);
 		$params['page'] = $url_params['page'];

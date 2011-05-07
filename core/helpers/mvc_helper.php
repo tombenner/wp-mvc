@@ -1,11 +1,24 @@
 <?php
 
 class MvcHelper {
+
+	protected $file_includer = null;
 	
-	public function render_view($path) {
+	function __construct() {
+		$this->file_includer = new MvcFileIncluder();
+	}
 	
-		require_once MVC_PLUGIN_PATH.'app/views/'.$path.'.php';
-	
+	public function render_view($path, $view_vars=array()) {
+		extract($view_vars);
+		$filepath = $this->file_includer->find_first_app_file_or_core_file('views/'.$path.'.php');
+		if (!$filepath) {
+			$path = preg_replace('/admin\/(?!layouts)([\w_]+)/', 'admin', $path);
+			$filepath = $this->file_includer->find_first_app_file_or_core_file('views/'.$path.'.php');
+			if (!$filepath) {
+				MvcError::warning('View "'.$path.'" not found.');
+			}
+		}
+		require $filepath;
 	}
 	
 	public function esc_attr($string) {
@@ -159,10 +172,10 @@ class MvcHelper {
 		$links = array();
 		$object_name = empty($object->__name) ? 'Item #'.$object->__id : $object->__name;
 		$encoded_object_name = $this->esc_attr($object_name);
-		$controller = Inflector::tableize($model->name);
-		$links[] = '<a href="'.Router::admin_url(array('controller' => $controller, 'action' => 'edit', 'id' => $object->__id)).'" title="Edit '.$encoded_object_name.'">Edit</a>';
-		$links[] = '<a href="'.Router::public_url(array('controller' => $controller, 'action' => 'show', 'id' => $object->__id)).'" title="View '.$encoded_object_name.'">View</a>';
-		$links[] = '<a href="'.Router::admin_url(array('controller' => $controller, 'action' => 'delete', 'id' => $object->__id)).'" title="Delete '.$encoded_object_name.'" onclick="return confirm(&#039;Are you sure you want to delete '.$encoded_object_name.'?&#039;);">Delete</a>';
+		$controller = MvcInflector::tableize($model->name);
+		$links[] = '<a href="'.MvcRouter::admin_url(array('controller' => $controller, 'action' => 'edit', 'id' => $object->__id)).'" title="Edit '.$encoded_object_name.'">Edit</a>';
+		$links[] = '<a href="'.MvcRouter::public_url(array('controller' => $controller, 'action' => 'show', 'id' => $object->__id)).'" title="View '.$encoded_object_name.'">View</a>';
+		$links[] = '<a href="'.MvcRouter::admin_url(array('controller' => $controller, 'action' => 'delete', 'id' => $object->__id)).'" title="Delete '.$encoded_object_name.'" onclick="return confirm(&#039;Are you sure you want to delete '.$encoded_object_name.'?&#039;);">Delete</a>';
 		$html = implode(' | ', $links);
 		return '<td>'.$html.'</td>';
 	}

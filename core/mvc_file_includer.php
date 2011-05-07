@@ -2,35 +2,105 @@
 
 class MvcFileIncluder {
 
+	private $core_path = '';
+	private $plugin_paths = array();
+
 	function __construct() {
-	
-		$this->core_directory = MVC_CORE_PATH;
-		$this->app_directory = MVC_APP_PATH;
-				
+		$this->core_path = MVC_CORE_PATH;
+		$this->plugin_app_paths = MvcConfiguration::get('PluginAppPaths');
 	}
 	
-	public function require_app_or_core_file($relative_filepath) {
-		if (!$this->require_app_file_if_exists($relative_filepath)) {
-			if (!$this->require_core_file_if_exists('pluggable/'.$relative_filepath)) {
-				$this->require_core_file($relative_filepath);
+	public function find_first_app_file_or_core_file($filepath) {
+		foreach($this->plugin_app_paths as $plugin_app_path) {
+			if (file_exists($plugin_app_path.$filepath)) {
+				return $plugin_app_path.$filepath;
+			}
+		}
+		if (file_exists($this->core_path.'pluggable/'.$filepath)) {
+			return $this->core_path.'pluggable/'.$filepath;
+		}
+		if (file_exists($this->core_path.$filepath)) {
+			return $this->core_path.$filepath;
+		}
+		return false;
+	}
+	
+	public function require_first_app_file_or_core_file($filepath) {
+		if (!$this->include_first_app_file($filepath)) {
+			if (!$this->include_core_file('pluggable/'.$filepath)) {
+				$this->require_core_file($filepath);
+			}
+		}
+	}
+	
+	public function require_all_app_files_or_core_file($filepath) {
+		if (!$this->include_all_app_files($filepath)) {
+			if (!$this->include_core_file('pluggable/'.$filepath)) {
+				$this->require_core_file($filepath);
 			}
 		}
 	}
 	
 	public function require_core_file($filepath) {
-		return $this->require_file($this->core_directory.$filepath);
+		if (!$this->include_core_file('pluggable/'.$filepath)) {
+			$this->require_file($this->core_path.$filepath);
+		}
 	}
 	
-	public function require_app_file($filepath) {
-		return $this->require_file($this->app_directory.$filepath);
+	public function require_first_app_file($filepath) {
+		foreach($this->plugin_app_paths as $plugin_app_path) {
+			if ($this->include_file($plugin_app_path.$filepath)) {
+				return true;
+			}
+		}
+		MvcError::fatal('The file "'.$filepath.'" couldn\'t be found in any apps.');
 	}
 	
-	public function require_core_file_if_exists($filepath) {
-		return $this->require_file_if_exists($this->core_directory.$filepath);
+	public function include_all_app_files($filepath) {
+		$included = false;
+		foreach($this->plugin_app_paths as $plugin_app_path) {
+			if ($this->include_file($plugin_app_path.$filepath)) {
+				$included = true;
+			}
+		}
+		return $included;
 	}
 	
-	public function require_app_file_if_exists($filepath) {
-		return $this->require_file_if_exists($this->app_directory.$filepath);
+	public function include_core_file($filepath) {
+		return $this->include_file($this->core_path.$filepath);
+	}
+	
+	public function include_first_app_file($filepath) {
+		foreach($this->plugin_app_paths as $plugin_app_path) {
+			if ($this->include_file($plugin_app_path.$filepath)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public function include_first_app_file_or_core_file($filepath) {
+		foreach($this->plugin_app_paths as $plugin_app_path) {
+			if ($this->include_file($plugin_app_path.$filepath)) {
+				return true;
+			}
+		}
+		if (!$this->include_core_file('pluggable/'.$filepath)) {
+			if (!$this->include_core_file($filepath)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public function require_all_app_files($filepath) {
+		$included = false;
+		foreach($this->plugin_app_paths as $plugin_app_path) {
+			if ($this->include_require_file($plugin_app_path.$filepath)) {
+				$included = true;
+			}
+		}
+		return $included;
 	}
 	
 	public function get_php_files_in_directory($directory, $options=array()) {
@@ -68,7 +138,7 @@ class MvcFileIncluder {
 		require_once $filepath;
 	}
 	
-	private function require_file_if_exists($filepath) {
+	private function include_file($filepath) {
 		if (file_exists($filepath)) {
 			$this->require_file($filepath);
 			return true;

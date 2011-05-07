@@ -14,7 +14,7 @@ class MvcObjectRegistry {
 
 	function &get_object($key) {
 		$_this =& MvcObjectRegistry::get_instance();
-		$key = Inflector::camelize($key);
+		$key = MvcInflector::camelize($key);
 		$return = false;
 		if (isset($_this->__objects[$key])) {
 			$return =& $_this->__objects[$key];
@@ -24,7 +24,7 @@ class MvcObjectRegistry {
 	
 	function add_object($key, &$object) {
 		$_this =& MvcObjectRegistry::get_instance();
-		$key = Inflector::camelize($key);
+		$key = MvcInflector::camelize($key);
 		if (!isset($_this->__objects[$key])) {
 			$_this->__objects[$key] =& $object;
 			return true;

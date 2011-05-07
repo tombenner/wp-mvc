@@ -1,10 +1,10 @@
-<h2><?php echo Inflector::pluralize($model->name); ?></h2>
+<h2><?php echo MvcInflector::pluralize($model->name); ?></h2>
 
-<form id="posts-filter" action="<?php echo Router::admin_url(array('controller' => Inflector::tableize($model->name))); ?>" method="get">
+<form id="posts-filter" action="<?php echo MvcRouter::admin_url(array('controller' => MvcInflector::tableize($model->name))); ?>" method="get">
 
 	<p class="search-box">
 		<label class="screen-reader-text" for="post-search-input">Search:</label>
-		<input type="hidden" name="page" value="<?php echo Inflector::tableize($model->name); ?>" />
+		<input type="hidden" name="page" value="<?php echo MvcInflector::tableize($model->name); ?>" />
 		<input type="text" name="q" value="<?php empty($params['q']) ? '' : $params['q']; ?>" />
 		<input type="submit" value="Search" class="button" />
 	</p>

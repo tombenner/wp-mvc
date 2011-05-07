@@ -61,7 +61,7 @@ class MvcDataValidator {
 	}
 	
 	private function process_message($message, $field) {
-		$titleized_field = Inflector::titleize($field);
+		$titleized_field = MvcInflector::titleize($field);
 		$message = str_replace('{field}', $titleized_field, $message);
 		return $message;
 	}

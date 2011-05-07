@@ -5,7 +5,7 @@ class MvcHtmlHelper extends MvcHelper {
 	public function link($title, $url, $options=array()) {
 		
 		if (is_array($url)) {
-			$url = Router::public_url($url);
+			$url = MvcRouter::public_url($url);
 		}
 	
 		$defaults = array(
@@ -23,7 +23,7 @@ class MvcHtmlHelper extends MvcHelper {
 	
 	public function object_url($object, $options) {
 		$options['id'] = $object->__id;
-		$url = Router::public_url($options);
+		$url = MvcRouter::public_url($options);
 		return $url;
 	}
 	
@@ -35,7 +35,7 @@ class MvcHtmlHelper extends MvcHelper {
 	
 	public function admin_object_url($object, $options) {
 		$options['id'] = $object->__id;
-		$url = Router::admin_url($options);
+		$url = MvcRouter::admin_url($options);
 		return $url;
 	}
 	

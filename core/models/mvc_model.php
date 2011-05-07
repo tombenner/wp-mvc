@@ -16,9 +16,11 @@ class MvcModel {
 	
 	function __construct() {
 		
+		global $wpdb;
+		
 		$this->name = preg_replace('/Model$/', '', get_class($this));
 		
-		$table = empty($this->table) ? Inflector::tableize($this->name) : $this->table;
+		$table = empty($this->table) ? $wpdb->prefix.MvcInflector::tableize($this->name) : $this->process_table_name($this->table);
 		
 		$defaults = array(
 			'model_name' => $this->name,
@@ -205,7 +207,7 @@ class MvcModel {
 								$join_table_alias = $join_model_name.$this->name;
 								// The join for the HABTM join table
 								$join = array(
-									'table' => $association['join_table'],
+									'table' => $this->process_table_name($association['join_table']),
 									'on' => $join_table_alias.'.'.$association['foreign_key'].' = '.$this->name.'.'.$this->primary_key,
 									'alias' => $join_table_alias
 								);
@@ -259,7 +261,7 @@ class MvcModel {
 		if (!empty($model_data[$association_name])) {
 			if (isset($model_data[$association_name]['ids'])) {
 				$this->db_adapter->delete_all(array(
-					'table_reference' => $association['join_table'],
+					'table_reference' => $this->process_table_name($association['join_table']),
 					'conditions' => array($association['foreign_key'] => $object_id)
 				));
 				if (!empty($model_data[$association_name]['ids'])) {
@@ -271,7 +273,7 @@ class MvcModel {
 									$association['association_foreign_key'] => $association_id,
 								),
 								array(
-									'table_reference' => $association['join_table']
+									'table_reference' => $this->process_table_name($association['join_table'])
 								)
 							);
 						}
@@ -297,7 +299,7 @@ class MvcModel {
 	}
 	
 	private function init_admin_pages() {
-		$titleized = Inflector::titleize($this->name);
+		$titleized = MvcInflector::titleize($this->name);
 		$default_pages = array(
 			'add' => array(
 				'label' => 'Add New'
@@ -323,7 +325,7 @@ class MvcModel {
 			$defaults = array(
 				'action' => $key,
 				'in_menu' => true,
-				'label' => Inflector::titleize($key),
+				'label' => MvcInflector::titleize($key),
 				'capability' => 'administrator'
 			);
 			if (isset($default_pages[$key])) {
@@ -340,14 +342,14 @@ class MvcModel {
 		foreach($this->admin_columns as $key => $value) {
 			if (is_array($value)) {
 				if (!isset($value['label'])) {
-					$value['label'] = Inflector::titleize($key);
+					$value['label'] = MvcInflector::titleize($key);
 				}
 			} else if (is_integer($key)) {
 				$key = $value;
 				if ($value == 'id') {
 					$value = array('label' => 'ID');
 				} else {
-					$value = array('label' => Inflector::titleize($value));
+					$value = array('label' => MvcInflector::titleize($value));
 				}
 			} else {
 				$value = array('label' => $value);
@@ -418,7 +420,7 @@ class MvcModel {
 							$associated_object = $model->find_by_id($object->{$association['foreign_key']}, array(
 								'recursive' => $recursive
 							));
-							$object->{Inflector::underscore($model_name)} = $associated_object;
+							$object->{MvcInflector::underscore($model_name)} = $associated_object;
 							break;
 							
 						case 'has_many':
@@ -427,7 +429,7 @@ class MvcModel {
 								'conditions' => array($association['foreign_key'] => $object->__id),
 								'recursive' => $recursive
 							));
-							$object->{Inflector::tableize($model_name)} = $associated_objects;
+							$object->{MvcInflector::tableize($model_name)} = $associated_objects;
 							break;
 						
 						case 'has_and_belongs_to_many':
@@ -435,14 +437,14 @@ class MvcModel {
 							$associated_objects = $model->find(array(
 								'selects' => $association['fields'],
 								'joins' => array(
-									'table' => $association['join_table'],
+									'table' => $this->process_table_name($association['join_table']),
 									'on' => $join_alias.'.'.$association['association_foreign_key'].' = '.$model_name.'.'.$model->primary_key,
 									'alias' => $join_alias
 								),
 								'conditions' => array($join_alias.'.'.$association['foreign_key'] => $object->__id),
 								'recursive' => $recursive
 							));
-							$object->{Inflector::tableize($model_name)} = $associated_objects;
+							$object->{MvcInflector::tableize($model_name)} = $associated_objects;
 							break;
 					}
 				}
@@ -463,6 +465,12 @@ class MvcModel {
 			return $objects[0];
 		}
 		return $objects;
+	}
+	
+	protected function process_table_name($table_name) {
+		global $wpdb;
+		$table_name = str_replace('{prefix}', $wpdb->prefix, $table_name);
+		return $table_name;
 	}
 	
 	protected function init_schema() {
@@ -503,7 +511,7 @@ class MvcModel {
 						'type' => 'belongs_to',
 						'name' => $association,
 						'class' => $association,
-						'foreign_key' => Inflector::underscore($association).'_id',
+						'foreign_key' => MvcInflector::underscore($association).'_id',
 						'includes' => null
 					);
 					$this->associations[$association] = $config;
@@ -520,7 +528,7 @@ class MvcModel {
 						'type' => 'has_many',
 						'name' => $association,
 						'class' => $association,
-						'foreign_key' => Inflector::underscore($this->name).'_id',
+						'foreign_key' => MvcInflector::underscore($this->name).'_id',
 						'includes' => null
 					);
 					$this->associations[$association] = $config;
@@ -541,9 +549,9 @@ class MvcModel {
 					'type' => 'has_and_belongs_to_many',
 					'name' => $association_name,
 					'class' => $association_name,
-					'foreign_key' => isset($association['foreign_key']) ? $association['foreign_key'] : Inflector::underscore($this->name).'_id',
-					'association_foreign_key' => isset($association['association_foreign_key']) ? $association['association_foreign_key'] : Inflector::underscore($association_name).'_id',
-					'join_table' => $association['join_table'],
+					'foreign_key' => isset($association['foreign_key']) ? $association['foreign_key'] : MvcInflector::underscore($this->name).'_id',
+					'association_foreign_key' => isset($association['association_foreign_key']) ? $association['association_foreign_key'] : MvcInflector::underscore($association_name).'_id',
+					'join_table' => $this->process_table_name($association['join_table']),
 					'fields' => isset($association['fields']) ? $association['fields'] : null,
 					'includes' => isset($association['includes']) ? $association['includes'] : null
 				);
