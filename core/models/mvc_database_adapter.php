@@ -98,7 +98,7 @@ class MvcDatabaseAdapter {
 			if (strpos($key, '.') === false && $use_table_alias) {
 				$key = $this->defaults['model_name'].'.'.$key;
 			}
-			$operator = strpos($key, ' LIKE') === false ? ' = ' : ' ';
+			$operator = preg_match('/\s+(<|>|<=|>=|<>|\!=|[\w\s]+)/', $key) ? ' ' : ' = ';
 			$sql_clauses[] = $this->db->escape($key).$operator.'"'.$this->db->escape($value).'"';
 		}
 		return $sql_clauses;
