@@ -40,6 +40,11 @@ class MvcInflector {
 		$string = ucwords($string);
 		return $string;
 	}
+	
+	public function pluralize_titleize($string) {
+		$string = MvcInflector::pluralize(MvcInflector::titleize($string));
+		return $string;
+	}
 
 }
 
