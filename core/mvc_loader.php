@@ -211,6 +211,7 @@ class MvcLoader {
 			$tableized = MvcInflector::tableize($model_name);
 			$pluralized = MvcInflector::pluralize($model_name);
 			$titleized = MvcInflector::titleize($model_name);
+			$pluralize_titleized = MvcInflector::pluralize_titleize($model_name);
 		
 			$controller_name = 'admin_'.$tableized;
 			
@@ -221,8 +222,8 @@ class MvcLoader {
 			$method = $controller_name.'_index';
 			$this->dispatcher->{$method} = create_function('', 'MvcDispatcher::dispatch(array("controller" => "'.$controller_name.'", "action" => "index"));');
 			add_menu_page(
-				$pluralized,
-				$pluralized,
+				$pluralize_titleized,
+				$pluralize_titleized,
 				'administrator',
 				$top_level_handle,
 				array($this->dispatcher, $method),
@@ -241,7 +242,7 @@ class MvcLoader {
 				if ($admin_page['in_menu']) {
 					add_submenu_page(
 						$top_level_handle,
-						$admin_page['label'].' &lsaquo; '.$pluralized,
+						$admin_page['label'].' &lsaquo; '.$pluralize_titleized,
 						$admin_page['label'],
 						$admin_page['capability'],
 						$top_level_handle.'-'.$key,
