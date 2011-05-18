@@ -111,6 +111,10 @@ class MvcLoader {
 		
 	}
 	
+	public function plugins_loaded() {
+		$this->add_admin_ajax_routes();
+	}
+	
 	public function init() {
 	
 		$this->load_controllers();
@@ -383,6 +387,19 @@ class MvcLoader {
 		if ($routing_params) {
 			$this->dispatcher->dispatch($routing_params);
 		}
+	}
+	
+	public function add_admin_ajax_routes() {
+		$routes = MvcRouter::get_admin_ajax_routes();
+		if (!empty($routes)) {
+			foreach($routes as $route) {
+				$route['is_admin_ajax'] = true;
+				$method = 'admin_ajax_'.$route['wp_action'];
+				$this->dispatcher->{$method} = create_function('', 'MvcDispatcher::dispatch(array("controller" => "'.$route['controller'].'", "action" => "'.$route['action'].'"));die();');
+				add_action('wp_ajax_'.$route['wp_action'], array($this->dispatcher, $method));
+			}
+		}
+	
 	}
 
 }

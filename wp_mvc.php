@@ -16,6 +16,8 @@ require_once MVC_PLUGIN_PATH.'core/mvc_loader.php';
 
 $mvc_loader = new MvcLoader();
 
+add_action('plugins_loaded', array($mvc_loader, 'plugins_loaded'));
+
 add_action('init', array($mvc_loader, 'init'));
 
 add_action('admin_init', array($mvc_loader, 'admin_init'));
