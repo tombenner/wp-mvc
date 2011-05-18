@@ -97,13 +97,13 @@ class MvcLoader {
 			$ordered_plugins = array();
 			$index_of_all = array_search('all', $plugin_order);
 			if ($index_of_all !== false) {
-				$first_plugins = array_slice($ordered_plugins, 0, $index_of_all - 1);
-				$last_plugins = array_slice($ordered_plugins, $index_of_all);
+				$first_plugins = array_slice($plugin_order, 0, $index_of_all - 1);
+				$last_plugins = array_slice($plugin_order, $index_of_all);
 				$middle_plugins = array_diff($plugins, $first_plugins, $last_plugins);
 				$plugins = array_merge($first_plugins, $middle_plugins, $last_plugins);
 			} else {
-				$unordered_plugins = array_diff($plugins, $ordered_plugins);
-				$plugins = array_merge($ordered_plugins, $unordered_plugins);
+				$unordered_plugins = array_diff($plugins, $plugin_order);
+				$plugins = array_merge($plugin_order, $unordered_plugins);
 			}
 		}
 		
