@@ -502,11 +502,10 @@ class MvcModel {
 	
 	protected function init_associations() {
 		if (!empty($this->belongs_to)) {
-			foreach($this->belongs_to as $association) {
-				if (is_string($association)) {
-					if (!is_array($this->associations)) {
-						$this->associations = array();
-					}
+			foreach($this->belongs_to as $key => $value) {
+				$config = null;
+				if (is_string($value)) {
+					$association = $value;
 					$config = array(
 						'type' => 'belongs_to',
 						'name' => $association,
@@ -514,6 +513,20 @@ class MvcModel {
 						'foreign_key' => MvcInflector::underscore($association).'_id',
 						'includes' => null
 					);
+				} else if (is_string($key) && is_array($value)) {
+					$association = $key;
+					$config = array(
+						'type' => 'belongs_to',
+						'name' => empty($value['name']) ? $association : $value['name'],
+						'class' => empty($value['class']) ? $association : $value['class'],
+						'foreign_key' => empty($value['foreign_key']) ? MvcInflector::underscore($association).'_id' : $value['foreign_key'],
+						'includes' => null
+					);
+				}
+				if (!empty($config)) {
+					if (!is_array($this->associations)) {
+						$this->associations = array();
+					}
 					$this->associations[$association] = $config;
 				}
 			}
