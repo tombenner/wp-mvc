@@ -309,62 +309,67 @@ class MvcLoader {
 			
 			if (strpos($route_path, '{:controller}') !== false) {
 				foreach($this->public_controller_names as $controller) {
-
-					add_rewrite_tag('%'.$controller.'%', '(.+)');
-					
-					$rewrite_path = $route_path;
-					$query_vars = array();
-					$query_var_counter = 0;
-					$query_var_match_string = '';
-					
-					// Add any route params from the route path (e.g. '{:controller}/{:id:[\d]+}') to $query_vars
-					// and append them to the match string for use in a WP rewrite rule
-					preg_match_all('/{:(.+?)(:.*?)?}/', $rewrite_path, $matches);
-					foreach($matches[1] as $query_var) {
-						$query_var = 'mvc_'.$query_var;
-						if ($query_var != 'mvc_controller') {
-							$query_var_match_string .= '&'.$query_var.'=$matches['.$query_var_counter.']';
-						}
-						$query_vars[] = $query_var;
-						$query_var_counter++;
-					}
-					
-					// Do the same as above for route params that defined as route defaults (e.g. array('action' => 'show'))
-					if (!empty($route_defaults)) {
-						foreach($route_defaults as $query_var => $value) {
-							$query_var = 'mvc_'.$query_var;
-							if ($query_var != 'mvc_controller') {
-								$query_var_match_string .= '&'.$query_var.'='.$value;
-								$query_vars[] = $query_var;
-							}
-						}
-					}
-					
-					$this->query_vars = array_unique(array_merge($this->query_vars, $query_vars));
-					$rewrite_path = str_replace('{:controller}', $controller, $route_path);
-					
-					// Replace any route params (e.g. {:param_name}) in the route path with the default pattern ([^/]+)
-					$rewrite_path = preg_replace('/({:[\w_-]+})/', '([^/]+)', $rewrite_path);
-					// Replace any route params with defined patterns (e.g. {:param_name:[\d]+}) in the route path with
-					// their pattern (e.g. ([\d]+))
-					$rewrite_path = preg_replace('/({:[\w_-]+:)(.*?)}/', '(\2)', $rewrite_path);
-					$rewrite_path = '^'.$rewrite_path.'/?$';
-					
-					$controller_value = empty($route_defaults['controller']) ? $controller : $route_defaults['controller'];
-					$controller_rules = array();
-					$controller_rules[$rewrite_path] = 'index.php?mvc_controller='.$controller_value.$query_var_match_string;
-					
-					$new_rules = array_merge($new_rules, $controller_rules);
-				
+					$route_rules = $this->get_rewrite_rules($route_path, $route_defaults, $controller);
+					$new_rules = array_merge($new_rules, $route_rules);
 				}
+			} else if (!empty($route_defaults['controller'])) {
+				$route_rules = $this->get_rewrite_rules($route_path, $route_defaults, $route_defaults['controller'], 1);
+				$new_rules = array_merge($new_rules, $route_rules);
 			}
 		}
 		
 		$rules = array_merge($new_rules, $rules);
-		
 		$rules = apply_filters('mvc_public_rewrite_rules', $rules);
-		
 		return $rules;
+	}
+	
+	private function get_rewrite_rules($route_path, $route_defaults, $controller, $first_query_var_match_index=0) {
+
+		add_rewrite_tag('%'.$controller.'%', '(.+)');
+		
+		$rewrite_path = $route_path;
+		$query_vars = array();
+		$query_var_counter = $first_query_var_match_index;
+		$query_var_match_string = '';
+		
+		// Add any route params from the route path (e.g. '{:controller}/{:id:[\d]+}') to $query_vars
+		// and append them to the match string for use in a WP rewrite rule
+		preg_match_all('/{:(.+?)(:.*?)?}/', $rewrite_path, $matches);
+		foreach($matches[1] as $query_var) {
+			$query_var = 'mvc_'.$query_var;
+			if ($query_var != 'mvc_controller') {
+				$query_var_match_string .= '&'.$query_var.'=$matches['.$query_var_counter.']';
+			}
+			$query_vars[] = $query_var;
+			$query_var_counter++;
+		}
+		
+		// Do the same as above for route params that are defined as route defaults (e.g. array('action' => 'show'))
+		if (!empty($route_defaults)) {
+			foreach($route_defaults as $query_var => $value) {
+				$query_var = 'mvc_'.$query_var;
+				if ($query_var != 'mvc_controller') {
+					$query_var_match_string .= '&'.$query_var.'='.$value;
+					$query_vars[] = $query_var;
+				}
+			}
+		}
+		
+		$this->query_vars = array_unique(array_merge($this->query_vars, $query_vars));
+		$rewrite_path = str_replace('{:controller}', $controller, $route_path);
+		
+		// Replace any route params (e.g. {:param_name}) in the route path with the default pattern ([^/]+)
+		$rewrite_path = preg_replace('/({:[\w_-]+})/', '([^/]+)', $rewrite_path);
+		// Replace any route params with defined patterns (e.g. {:param_name:[\d]+}) in the route path with
+		// their pattern (e.g. ([\d]+))
+		$rewrite_path = preg_replace('/({:[\w_-]+:)(.*?)}/', '(\2)', $rewrite_path);
+		$rewrite_path = '^'.$rewrite_path.'/?$';
+		
+		$controller_value = empty($route_defaults['controller']) ? $controller : $route_defaults['controller'];
+		$controller_rules = array();
+		$controller_rules[$rewrite_path] = 'index.php?mvc_controller='.$controller_value.$query_var_match_string;
+		
+		return $controller_rules;
 	}
 	
 	public function add_query_vars($vars) {
