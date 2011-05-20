@@ -401,6 +401,7 @@ class MvcLoader {
 		$routing_params = $this->get_routing_params();
 		
 		if ($routing_params) {
+			do_action('mvc_public_init', $routing_params);
 			$this->dispatcher->dispatch($routing_params);
 		}
 	}
