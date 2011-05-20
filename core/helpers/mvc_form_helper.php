@@ -106,6 +106,18 @@ class MvcFormHelper extends MvcHelper {
 		return $html;
 	}
 	
+	public function hidden_input($field_name, $options=array()) {
+		$defaults = array(
+			'id' => $this->input_id($field_name),
+			'name' => $this->input_name($field_name),
+			'type' => 'hidden'
+		);
+		$options = array_merge($defaults, $options);
+		$attributes_html = self::attributes_html($options, 'input');
+		$html = '<input'.$attributes_html.' />';
+		return $html;
+	}
+	
 	public function select($field_name, $options=array()) {
 		$html = $this->before_input($field_name, $options);
 		$html .= $this->select_tag($field_name, $options);
@@ -137,6 +149,18 @@ class MvcFormHelper extends MvcHelper {
 			$html .= '<option value="'.$this->esc_attr($key).'"'.$selected_attribute.'>'.$value.'</option>';
 		}
 		$html .= '</select>';
+		return $html;
+	}
+	
+	public function button($text, $options=array()) {
+		$defaults = array(
+			'id' => $this->input_id($text),
+			'type' => 'button',
+			'class' => 'button'
+		);
+		$options = array_merge($defaults, $options);
+		$attributes_html = self::attributes_html($options, 'input');
+		$html = '<button'.$attributes_html.'>'.$text.'</button>';
 		return $html;
 	}
 	
