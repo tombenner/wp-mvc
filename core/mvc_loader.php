@@ -118,6 +118,7 @@ class MvcLoader {
 	public function init() {
 	
 		$this->load_controllers();
+		$this->load_libs();
 		$this->load_models();
 		$this->load_functions();
 	
@@ -142,6 +143,16 @@ class MvcLoader {
 				}
 			}
 		
+		}
+		
+	}
+	
+	private function load_libs() {
+		
+		foreach($this->plugin_app_paths as $plugin_app_path) {
+		
+			$this->file_includer->require_php_files_in_directory($plugin_app_path.'libs/');
+			
 		}
 		
 	}
