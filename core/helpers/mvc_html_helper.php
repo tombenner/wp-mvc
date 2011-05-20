@@ -41,7 +41,7 @@ class MvcHtmlHelper extends MvcHelper {
 	
 	public function admin_object_link($object, $options) {
 		$url = self::admin_object_url($object, $options);
-		$title = $object->__name;
+		$title = empty($options['title']) ? $object->__name : $options['title'];
 		return self::link($title, $url);
 	}
 	
