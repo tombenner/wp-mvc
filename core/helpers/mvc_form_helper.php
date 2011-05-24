@@ -19,7 +19,7 @@ class MvcFormHelper extends MvcHelper {
 		}
 		$html = '<form action="'.MvcRouter::admin_url($router_options).'" method="post">';
 		if ($object_id) {
-			$html .= '<input type="hidden" name="'.$this->input_name('id').'" value="'.$object_id.'" />';
+			$html .= '<input type="hidden" id="'.$this->input_id('hidden_id').'" name="'.$this->input_name('id').'" value="'.$object_id.'" />';
 		}
 		return $html;
 	}
