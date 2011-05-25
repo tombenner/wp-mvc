@@ -2,47 +2,51 @@
 
 class MvcHtmlHelper extends MvcHelper {
 	
-	public function link($title, $url, $options=array()) {
-		
+	public function link($text, $url, $options=array()) {
 		if (is_array($url)) {
 			$url = MvcRouter::public_url($url);
 		}
-	
 		$defaults = array(
 			'href' => $url,
-			'title' => $title
+			'title' => $text
 		);
 		$options = array_merge($defaults, $options);
-	
 		$attributes_html = self::attributes_html($options, 'a');
-		
-		$html = '<a'.$attributes_html.'>'.$title.'</a>';
+		$html = '<a'.$attributes_html.'>'.$text.'</a>';
 		return $html;
-		
 	}
 	
 	public function object_url($object, $options) {
-		$options['id'] = $object->__id;
+		$defaults = array(
+			'id' => $object->__id,
+			'action' => 'show',
+			'object' => $object
+		);
+		$options = array_merge($defaults, $options);
 		$url = MvcRouter::public_url($options);
 		return $url;
 	}
 	
 	public function object_link($object, $options) {
 		$url = self::object_url($object, $options);
-		$title = empty($options['title']) ? $object->__name : $options['title'];
-		return self::link($title, $url);
+		$text = empty($options['text']) ? $object->__name : $options['text'];
+		return self::link($text, $url);
 	}
 	
 	public function admin_object_url($object, $options) {
-		$options['id'] = $object->__id;
+		$defaults = array(
+			'id' => $object->__id,
+			'object' => $object
+		);
+		$options = array_merge($defaults, $options);
 		$url = MvcRouter::admin_url($options);
 		return $url;
 	}
 	
 	public function admin_object_link($object, $options) {
 		$url = self::admin_object_url($object, $options);
-		$title = empty($options['title']) ? $object->__name : $options['title'];
-		return self::link($title, $url);
+		$text = empty($options['text']) ? $object->__name : $options['text'];
+		return self::link($text, $url);
 	}
 	
 	public function __call($method, $args) {
