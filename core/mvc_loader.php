@@ -408,11 +408,12 @@ class MvcLoader {
 	}
 	
 	public function template_redirect() {
-		global $wp_query;
+		global $wp_query, $mvc_params;
 		
 		$routing_params = $this->get_routing_params();
 		
 		if ($routing_params) {
+			$mvc_params = $routing_params;
 			do_action('mvc_public_init', $routing_params);
 			$this->dispatcher->dispatch($routing_params);
 		}

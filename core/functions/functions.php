@@ -88,4 +88,12 @@ function mvc_get_plugins() {
 	return $plugins;
 }
 
+function is_mvc_page() {
+	global $mvc_params;
+	if (!empty($mvc_params['controller'])) {
+		return true;
+	}
+	return false;
+}
+
 ?>
