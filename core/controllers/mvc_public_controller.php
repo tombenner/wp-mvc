@@ -50,7 +50,8 @@ class MvcPublicController extends MvcController {
 	public function set_pagination($collection) {
 		$params = $this->params;
 		unset($params['page']);
-		$url = MvcRouter::public_url(array('controller' => $this->name));
+		unset($params['conditions']);
+		$url = MvcRouter::public_url(array('controller' => $this->name, 'action' => $this->action));
 		$this->pagination = array(
 			'base' => $url.'%_%',
 			'format' => '?page=%#%',
