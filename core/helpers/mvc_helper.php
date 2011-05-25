@@ -6,6 +6,10 @@ class MvcHelper {
 	
 	function __construct() {
 		$this->file_includer = new MvcFileIncluder();
+		$this->init();
+	}
+	
+	public function init() {
 	}
 	
 	public function render_view($path, $view_vars=array()) {
