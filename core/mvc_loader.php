@@ -204,6 +204,8 @@ class MvcLoader {
 		$controller = substr($controller, 4);
 		
 		if (!empty($controller)) {
+		
+			global $title;
 			
 			// Necessary for flash()-related functionality
 			session_start();
@@ -215,6 +217,12 @@ class MvcLoader {
 				'action' => $action
 			);
 			do_action('mvc_admin_init', $mvc_admin_init_args);
+		
+			$title =  MvcInflector::pluralize_titleize($controller);
+			if (!empty($action) && $action != 'index') {
+				$title = MvcInflector::titleize($action).' &lsaquo; '.$title;
+			}
+			$title = apply_filters('mvc_admin_title', $title);
 		
 		}
 		
@@ -288,8 +296,6 @@ class MvcLoader {
 			$menu_position++;
 
 		}
-	
-	
 	
 	}
 	
