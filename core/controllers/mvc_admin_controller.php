@@ -53,9 +53,8 @@ class MvcAdminController extends MvcController {
 			if (!empty($this->params['data'][$this->model->name])) {
 				$object = $this->params['data'][$this->model->name];
 				if (empty($object['id'])) {
-					$model = $this->model;
-					$model->create($this->params['data']);
-					$id = $model->insert_id;
+					$this->model->create($this->params['data']);
+					$id = $this->model->insert_id;
 					$url = MvcRouter::admin_url(array('controller' => $this->name, 'action' => 'edit', 'id' => $id));
 					$this->flash('notice', 'Successfully created!');
 					$this->redirect($url);
