@@ -9,6 +9,18 @@ class MvcRouter {
 		$controller = $options['controller'];
 		$action = empty($options['action']) ? 'index' : $options['action'];
 		$matched_route = null;
+		if (!empty($options['object']) && is_object($options['object'])) {
+			$model_name = MvcInflector::camelize(MvcInflector::singularize($controller));
+			$model = MvcModelRegistry::get_model($model_name);
+			if (!empty($model) && method_exists($model, 'to_url')) {
+				$url = site_url('/');
+				$url .= $model->to_url($options['object']);
+				return $url;
+			}
+			if (empty($options['id']) && !empty($options['object']->__id)) {
+				$options['id'] = $options['object']->__id;
+			}
+		}
 		foreach($routes as $route) {
 			$route_path = $route[0];
 			$route_defaults = $route[1];
@@ -46,6 +58,11 @@ class MvcRouter {
 	}
 
 	public function admin_url($options=array()) {
+		if (!empty($options['object']) && is_object($options['object'])) {
+			if (empty($options['id']) && !empty($options['object']->__id)) {
+				$options['id'] = $options['object']->__id;
+			}
+		}
 		$url = get_admin_url().'admin.php';
 		$url .= '?'.http_build_query(self::admin_url_params($options));
 		return $url;
