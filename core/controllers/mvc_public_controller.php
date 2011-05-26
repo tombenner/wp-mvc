@@ -5,46 +5,29 @@ class MvcPublicController extends MvcController {
 	public $is_admin = false;
 	
 	function __construct() {
-	
 		parent::__construct();
-		
 		$this->clean_wp_query();
-		
 	}
 	
 	public function index() {
-		
 		$this->set_objects();
-	
 	}
 	
 	public function show() {
-			
 		$this->set_object();
-	
 	}
 	
 	public function set_objects() {
-	
 		$this->params['page'] = empty($this->params['page']) ? 1 : $this->params['page'];
-		
-		if (!empty($this->params['q'])) {
-			if (!empty($this->model->public_searchable_fields)) {
-				$conditions = array();
-				foreach($this->model->public_searchable_fields as $field) {
-					$conditions[] = array($field.' LIKE' => '%'.$this->params['q'].'%');
-				}
-				$this->params['conditions'] = array(
-					'OR' => $conditions
-				);
+		if (!empty($this->params['q']) && !empty($this->model->public_searchable_fields)) {
+			$this->params['conditions'] = $this->model->get_keyword_conditions($this->model->public_searchable_fields, $this->params['q']);
+			if (!empty($this->model->public_search_joins)) {
+				$this->params['joins'] = $this->model->public_search_joins;
 			}
 		}
-		
 		$collection = $this->model->paginate($this->params);
-		
 		$this->set('objects', $collection['objects']);
 		$this->set_pagination($collection);
-	
 	}
 	
 	public function set_pagination($collection) {

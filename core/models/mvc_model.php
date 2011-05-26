@@ -163,6 +163,29 @@ class MvcModel {
 	
 	}
 	
+	public function get_keyword_conditions($fields, $keywords) {
+		$conditions = array();
+		if (is_string($keywords)) {
+			$keywords = preg_split('/[\s]+/', $keywords);
+		}
+		$formatted_fields = array();
+		foreach($fields as $field) {
+			if (strpos($field, '.') === false) {
+				$field = $this->name.'.'.$field;
+			}
+			$formatted_fields[] = $field;
+		}
+		if (count($formatted_fields) == 1) {
+			$field_reference = $formatted_fields[0];
+		} else {
+			$field_reference = 'CONCAT('.implode(', ', $formatted_fields).')';
+		}
+		foreach($keywords as $keyword) {
+			$conditions[] = array($field_reference.' LIKE' => '%'.$keyword.'%');
+		}
+		return $conditions;
+	}
+	
 	protected function get_total_count($options=array()) {
 		$clauses = $this->db_adapter->get_sql_select_clauses($options);
 		$clauses['select'] = 'SELECT COUNT(*) AS count';
