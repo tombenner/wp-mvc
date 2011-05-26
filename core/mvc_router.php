@@ -64,7 +64,10 @@ class MvcRouter {
 			}
 		}
 		$url = get_admin_url().'admin.php';
-		$url .= '?'.http_build_query(self::admin_url_params($options));
+		$params = http_build_query(self::admin_url_params($options));
+		if ($params) {
+			$url .= '?'.$params;
+		}
 		return $url;
 	}
 	
@@ -81,6 +84,16 @@ class MvcRouter {
 			$params['id'] = $options['id'];
 		}
 		return $params;
+	}
+	
+	public function admin_page_param($options=array()) {
+		if (is_string($options)) {
+			$options = array('model' => $options);
+		}
+		if (!empty($options['model'])) {
+			return 'mvc_'.MvcInflector::tableize($options['model']);
+		}
+		return false;
 	}
 
 	public function public_connect($route, $defaults=array()) {
