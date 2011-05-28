@@ -218,7 +218,7 @@ class MvcLoader {
 			);
 			do_action('mvc_admin_init', $mvc_admin_init_args);
 		
-			$title =  MvcInflector::pluralize_titleize($controller);
+			$title =  MvcInflector::titleize($controller);
 			if (!empty($action) && $action != 'index') {
 				$title = MvcInflector::titleize($action).' &lsaquo; '.$title;
 			}
