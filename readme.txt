@@ -17,7 +17,7 @@ WP MVC fills this gap. The basic idea is that you create an app/ directory that 
 
 For more extensive documentation, and to see what WP MVC is capable of, please visit [wpmvc.org](http://wpmvc.org).
 
-If you’d like to grab development releases, see what new features are being added, or browse the source code please visit the [GitHub repo](http://github.com/tombenner/wp-mvc).
+If you'd like to grab development releases, see what new features are being added, or browse the source code please visit the [GitHub repo](http://github.com/tombenner/wp-mvc).
 
 == Installation ==
 
