@@ -1,44 +1,44 @@
 WP MVC
 ==================================================
-An MVC framework for WordPress
+An MVC framework for WordPress plugins
 
 Description
 -----------
 
-WP MVC is a WordPress plugin that allows developers to use an MVC framework inside of WordPress. Since WordPress already provides a large amount of functionality for the content types that it supports out of the box (users, posts, pages, comments, categories, tags, and links), the primary focus of WP MVC is on other content types. WordPress supports custom post types natively, of course, but setting up custom post types and all of the necessary related functionality (public views, administrative management, associations, etc) is typically more time-consuming than doing the equivalent work in an MVC framework. The resulting code and database structure is significantly less graceful than the MVC equivalent, too.
+WP MVC is a WordPress plugin that allows developers to use a MVC framework to create plugins. It is a full-fledged framework with architecture that's similar to that of CakePHP or Ruby on Rails. Developers can consequently use it to rapidly build sites that take advantage of both WordPress's native functionality and all of the many advantages of an MVC framework. 
+
+WordPress supports a number of specific content types natively, but setting up custom post types and all of the necessary related functionality (public views, administrative management, associations, etc) is typically more time-consuming than doing the equivalent work in an MVC framework. The resulting code and database structure is significantly less graceful than the MVC equivalent, too.
 
 WP MVC fills this gap. The basic idea is that you create an app/ directory that contains a file structure similar to other MVC frameworks (controllers/, helpers/, models/, views/, etc) and set up models, views, and controllers just as you would in other frameworks. WP MVC runs this code in the context of WordPress (i.e. you can still use all of WordPress's functionality inside of app/). Since WordPress already provides an administrative system, admin actions and views in app/ are run in that context, with WP MVC adding all of the necessary WordPress actions and filters to make this possible without the developer needing to lift a finger. An [Administration Menu](http://codex.wordpress.org/Administration_Menus) is automatically created for each model, but it can be customized or omitted.
+
+For more extensive documentation, and to see what WP MVC is capable of, please visit [wpmvc.org](http://wpmvc.org).
+
+If you’d like to grab development releases, see what new features are being added, or browse the source code please visit the [GitHub repo](http://github.com/tombenner/wp-mvc).
 
 Installation
 ------------
 
-1. Upload `wp-mvc` to the `/wp-content/plugins/` directory
+1. Upload `wp-mvc` to the `wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Either set up the example application to see how WP MVC works or start creating an application using the code generation utility `wpmvc`:
+1. Either set up the example plugin to see how WP MVC works or start creating an application using the code generation utility `wpmvc`:
 
-#### Setting up the example application:
+#### Setting up the example WP MVC-based plugin:
 
-1. Run the example application's SQL script (`wp-mvc/examples/events_calendar/create_tables_and_insert_data.sql`) to create its tables and insert some example data.
+1. Move its directory (e.g. `wp-content/plugins/wp-mvc/examples/events-calendar-example`) into the `wp-content/plugins/` directory (e.g. `wp-content/plugins/events-calendar-example`)
+1. Activate the plugin through the "Plugins" menu in WordPress
 
-1. Copy the app/ directory (`wp-mvc/examples/events_calendar/app/`) into the root of this plugin's directory (so that it's at `wp-mvc/app/`). After doing so, there will be administrative menus for each model in WordPress, and you'll be able to browse to URLs like /events/, /events/1/, /venues/, etc to see the public-facing views.
+After doing so, you should see administrative menus for each model in WordPress, and you'll be able to browse to URLs like `/events/`, `/events/1/`, `/venues/`, etc to see the public-facing views.
 
-#### Creating an application using the WP MVC console to generate initial code
+#### Creating a WP MVC-based plugin
 
-1. Create the table in the database that will be used for a resource (e.g. for a resource named MyVenue, create a table named `my_venues`).
+It only takes four simple steps to create a basic WP MVC-based plugin:
 
-1. Make sure that `wpmvc` is executable
+1. Create the initial plugin code using a single command (WP MVC provides a code generation utility)
+1. Write the SQL to create any tables that the plugin uses
+1. Create the initial code for the models, views, and controllers using a single command for each resource
+1. Modify the generated models, views, and controllers to customize the app
 
-	`cd path/to/plugins/wp-mvc`
-	
-	`chmod +x wpmvc`
-
-1. Create the initial code for a resource's model, view, and controllers.
-
-	`./wpmvc generate scaffold MyVenue`
-
-1. The generated code will be in `plugins/wp-mvc/app/` and assumes that a database column named `name` is present and will be used to represent the resource in views. (See the example application for examples of how to modify this.) There will now be an administrative menu (`My Venues`) for this resource in WordPress, and you'll be able to browse to URLs like /my_venues/ and /my_venues/1/ to see the public-facing views.
-
-1. Flesh out the code or create code for more resources using the `generate scaffold` command as shown above.
+For a simple example tutorial on this, please see the [tutorial on wpmvc.org](http://wpmvc.org/documentation/70/tutorial/).
 
 Frequently Asked Questions
 --------------------------
@@ -49,7 +49,7 @@ WP MVC is a full-fledged MVC framework, but behind the scenes it uses existing W
 
 #### Is feature X available?
 
-This framework is still in development. Most of the functionality that's available is used in the example application, so if there's functionality that you'd like to use that isn't implemented in there, it may not exist yet. However, if it's something that is widely useful, I'd certainly be willing to implement it myself or to accept any well-written code that implements it. Please feel free to contact me either in the WordPress forum or through GitHub for any such requests:
+This framework is still in development. Most of the functionality that's available is used in the example application, so if there's functionality that you'd like to use that isn't implemented in there, it may not exist yet. However, if it's something that is widely useful, I'd certainly be willing to implement it myself or to accept any well-written code that implements it. Please feel free to either add a topic in the WordPress forum or contact me through GitHub for any such requests:
 
 * [WordPress Forum](http://wordpress.org/tags/wp-mvc?forum_id=10)
 * [GitHub](http://github.com/tombenner/)
