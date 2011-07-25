@@ -79,6 +79,7 @@ class MvcHelper {
 			'input' => array(
 				'accept',
 				'access_key',
+				'align',
 				'alt',
 				'checked',
 				'class',
@@ -96,6 +97,23 @@ class MvcHelper {
 				'title',
 				'type',
 				'value',
+				'xml:lang',
+				$event_attributes['form']
+			),
+			'textarea' => array(
+				'access_key',
+				'class',
+				'cols',
+				'dir',
+				'disabled',
+				'id',
+				'lang',
+				'name',
+				'readonly',
+				'rows',
+				'style',
+				'tabindex',
+				'title',
 				'xml:lang',
 				$event_attributes['form']
 			),
