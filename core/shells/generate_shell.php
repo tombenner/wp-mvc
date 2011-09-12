@@ -46,8 +46,8 @@ class GenerateShell extends MvcShell {
 		$plugin_underscored = MvcInflector::underscore($plugin);
 		$plugin_hyphenized = str_replace('_', '-', $plugin_underscored);
 		
-		$plugin_path = WP_PLUGIN_DIR.'/'.$plugin_hyphenized.'/';
-		$plugin_app_path = $plugin_path.'app/';
+		$plugin_path = $this->get_plugin_path($plugin);
+		$plugin_app_path = $this->get_plugin_app_path($plugin);
 		
 		$directory = new MvcDirectory();
 		$app_directories = array(
@@ -84,7 +84,7 @@ class GenerateShell extends MvcShell {
 	
 	private function generate_controllers($plugin, $name) {
 		
-		$plugin_app_path = mvc_plugin_app_path($plugin);
+		$plugin_app_path = $this->get_plugin_app_path($plugin);
 	
 		$name_tableized = MvcInflector::tableize($name);
 		$name_pluralized = MvcInflector::pluralize($name);
@@ -100,7 +100,7 @@ class GenerateShell extends MvcShell {
 	}
 	
 	private function generate_model($plugin, $name) {
-		$plugin_app_path = mvc_plugin_app_path($plugin);
+		$plugin_app_path = $this->get_plugin_app_path($plugin);
 		$name_camelized = MvcInflector::camelize($name);
 		$name_underscored = MvcInflector::underscore($name);
 		$target_path = $plugin_app_path.'models/'.$name_underscored.'.php';
@@ -110,7 +110,7 @@ class GenerateShell extends MvcShell {
 	
 	private function generate_views($plugin, $name) {
 		
-		$plugin_app_path = mvc_plugin_app_path($plugin);
+		$plugin_app_path = $this->get_plugin_app_path($plugin);
 	
 		$name_tableized = MvcInflector::tableize($name);
 		$name_titleized = MvcInflector::titleize($name);
@@ -145,6 +145,19 @@ class GenerateShell extends MvcShell {
 		}
 		$args[0] = str_replace('_', '-', MvcInflector::underscore($args[0]));
 		return $args;
+	}
+	
+	private function get_plugin_path($plugin_name) {
+		$plugin_underscored = MvcInflector::underscore($plugin_name);
+		$plugin_hyphenized = str_replace('_', '-', $plugin_underscored);
+		$plugin_path = WP_PLUGIN_DIR.'/'.$plugin_hyphenized.'/';
+		return $plugin_path;
+	}
+	
+	private function get_plugin_app_path($plugin_name) {
+		$plugin_path = $this->get_plugin_path($plugin_name);
+		$plugin_app_path = $plugin_path.'app/';
+		return $plugin_app_path;
 	}
 
 }

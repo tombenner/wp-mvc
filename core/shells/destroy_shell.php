@@ -4,28 +4,28 @@ class DestroyShell extends MvcShell {
 
 	public function controllers($args) {
 		list($plugin, $name) = $this->get_plugin_model_args($args);
-		$this->destroy_controllers($name);
+		$this->destroy_controllers($plugin, $name);
 	}
 
 	public function model($args) {
 		list($plugin, $name) = $this->get_plugin_model_args($args);
-		$this->destroy_model($name);
+		$this->destroy_model($plugin, $name);
 	}
 
 	public function scaffold($args) {
 		list($plugin, $name) = $this->get_plugin_model_args($args);
-		$this->destroy_controllers($name);
-		$this->destroy_model($name);
-		$this->destroy_views($name);
+		$this->destroy_controllers($plugin, $name);
+		$this->destroy_model($plugin, $name);
+		$this->destroy_views($plugin, $name);
 	}
 
 	public function views($args) {
 		list($plugin, $name) = $this->get_plugin_model_args($args);
-		$this->destroy_views($name);
+		$this->destroy_views($plugin, $name);
 	}
 	
 	private function destroy_controllers($plugin, $name) {
-		$plugin_app_path = mvc_plugin_app_path($plugin);
+		$plugin_app_path = $this->get_plugin_app_path($plugin);
 		$file = new MvcFile();
 		$name_tableized = MvcInflector::tableize($name);
 		$target_directory = $plugin_app_path.'controllers/';
@@ -34,7 +34,7 @@ class DestroyShell extends MvcShell {
 	}
 	
 	private function destroy_model($plugin, $name) {
-		$plugin_app_path = mvc_plugin_app_path($plugin);
+		$plugin_app_path = $this->get_plugin_app_path($plugin);
 		$file = new MvcFile();
 		$name_underscore = MvcInflector::underscore($name);
 		$target_path = $plugin_app_path.'models/'.$name_underscore.'.php';
@@ -42,7 +42,7 @@ class DestroyShell extends MvcShell {
 	}
 	
 	private function destroy_views($plugin, $name) {
-		$plugin_app_path = mvc_plugin_app_path($plugin);
+		$plugin_app_path = $this->get_plugin_app_path($plugin);
 		$name_tableized = MvcInflector::tableize($name);
 		$public_directory = $plugin_app_path.'views/'.$name_tableized;
 		$admin_directory = $plugin_app_path.'views/admin/'.$name_tableized;
@@ -57,6 +57,19 @@ class DestroyShell extends MvcShell {
 		}
 		$args[0] = str_replace('_', '-', MvcInflector::underscore($args[0]));
 		return $args;
+	}
+	
+	private function get_plugin_path($plugin_name) {
+		$plugin_underscored = MvcInflector::underscore($plugin_name);
+		$plugin_hyphenized = str_replace('_', '-', $plugin_underscored);
+		$plugin_path = WP_PLUGIN_DIR.'/'.$plugin_hyphenized.'/';
+		return $plugin_path;
+	}
+	
+	private function get_plugin_app_path($plugin_name) {
+		$plugin_path = $this->get_plugin_path($plugin_name);
+		$plugin_app_path = $plugin_path.'app/';
+		return $plugin_app_path;
 	}
 
 }
