@@ -30,7 +30,7 @@ class MvcHtmlHelper extends MvcHelper {
 	public function object_link($object, $options) {
 		$url = self::object_url($object, $options);
 		$text = empty($options['text']) ? $object->__name : $options['text'];
-		return self::link($text, $url);
+		return self::link($text, $url, $options);
 	}
 	
 	public function admin_object_url($object, $options) {
