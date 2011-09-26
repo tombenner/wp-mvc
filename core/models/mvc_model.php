@@ -66,8 +66,12 @@ class MvcModel {
 			return false;
 		}
 		$model_data = $data[$this->name];
-		$id = $this->insert($model_data);
-		$this->update_associations($id, $model_data);
+		if( ($id = $this->insert($data)) === false )
+                {
+                    $this->validation_error_html = "An error occurred while trying to insert the record.";
+                    return false ;
+                }
+		$this->update_associations($id, $data);
 		return $id;
 	}
 	
@@ -75,26 +79,42 @@ class MvcModel {
 		if (empty($data[$this->name])) {
 			return false;
 		}
+                //the validation and call to before_save don't depend on the update type (create or update)
+                $model_data = $data[$this->name];
+                $id = $model_data['id'];
+                unset($model_data['id']);
+                $valid = $this->validate_data($model_data);
+                if ($valid !== true) {
+                        $this->validation_error = $valid;
+                        $this->validation_error_html = $this->validation_error->get_html();
+                        $this->invalid_data = $model_data;
+                        return false;
+                }
+                if (method_exists($this, 'before_save')) {
+                        //reference to the object !
+                        if ($this->before_save(&$model_data) === false) {
+                                $this->validation_error_html = "An error occurred before trying to the save/update the record.";
+                                return false;
+                        }
+                }
 		if (!empty($data[$this->name]['id'])) {
-			$model_data = $data[$this->name];
-			$id = $model_data['id'];
-			unset($model_data['id']);
-			$valid = $this->validate_data($model_data);
-			if ($valid !== true) {
-				$this->validation_error = $valid;
-				$this->validation_error_html = $this->validation_error->get_html();
-				$this->invalid_data = $model_data;
-				return false;
-			}
-			if (method_exists($this, 'before_save')) {
-				if (!$this->before_save($model_data)) {
-					return false;
-				}
-			}
-			$this->update($id, $model_data);
-			$this->update_associations($id, $model_data);
+
+			if($this->update($id, $model_data) === false)
+                        {
+                                $this->validation_error_html = "An error occurred while trying to update the record.";
+                                return false ;
+                        }
+			if($this->update_associations($id, $model_data) === false)
+                        {
+                                $this->validation_error_html = "An error occurred while trying to update the record association.";
+                                return false ;
+                        }
 		} else {
-			$id = $this->create($data);
+			if( ($id = $this->create($model_data)) === false)
+                        {
+                                $this->validation_error_html = "An error occurred while trying to insert the record.";
+                                return false ;
+                        }
 		}
 		if (method_exists($this, 'after_save')) {
 			$object = $this->find_by_id($id);
@@ -113,22 +133,22 @@ class MvcModel {
 		$options = array(
 			'conditions' => array($this->name.'.'.$this->primary_key => $id)
 		);
-		$this->db_adapter->update_all($data, $options);
+		return $this->db_adapter->update_all($data, $options);
 	}
 	
 	public function update_all($data, $options=array()) {
-		$this->db_adapter->update_all($data, $options);
+		return $this->db_adapter->update_all($data, $options);
 	}
 	
 	public function delete($id) {
 		$options = array(
 			'conditions' => array($this->primary_key => $id)
 		);
-		$this->db_adapter->delete_all($options);
+		return $this->db_adapter->delete_all($options);
 	}
 	
 	public function delete_all($options=array()) {
-		$this->db_adapter->delete_all($options);
+		return $this->db_adapter->delete_all($options);
 	}
 	
 	public function find($options=array()) {
@@ -256,14 +276,17 @@ class MvcModel {
 			foreach($this->associations as $association) {
 				switch($association['type']) {
 					case 'has_many':
-						$this->update_has_many_associations($id, $association, $model_data);
+						if($this->update_has_many_associations($id, $association, $model_data) === false)
+                                                    return false;
 						break;
 					case 'has_and_belongs_to_many':
-						$this->update_has_and_belongs_to_many_associations($id, $association, $model_data);
+						if($this->update_has_and_belongs_to_many_associations($id, $association, $model_data) === false)
+                                                        return false ;
 						break;
 				}
 			}
 		}
+                return true;
 	}
 	
 	private function update_has_many_associations($object_id, $association, $model_data) {
@@ -277,20 +300,22 @@ class MvcModel {
 				}
 			}
 		}
+                return true ;
 	}
 	
 	private function update_has_and_belongs_to_many_associations($object_id, $association, $model_data) {
 		$association_name = $association['name'];
 		if (!empty($model_data[$association_name])) {
 			if (isset($model_data[$association_name]['ids'])) {
-				$this->db_adapter->delete_all(array(
+				if ( $this->db_adapter->delete_all(array(
 					'table_reference' => $this->process_table_name($association['join_table']),
 					'conditions' => array($association['foreign_key'] => $object_id)
-				));
+				)) === false )
+                                        return false ;
 				if (!empty($model_data[$association_name]['ids'])) {
 					foreach($model_data[$association_name]['ids'] as $association_id) {
 						if (!empty($association_id)) {
-							$this->db_adapter->insert(
+							if ( $this->db_adapter->insert(
 								array(
 									$association['foreign_key'] => $object_id,
 									$association['association_foreign_key'] => $association_id,
@@ -298,12 +323,14 @@ class MvcModel {
 								array(
 									'table_reference' => $this->process_table_name($association['join_table'])
 								)
-							);
+							) === false )
+                                                                        return false ;
 						}
 					}
 				}
 			}
 		}
+                return true ;
 	}
 	
 	private function validate_data($data) {

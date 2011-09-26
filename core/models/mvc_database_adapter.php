@@ -160,8 +160,9 @@ class MvcDatabaseAdapter {
 			'insert_values' => 'VALUES '.$this->get_insert_values_sql($data)
 		);
 		$sql = implode(' ', $clauses);
-		$this->query($sql);
 		$insert_id = mysql_insert_id();
+		if($this->query($sql) === false)
+                    return false ;
 		return $insert_id;
 	}
 	
@@ -173,7 +174,7 @@ class MvcDatabaseAdapter {
 			'limit' => $this->get_limit_sql($options)
 		);
 		$sql = implode(' ', $clauses);
-		$this->query($sql);
+		return $this->query($sql);
 	}
 	
 	public function delete_all($options) {
