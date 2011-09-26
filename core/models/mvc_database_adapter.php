@@ -123,7 +123,11 @@ class MvcDatabaseAdapter {
 	public function get_set_sql($data) {
 		$clauses = array();
 		foreach($data as $key => $value) {
-			if (is_string($value) || is_numeric($value)) {
+                        if ($value == 'NULL')
+                        {
+                            $clauses[] = $key.' = NULL';
+                        }
+			else if (is_string($value) || is_numeric($value)) {
 				$clauses[] = $key.' = "'.$this->db->escape($value).'"';
 			}
 		}
