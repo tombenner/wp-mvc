@@ -218,7 +218,7 @@ class MvcLoader {
 			);
 			do_action('mvc_admin_init', $mvc_admin_init_args);
 		
-			$title =  MvcInflector::titleize($controller);
+			$title = MvcInflector::titleize($controller);
 			if (!empty($action) && $action != 'index') {
 				$title = MvcInflector::titleize($action).' &lsaquo; '.$title;
 			}
@@ -240,7 +240,7 @@ class MvcLoader {
 		
 			$model = MvcModelRegistry::get_model($model_name);
 			
-			if(!$model->hide_menu) {
+			if (!$model->hide_menu) {
 				$tableized = MvcInflector::tableize($model_name);
 				$pluralized = MvcInflector::pluralize($model_name);
 				$titleized = MvcInflector::titleize($model_name);

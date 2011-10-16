@@ -19,7 +19,7 @@ class MvcFormHelper extends MvcHelper {
 			$router_options['id'] = $object_id;
 		}
 		
-		if($options['public']) {
+		if ($options['public']) {
 			$html = '<form action="'.MvcRouter::public_url($router_options).'" method="post">';
 		} else {
 			$html = '<form action="'.MvcRouter::admin_url($router_options).'" method="post">';
