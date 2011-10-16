@@ -138,7 +138,7 @@ class MvcHelper {
 			)
 		);
 		
-		foreach($valid_attributes_by_tag as $key => $valid_attributes) {
+		foreach ($valid_attributes_by_tag as $key => $valid_attributes) {
 			$valid_attributes = array_merge($event_attributes['standard'], $valid_attributes);
 			$valid_attributes = self::array_flatten($valid_attributes);
 			$valid_attributes_by_tag[$key] = $valid_attributes;
@@ -149,7 +149,7 @@ class MvcHelper {
 		$attributes = array_intersect_key($attributes, array_flip($valid_attributes));
 		
 		$attributes_html = '';
-		foreach($attributes as $key => $value) {
+		foreach ($attributes as $key => $value) {
 			$attributes_html .= ' '.$key.'="'.esc_attr($value).'"';
 		}
 		return $attributes_html;
@@ -160,7 +160,7 @@ class MvcHelper {
 	
 	public function admin_header_cells($model) {
 		$html = '';
-		foreach($model->admin_columns as $key => $column) {
+		foreach ($model->admin_columns as $key => $column) {
 			$html .= $this->admin_header_cell($column['label']);
 		}
 		$html .= $this->admin_header_cell('');
@@ -174,9 +174,9 @@ class MvcHelper {
 	
 	public function admin_table_cells($model, $objects) {
 		$html = '';
-		foreach($objects as $object) {
+		foreach ($objects as $object) {
 			$html .= '<tr>';
-			foreach($model->admin_columns as $key => $column) {
+			foreach ($model->admin_columns as $key => $column) {
 				$html .= $this->admin_table_cell($model, $object, $column);
 			}
 			$html .= $this->admin_actions_cell($model, $object);
@@ -210,7 +210,7 @@ class MvcHelper {
 	
 	private function array_flatten($array) {
 
-		foreach($array as $key => $value){
+		foreach ($array as $key => $value){
 			$array[$key] = (array)$value;
 		}
 		

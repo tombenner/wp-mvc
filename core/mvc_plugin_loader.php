@@ -38,7 +38,7 @@ class MvcPluginLoader {
 		$removed = false;
 		$plugins = $this->get_plugins();
 		if (in_array($plugin, $plugins)) {
-			foreach($plugins as $key => $existing_plugin) {
+			foreach ($plugins as $key => $existing_plugin) {
 				if ($plugin == $existing_plugin) {
 					unset($plugins[$key]);
 					$removed = true;
@@ -56,7 +56,7 @@ class MvcPluginLoader {
 	}
 	
 	protected function filter_nonexistent_plugins($plugins) {
-		foreach($plugins as $key => $plugin) {
+		foreach ($plugins as $key => $plugin) {
 			if (!is_dir(WP_PLUGIN_DIR.'/'.$plugin)) {
 				unset($plugins[$key]);
 			}

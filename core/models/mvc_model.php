@@ -37,7 +37,7 @@ class MvcModel {
 			'validate' => empty($this->validate) ? null : $this->validate
 		);
 		
-		foreach($defaults as $key => $value) {
+		foreach ($defaults as $key => $value) {
 			$this->{$key} = $value;
 		}
 		
@@ -55,7 +55,7 @@ class MvcModel {
 	
 	public function new_object($data) {
 		$object = false;
-		foreach($data as $field => $value) {
+		foreach ($data as $field => $value) {
 			$object->{$field} = $value;
 		}
 		$object = $this->process_objects($object);
@@ -179,7 +179,7 @@ class MvcModel {
 			$keywords = preg_split('/[\s]+/', $keywords);
 		}
 		$formatted_fields = array();
-		foreach($fields as $field) {
+		foreach ($fields as $field) {
 			if (strpos($field, '.') === false) {
 				$field = $this->name.'.'.$field;
 			}
@@ -190,7 +190,7 @@ class MvcModel {
 		} else {
 			$field_reference = 'CONCAT('.implode(', ', $formatted_fields).')';
 		}
-		foreach($keywords as $keyword) {
+		foreach ($keywords as $keyword) {
 			$conditions[] = array($field_reference.' LIKE' => '%'.$keyword.'%');
 		}
 		return $conditions;
@@ -210,7 +210,7 @@ class MvcModel {
 			if (is_string($options['joins'])) {
 				$options['joins'] = array($options['joins']);
 			}
-			foreach($options['joins'] as $key => $join) {
+			foreach ($options['joins'] as $key => $join) {
 				if (is_string($join)) {
 					$join_model_name = $join;
 					if (!empty($this->associations[$join_model_name])) {
@@ -263,7 +263,7 @@ class MvcModel {
 	
 	private function update_associations($id, $model_data) {
 		if (!empty($this->associations)) {
-			foreach($this->associations as $association) {
+			foreach ($this->associations as $association) {
 				switch($association['type']) {
 					case 'has_many':
 						$this->update_has_many_associations($id, $association, $model_data);
@@ -298,7 +298,7 @@ class MvcModel {
 					'conditions' => array($association['foreign_key'] => $object_id)
 				));
 				if (!empty($model_data[$association_name]['ids'])) {
-					foreach($model_data[$association_name]['ids'] as $association_id) {
+					foreach ($model_data[$association_name]['ids'] as $association_id) {
 						if (!empty($association_id)) {
 							$this->db_adapter->insert(
 								array(
@@ -319,7 +319,7 @@ class MvcModel {
 	private function validate_data($data) {
 		$rules = $this->validate;
 		if (!empty($rules)) {
-			foreach($rules as $field => $rule) {
+			foreach ($rules as $field => $rule) {
 				if (isset($data[$field])) {
 					$valid = $this->data_validator->validate($field, $data[$field], $rule);
 					if ($valid !== true) {
@@ -350,7 +350,7 @@ class MvcModel {
 			$this->admin_pages = $default_pages;
 		}
 		$admin_pages = array();
-		foreach($this->admin_pages as $key => $value) {
+		foreach ($this->admin_pages as $key => $value) {
 			if (is_int($key)) {
 				$key = $value;
 				$value = array();
@@ -372,7 +372,7 @@ class MvcModel {
 	
 	private function init_admin_columns() {
 		$admin_columns = array();
-		foreach($this->admin_columns as $key => $value) {
+		foreach ($this->admin_columns as $key => $value) {
 			if (is_array($value)) {
 				if (!isset($value['label'])) {
 					$value['label'] = MvcInflector::titleize($key);
@@ -412,7 +412,7 @@ class MvcModel {
 		if (!empty($includes)) {
 			// Instantiate associated models, so that they don't need to be instantiated multiple times in the subsequent for loop
 			$models = array();
-			foreach($includes as $key => $include) {
+			foreach ($includes as $key => $include) {
 				$model_name = is_string($include) ? $include : $key;
 				$models[$model_name] = new $model_name();
 			}
@@ -420,14 +420,14 @@ class MvcModel {
 		
 		$recursive = isset($options['recursive']) ? $options['recursive'] - 1 : 2;
 		
-		foreach($objects as $key => $object) {
+		foreach ($objects as $key => $object) {
 		
 			if (!empty($this->primary_key)) {
 				$object->__id = $object->{$this->primary_key};
 			}
 			
 			if (!empty($includes) && $recursive != 0) {
-				foreach($includes as $include_key => $include) {
+				foreach ($includes as $include_key => $include) {
 					if (is_string($include)) {
 						$model_name = $include;
 						$association = $this->associations[$model_name];
@@ -514,7 +514,7 @@ class MvcModel {
 		
 		$schema = array();
 		
-		foreach($results as $result) {
+		foreach ($results as $result) {
 			$field = $result->Field;
 			$type_schema = explode('(', $result->Type);
 			$type = $type_schema[0];
@@ -535,7 +535,7 @@ class MvcModel {
 	
 	protected function init_associations() {
 		if (!empty($this->belongs_to)) {
-			foreach($this->belongs_to as $key => $value) {
+			foreach ($this->belongs_to as $key => $value) {
 				$config = null;
 				if (is_string($value)) {
 					$association = $value;
@@ -565,7 +565,7 @@ class MvcModel {
 			}
 		}
 		if (!empty($this->has_many)) {
-			foreach($this->has_many as $association) {
+			foreach ($this->has_many as $association) {
 				if (is_string($association)) {
 					if (!is_array($this->associations)) {
 						$this->associations = array();
@@ -582,12 +582,12 @@ class MvcModel {
 			}
 		}
 		if (!empty($this->has_and_belongs_to_many)) {
-			foreach($this->has_and_belongs_to_many as $association_name => $association) {
+			foreach ($this->has_and_belongs_to_many as $association_name => $association) {
 				if (!is_array($this->associations)) {
 					$this->associations = array();
 				}
 				if (isset($association['fields'])) {
-					foreach($association['fields'] as $key => $field) {
+					foreach ($association['fields'] as $key => $field) {
 						$association['fields'][$key] = $association_name.'.'.$field;
 					}
 				}

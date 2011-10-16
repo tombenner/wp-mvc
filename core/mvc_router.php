@@ -21,7 +21,7 @@ class MvcRouter {
 				$options['id'] = $options['object']->__id;
 			}
 		}
-		foreach($routes as $route) {
+		foreach ($routes as $route) {
 			$route_path = $route[0];
 			$route_defaults = $route[1];
 			if (!empty($route_defaults['controller']) && $route_defaults['controller'] == $controller) {
@@ -35,7 +35,7 @@ class MvcRouter {
 			$path_pattern = $matched_route[0];
 			preg_match_all('/{:([\w]+).*?}/', $path_pattern, $matches, PREG_SET_ORDER);
 			$path = $path_pattern;
-			foreach($matches as $match) {
+			foreach ($matches as $match) {
 				$pattern = $match[0];
 				$option_key = $match[1];
 				if (isset($options[$option_key])) {

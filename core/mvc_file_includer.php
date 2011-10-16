@@ -11,7 +11,7 @@ class MvcFileIncluder {
 	}
 	
 	public function find_first_app_file_or_core_file($filepath) {
-		foreach($this->plugin_app_paths as $plugin_app_path) {
+		foreach ($this->plugin_app_paths as $plugin_app_path) {
 			if (file_exists($plugin_app_path.$filepath)) {
 				return $plugin_app_path.$filepath;
 			}
@@ -48,7 +48,7 @@ class MvcFileIncluder {
 	}
 	
 	public function require_first_app_file($filepath) {
-		foreach($this->plugin_app_paths as $plugin_app_path) {
+		foreach ($this->plugin_app_paths as $plugin_app_path) {
 			if ($this->include_file($plugin_app_path.$filepath)) {
 				return true;
 			}
@@ -58,7 +58,7 @@ class MvcFileIncluder {
 	
 	public function include_all_app_files($filepath) {
 		$included = false;
-		foreach($this->plugin_app_paths as $plugin_app_path) {
+		foreach ($this->plugin_app_paths as $plugin_app_path) {
 			if ($this->include_file($plugin_app_path.$filepath)) {
 				$included = true;
 			}
@@ -71,7 +71,7 @@ class MvcFileIncluder {
 	}
 	
 	public function include_first_app_file($filepath) {
-		foreach($this->plugin_app_paths as $plugin_app_path) {
+		foreach ($this->plugin_app_paths as $plugin_app_path) {
 			if ($this->include_file($plugin_app_path.$filepath)) {
 				return true;
 			}
@@ -80,7 +80,7 @@ class MvcFileIncluder {
 	}
 	
 	public function include_first_app_file_or_core_file($filepath) {
-		foreach($this->plugin_app_paths as $plugin_app_path) {
+		foreach ($this->plugin_app_paths as $plugin_app_path) {
 			if ($this->include_file($plugin_app_path.$filepath)) {
 				return true;
 			}
@@ -95,7 +95,7 @@ class MvcFileIncluder {
 	
 	public function require_all_app_files($filepath) {
 		$included = false;
-		foreach($this->plugin_app_paths as $plugin_app_path) {
+		foreach ($this->plugin_app_paths as $plugin_app_path) {
 			if ($this->include_require_file($plugin_app_path.$filepath)) {
 				$included = true;
 			}
@@ -124,7 +124,7 @@ class MvcFileIncluder {
 		$filenames = $this->get_php_files_in_directory($directory);
 		$filepaths = array();
 		
-		foreach($filenames as $filename) {
+		foreach ($filenames as $filename) {
 			$filepath = $directory.$filename;
 			$filepaths[] = $filepath;
 			$this->require_file($filepath);
@@ -155,7 +155,7 @@ class MvcFileIncluder {
 		$file_tmp = glob($directory.'*', GLOB_MARK | GLOB_NOSORT);
 		$files = array();
 		
-		foreach($file_tmp as $item){
+		foreach ($file_tmp as $item){
 			if (substr($item, -1) != DIRECTORY_SEPARATOR) {
 				$files[] = $item;
 			} else {

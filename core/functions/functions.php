@@ -71,7 +71,7 @@ function mvc_remove_plugin($plugin) {
 	$removed = false;
 	$plugins = mvc_get_plugins();
 	if (in_array($plugin, $plugins)) {
-		foreach($plugins as $key => $existing_plugin) {
+		foreach ($plugins as $key => $existing_plugin) {
 			if ($plugin == $existing_plugin) {
 				unset($plugins[$key]);
 				$removed = true;

@@ -26,7 +26,7 @@ class MvcDataValidationError {
 			return false;
 		}
 		$html = '';
-		foreach($this->errors as $error) {
+		foreach ($this->errors as $error) {
 			$html .= '
 				<div class="mvc-validation-error">
 					'.$error['message'].'

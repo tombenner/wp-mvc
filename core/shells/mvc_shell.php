@@ -51,7 +51,7 @@ class MvcShell {
 	}
 	
 	protected function load_models($model_names) {
-		foreach($model_names as $model_name) {
+		foreach ($model_names as $model_name) {
 			$this->load_model($model_name);
 		}
 	}

@@ -13,7 +13,7 @@ class MvcTemplater {
 		if (is_string($variable_name_or_array)) {
 			$this->set_template_var($variable_name_or_array, $data);
 		} else if (is_array($variable_name_or_array)) {
-			foreach($variable_name_or_array as $key => $value) {
+			foreach ($variable_name_or_array as $key => $value) {
 				$this->set_template_var($key, $value);
 			}
 		}

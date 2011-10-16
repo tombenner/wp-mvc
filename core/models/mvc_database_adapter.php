@@ -66,7 +66,7 @@ class MvcDatabaseAdapter {
 		if (isset($joins['table'])) {
 			$joins = array($joins);
 		}
-		foreach($joins as $join) {
+		foreach ($joins as $join) {
 			$type = empty($join['type']) ? 'JOIN' : $join['type'];
 			$clauses[] = $type.' '.$join['table'].' '.$join['alias'].' ON '.$join['on'];
 		}
@@ -88,7 +88,7 @@ class MvcDatabaseAdapter {
 	public function get_where_sql_clauses($conditions, $options=array()) {
 		$use_table_alias = isset($options['use_table_alias']) ? $options['use_table_alias'] : true;
 		$sql_clauses = array();
-		foreach($conditions as $key => $value) {
+		foreach ($conditions as $key => $value) {
 			if (is_array($value)) {
 				$clauses = $this->get_where_sql_clauses($value);
 				$logical_operator = $key == 'OR' ? ' OR ' : ' AND ';
@@ -122,7 +122,7 @@ class MvcDatabaseAdapter {
 	
 	public function get_set_sql($data) {
 		$clauses = array();
-		foreach($data as $key => $value) {
+		foreach ($data as $key => $value) {
 			if (is_string($value) || is_numeric($value)) {
 				$clauses[] = $key.' = "'.$this->db->escape($value).'"';
 			}
@@ -140,7 +140,7 @@ class MvcDatabaseAdapter {
 	
 	public function get_insert_values_sql($data) {
 		$values = array();
-		foreach($data as $value) {
+		foreach ($data as $value) {
 			$values[] = '"'.$this->db->escape($value).'"';
 		}
 		$sql = '('.implode(', ', $values).')';

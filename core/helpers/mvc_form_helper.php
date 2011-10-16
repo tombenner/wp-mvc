@@ -147,7 +147,7 @@ class MvcFormHelper extends MvcHelper {
 			$empty_name = is_string($options['empty']) ? $options['empty'] : '';
 			$html .= '<option value="">'.$empty_name.'</option>';
 		}
-		foreach($options['options'] as $key => $value) {
+		foreach ($options['options'] as $key => $value) {
 			if (is_object($value)) {
 				$key = $value->__id;
 				$value = $value->__name;
@@ -229,7 +229,7 @@ class MvcFormHelper extends MvcHelper {
 		$html .= '<input type="hidden" name="'.$options['ids_input_name'].'[]" value="" />';
 		
 		$html .= '<ul id="'.$options['list_id'].'">';
-		foreach($associated_objects as $associated_object) {
+		foreach ($associated_objects as $associated_object) {
 			$html .= '
 				<li>
 					'.$associated_object->__name.'

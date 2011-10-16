@@ -31,7 +31,7 @@ class MvcDatabase {
 	}
 	
 	public function escape_array($array) {
-		foreach($array as $key => $value) {
+		foreach ($array as $key => $value) {
 			$array[$key] = $this->escape($value);
 		}
 		return $array;

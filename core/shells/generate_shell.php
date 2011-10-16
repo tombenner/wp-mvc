@@ -61,7 +61,7 @@ class GenerateShell extends MvcShell {
 			'views',
 			'views/admin'
 		);
-		foreach($app_directories as $path) {
+		foreach ($app_directories as $path) {
 			$directory->create($plugin_app_path.$path.'/');
 		}
 		

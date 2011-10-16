@@ -20,7 +20,7 @@ class MvcController {
 		$this->load_helper('Html');
 		
 		$models = MvcModelRegistry::get_models();
-		foreach($models as $model_name => $model) {
+		foreach ($models as $model_name => $model) {
 			$underscore = MvcInflector::underscore($model_name);
 			$tableize = MvcInflector::tableize($model_name);
 			// Add dynamicly created methods to HtmlHelper in the form speaker_url($object), speaker_link($object)
@@ -107,7 +107,7 @@ class MvcController {
 	}
 	
 	protected function load_models($model_names) {
-		foreach($model_names as $model_name) {
+		foreach ($model_names as $model_name) {
 			$this->load_model($model_name);
 		}
 	}
@@ -134,7 +134,7 @@ class MvcController {
 		if (is_string($variable_name_or_array)) {
 			$this->set_view_var($variable_name_or_array, $data);
 		} else if (is_array($variable_name_or_array)) {
-			foreach($variable_name_or_array as $key => $value) {
+			foreach ($variable_name_or_array as $key => $value) {
 				$this->set_view_var($key, $value);
 			}
 		}
@@ -198,7 +198,7 @@ class MvcController {
 		
 		if (!empty($options['collection'])) {
 			$var_name = empty($options['as']) ? 'object' : $options['as'];
-			foreach($options['collection'] as $object) {
+			foreach ($options['collection'] as $object) {
 				$view_vars = array();
 				$view_vars[$var_name] = $object;
 				if (!empty($options['locals'])) {
@@ -272,7 +272,7 @@ class MvcController {
 		$flashes = $this->get_all_flashes();
 		$html = '';
 		if (!empty($flashes)) {
-			foreach($flashes as $type => $message) {
+			foreach ($flashes as $type => $message) {
 				$classes = array();
 				$classes[] = $type;
 				if ($this->is_admin) {
