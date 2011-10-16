@@ -81,6 +81,7 @@ class MvcHelper {
 				'access_key',
 				'align',
 				'alt',
+				'autocomplete',
 				'checked',
 				'class',
 				'dir',
@@ -89,6 +90,7 @@ class MvcHelper {
 				'lang',
 				'maxlength',
 				'name',
+				'placeholder',
 				'readonly',
 				'required',
 				'size',
@@ -109,6 +111,7 @@ class MvcHelper {
 				'disabled',
 				'id',
 				'lang',
+				'maxlength',
 				'name',
 				'readonly',
 				'rows',
@@ -196,8 +199,10 @@ class MvcHelper {
 		$object_name = empty($object->__name) ? 'Item #'.$object->__id : $object->__name;
 		$encoded_object_name = $this->esc_attr($object_name);
 		$controller = MvcInflector::tableize($model->name);
+/*
 		$links[] = '<a href="'.MvcRouter::admin_url(array('controller' => $controller, 'action' => 'edit', 'object' => $object)).'" title="Edit '.$encoded_object_name.'">Edit</a>';
 		$links[] = '<a href="'.MvcRouter::public_url(array('controller' => $controller, 'action' => 'show', 'object' => $object)).'" title="View '.$encoded_object_name.'">View</a>';
+*/
 		$links[] = '<a href="'.MvcRouter::admin_url(array('controller' => $controller, 'action' => 'delete', 'object' => $object)).'" title="Delete '.$encoded_object_name.'" onclick="return confirm(&#039;Are you sure you want to delete '.$encoded_object_name.'?&#039;);">Delete</a>';
 		$html = implode(' | ', $links);
 		return '<td>'.$html.'</td>';
