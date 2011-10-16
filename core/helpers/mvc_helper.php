@@ -90,6 +90,7 @@ class MvcHelper {
 				'maxlength',
 				'name',
 				'readonly',
+				'required',
 				'size',
 				'src',
 				'style',

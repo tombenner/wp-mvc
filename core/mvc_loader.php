@@ -239,62 +239,65 @@ class MvcLoader {
 		foreach($this->model_names as $model_name) {
 		
 			$model = MvcModelRegistry::get_model($model_name);
-			$tableized = MvcInflector::tableize($model_name);
-			$pluralized = MvcInflector::pluralize($model_name);
-			$titleized = MvcInflector::titleize($model_name);
-			$pluralize_titleized = MvcInflector::pluralize_titleize($model_name);
+			
+			if(!$model->hide_menu) {
+				$tableized = MvcInflector::tableize($model_name);
+				$pluralized = MvcInflector::pluralize($model_name);
+				$titleized = MvcInflector::titleize($model_name);
+				$pluralize_titleized = MvcInflector::pluralize_titleize($model_name);
 		
-			$controller_name = 'admin_'.$tableized;
+				$controller_name = 'admin_'.$tableized;
 			
-			$top_level_handle = 'mvc_'.$tableized;
+				$top_level_handle = 'mvc_'.$tableized;
 			
-			$admin_pages = $model->admin_pages;
+				$admin_pages = $model->admin_pages;
 			
-			$method = $controller_name.'_index';
-			$this->dispatcher->{$method} = create_function('', 'MvcDispatcher::dispatch(array("controller" => "'.$controller_name.'", "action" => "index"));');
-			add_menu_page(
-				$pluralize_titleized,
-				$pluralize_titleized,
-				'administrator',
-				$top_level_handle,
-				array($this->dispatcher, $method),
-				null,
-				$menu_position
-			);
+				$method = $controller_name.'_index';
+				$this->dispatcher->{$method} = create_function('', 'MvcDispatcher::dispatch(array("controller" => "'.$controller_name.'", "action" => "index"));');
+				add_menu_page(
+					$pluralize_titleized,
+					$pluralize_titleized,
+					'administrator',
+					$top_level_handle,
+					array($this->dispatcher, $method),
+					null,
+					$menu_position
+				);
 			
-			foreach($admin_pages as $key => $admin_page) {
+				foreach($admin_pages as $key => $admin_page) {
 				
-				$method = $controller_name.'_'.$admin_page['action'];
+					$method = $controller_name.'_'.$admin_page['action'];
 				
-				if (!method_exists($this->dispatcher, $method)) {
-					$this->dispatcher->{$method} = create_function('', 'MvcDispatcher::dispatch(array("controller" => "'.$controller_name.'", "action" => "'.$admin_page['action'].'"));');
-				}
-				
-				$page_handle = $top_level_handle.'-'.$key;
-				
-				if ($admin_page['in_menu']) {
-					add_submenu_page(
-						$top_level_handle,
-						$admin_page['label'].' &lsaquo; '.$pluralize_titleized,
-						$admin_page['label'],
-						$admin_page['capability'],
-						$page_handle,
-						array($this->dispatcher, $method)
-					);
-				} else {
-					// It looks like there isn't a more native way of creating an admin page without
-					// having it show up in the menu, but if there is, it should be implemented here.
-					// To do: set up capability handling and page title handling for these pages that aren't in the menu
-					$hookname = get_plugin_page_hookname($page_handle,'');
-					if (!empty($hookname)) {
-						add_action($hookname, array($this->dispatcher, $method));
+					if (!method_exists($this->dispatcher, $method)) {
+						$this->dispatcher->{$method} = create_function('', 'MvcDispatcher::dispatch(array("controller" => "'.$controller_name.'", "action" => "'.$admin_page['action'].'"));');
 					}
-					$_registered_pages[$hookname] = true;
-				}
+				
+					$page_handle = $top_level_handle.'-'.$key;
+				
+					if ($admin_page['in_menu']) {
+						add_submenu_page(
+							$top_level_handle,
+							$admin_page['label'].' &lsaquo; '.$pluralize_titleized,
+							$admin_page['label'],
+							$admin_page['capability'],
+							$page_handle,
+							array($this->dispatcher, $method)
+						);
+					} else {
+						// It looks like there isn't a more native way of creating an admin page without
+						// having it show up in the menu, but if there is, it should be implemented here.
+						// To do: set up capability handling and page title handling for these pages that aren't in the menu
+						$hookname = get_plugin_page_hookname($page_handle,'');
+						if (!empty($hookname)) {
+							add_action($hookname, array($this->dispatcher, $method));
+						}
+						$_registered_pages[$hookname] = true;
+					}
 			
-			}
-			$menu_position++;
+				}
+				$menu_position++;
 
+			}
 		}
 	
 	}

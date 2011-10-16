@@ -5,7 +5,8 @@ class MvcFormHelper extends MvcHelper {
 	public function create($model_name, $options=array()) {
 		$defaults = array(
 			'action' => $this->controller->action,
-			'controller' => MvcInflector::tableize($model_name)
+			'controller' => MvcInflector::tableize($model_name),
+			'public' => false
 		);
 		$options = array_merge($defaults, $options);
 		$this->model_name = $model_name;
@@ -17,7 +18,13 @@ class MvcFormHelper extends MvcHelper {
 		if ($object_id) {
 			$router_options['id'] = $object_id;
 		}
-		$html = '<form action="'.MvcRouter::admin_url($router_options).'" method="post">';
+		
+		if($options['public']) {
+			$html = '<form action="'.MvcRouter::public_url($router_options).'" method="post">';
+		} else {
+			$html = '<form action="'.MvcRouter::admin_url($router_options).'" method="post">';
+		}
+		
 		if ($object_id) {
 			$html .= '<input type="hidden" id="'.$this->input_id('hidden_id').'" name="'.$this->input_name('id').'" value="'.$object_id.'" />';
 		}

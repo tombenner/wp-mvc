@@ -11,6 +11,7 @@ class MvcModel {
 	public $admin_pages = null;
 	public $validation_error = null;
 	public $validation_error_html = null;
+	public $hide_menu = false;
 	private $data_validator = null;
 	private $db_adapter = null;
 	
