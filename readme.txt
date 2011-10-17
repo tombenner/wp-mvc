@@ -23,6 +23,7 @@ If you'd like to grab development releases, see what new features are being adde
 
 1. Upload `wp-mvc` to the `wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
+1. Make sure that [Pretty Permalinks](http://codex.wordpress.org/Introduction_to_Blogging#Pretty_Permalinks) are enabled and working
 1. Either set up the example plugin to see how WP MVC works or start creating an application using the code generation utility `wpmvc`:
 
 #### Setting up the example WP MVC-based plugin:
