@@ -50,7 +50,7 @@ WP MVC is a full-fledged MVC framework, but behind the scenes it uses existing W
 
 #### Is feature X available?
 
-This framework is still in development. Most of the functionality that's available is used in the example application, so if there's functionality that you'd like to use that isn't implemented in there, it may not exist yet. However, if it's something that is widely useful, I'd certainly be willing to implement it myself or to accept any well-written code that implements it. Please feel free to either add a topic in the WordPress forum or contact me through GitHub for any such requests:
+Most of the functionality that's available is used in the example applications, so if there's functionality that you'd like to use that isn't implemented in those or mentioned on [wpmvc.org](http://wpmvc.org), it may not exist yet. However, if it's something that is widely useful, I'd certainly be willing to implement it myself or to accept any well-written code that implements it. Please feel free to either add a topic in the WordPress forum or contact me through GitHub for any such requests:
 
 * [WordPress Forum](http://wordpress.org/tags/wp-mvc?forum_id=10)
 * [GitHub](http://github.com/tombenner/)

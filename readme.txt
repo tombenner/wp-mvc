@@ -52,7 +52,7 @@ WP MVC is a full-fledged MVC framework, but behind the scenes it uses existing W
 
 = Is feature X available? =
 
-This framework is still in development. Most of the functionality that's available is used in the example application, so if there's functionality that you'd like to use that isn't implemented in there, it may not exist yet. However, if it's something that is widely useful, I'd certainly be willing to implement it myself or to accept any well-written code that implements it. Please feel free to either add a topic in the WordPress forum or contact me through GitHub for any such requests:
+Most of the functionality that's available is used in the example applications, so if there's functionality that you'd like to use that isn't implemented in those or mentioned on [wpmvc.org](http://wpmvc.org), it may not exist yet. However, if it's something that is widely useful, I'd certainly be willing to implement it myself or to accept any well-written code that implements it. Please feel free to either add a topic in the WordPress forum or contact me through GitHub for any such requests:
 
 * [WordPress Forum](http://wordpress.org/tags/wp-mvc?forum_id=10)
 * [GitHub](http://github.com/tombenner/)
@@ -60,3 +60,7 @@ This framework is still in development. Most of the functionality that's availab
 == Screenshots ==
 
 1. If you've worked with MVC frameworks before, the file structure for WP MVC will look refreshingly familiar.
+2. Administration Menus are added automatically for each model, but they can be customized or omitted.
+3. An example of the default "admin/index" view, which includes search functionality and pagination by default and can be customized.
+4. An example of the default "admin/add" view. See the next screenshot for the code that creates it.
+5. The code of the "admin/add" view in the previous screenshot. Forms can be easily created using the form helper, which includes an `input()` method that automatically determines the data type of the field and shows an appropriate input tag. Methods for most types of inputs (textareas, hidden inputs, select tags, checkboxes, etc) are also available, as are association-related input methods like `belongs_to_dropdown()` and has_many_dropdown()`.
