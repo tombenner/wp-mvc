@@ -41,6 +41,12 @@ class MvcRouter {
 				if (isset($options[$option_key])) {
 					$value = $options[$option_key];
 					$path = preg_replace('/'.preg_quote($pattern).'/', $value, $path, 1);
+				} else if (isset($options['object']) && is_object($options['object'])) {
+					if (isset($options['object']->{$option_key})) {
+						$value = $options['object']->{$option_key};
+						$path = preg_replace('/'.preg_quote($pattern).'/', $value, $path, 1);
+						$path = rtrim($path, '.*?');
+					}
 				}
 			}
 			$path = rtrim($path, '/').'/';
