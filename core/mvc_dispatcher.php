@@ -6,7 +6,7 @@ class MvcDispatcher {
 		
 		$controller_name = $options['controller'];
 		$action = $options['action'];
-		$object_id = empty($options['id']) ? null : $options['id'];
+		$params = $options;
 		
 		$controller_class = MvcInflector::camelize($controller_name).'Controller';
 		
@@ -20,15 +20,13 @@ class MvcDispatcher {
 			MvcError::fatal('A method for the action "'.$action.'" doesn\'t exist in "'.$controller_class.'"');
 		}
 		
-		$params = $_REQUEST;
-		$params = self::escape_params($params);
+		$request_params = $_REQUEST;
+		$request_params = self::escape_params($request_params);
+		
+		$params = array_merge($request_params, $params);
 		
 		if (is_admin()) {
 			unset($params['page']);
-		} else {
-			if (empty($params['id']) && !empty($object_id)) {
-				$params['id'] = $object_id;
-			}
 		}
 		
 		$controller->params = $params;
