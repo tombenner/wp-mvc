@@ -2,7 +2,7 @@
 
 class MvcConfiguration {
 
-	function &getInstance($boot = true) {
+	function &get_instance($boot = true) {
 		static $instance = array();
 		
 		if (!$instance) {
@@ -13,7 +13,7 @@ class MvcConfiguration {
 	}
 
 	function set($config, $value = null) {
-		$_this =& MvcConfiguration::getInstance();
+		$_this =& MvcConfiguration::get_instance();
 
 		if (!is_array($config)) {
 			$config = array($config => $value);
@@ -34,7 +34,7 @@ class MvcConfiguration {
 	}
 
 	function get($config) {
-		$_this =& MvcConfiguration::getInstance();
+		$_this =& MvcConfiguration::get_instance();
 
 		if (strpos($config, '.') !== false) {
 			$names = explode('.', $config, 2);
