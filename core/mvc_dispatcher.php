@@ -35,7 +35,7 @@ class MvcDispatcher {
 		$controller->after_action($action);
 		
 		if (!$controller->view_rendered) {
-			$controller->render_view($controller->views_path.$action);
+			$controller->render_view($controller->views_path.$action, $options);
 		}
 	
 	}
