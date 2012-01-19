@@ -12,6 +12,32 @@ function mvc_plugin_app_url($plugin) {
 	return $url;
 }
 
+function mvc_model($model_name) {
+	$model_underscore = MvcInflector::underscore($model_name);
+	$file_includer = new MvcFileIncluder();
+	$file_includer->require_first_app_file('models/'.$model_underscore.'.php');
+	if (class_exists($model_name)) {
+		return new $model_name();
+	}
+	MvcError::warning('Unable to load the "'.$model_name.'" model.');
+	return null;
+}
+
+function mvc_render_to_string($view, $vars=array()) {
+	$view_pieces = explode('/', $view);
+	$model_tableized = $view_pieces[0];
+	$model_camelized = MvcInflector::camelize($model_tableized);
+	$controller_name = $model_camelized.'Controller';
+	if (!class_exists($controller_name)) {
+		$controller_name = 'MvcPublicController';
+	}
+	$controller = new $controller_name();
+	$controller->init();
+	$controller->set($vars);
+	$string = $controller->render_to_string($view);
+	return $string;
+}
+
 function mvc_public_url($options) {
 	return MvcRouter::public_url($options);
 }
