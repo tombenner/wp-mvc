@@ -224,6 +224,22 @@ class MvcController {
 	
 	}
 	
+	public function render_to_string($path, $options=array()) {
+		$defaults = array(
+			'bypass_layout' => true,
+			'vars' => $this->view_vars
+		);
+		$is_controller = $this->is_controller;
+		$this->is_controller = false;
+		$options = array_merge($defaults, $options);
+		ob_start();
+		$this->include_view($path, $options['vars']);
+		$string = ob_get_contents();
+		ob_end_clean();
+		$this->is_controller = $is_controller;
+		return $string;
+	}
+	
 	protected function include_view($path, $view_vars=array()) {
 		extract($view_vars);
 		$path = preg_replace('/^admin_([^\/]+)/', 'admin/$1', $path);
