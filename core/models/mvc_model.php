@@ -148,6 +148,15 @@ class MvcModel {
 		return $objects;
 	}
 	
+	public function find_one($options=array()) {
+		$options['limit'] = 1;
+		$options = $this->process_find_options($options);
+		$object = $this->db_adapter->get_results($options);
+		$object = isset($object[0]) ? $object[0] : null;
+		$object = $this->process_objects($object, $options);
+		return $object;
+	}
+	
 	public function find_by_id($id, $options=array()) {
 		$options = $this->process_find_options($options);
 		$options['conditions'] = array($this->name.'.'.$this->primary_key => $id);
