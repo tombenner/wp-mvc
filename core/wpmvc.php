@@ -1,8 +1,9 @@
 <?php
 
-$wp_root = dirname(__FILE__).'/../../../../';
+$wordpress_path = getenv('WPMVC_WORDPRESS_PATH');
+$wordpress_path = $wordpress_path ? rtrim($wordpress_path, '/').'/' : dirname(__FILE__).'/../../../../';
 
-require_once $wp_root.'wp-load.php';
+require_once $wordpress_path.'wp-load.php';
 
 $shell = new MvcShellDispatcher($argv);
 
