@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Shell for automating the creation of WP MVC-based plugins and the 
+ * models, views, and controllers used in those plugins.
+ */
 class GenerateShell extends MvcShell {
 
 	private $templater = null;
@@ -9,6 +12,11 @@ class GenerateShell extends MvcShell {
 		$this->templater->set_template_directory($this->core_path.'templates/plugin/app/');
 	}
 	
+    /**
+     * Generate a MVC Plugin.
+     * wpmvc generate plugin <plugin>
+     * @param mixed $args 
+     */
 	public function plugin($args) {
 		if (empty($args[0])) {
 			MvcError::fatal('Please specify a name for the plugin (e.g. "wpmvc generate plugin MyPlugin").');
@@ -17,16 +25,31 @@ class GenerateShell extends MvcShell {
 		$this->generate_app($plugin);
 	}
 
+    /**
+     * Generate controller and admin controller:
+     * wpmvc generate controllers <plugin> <name>
+     * @param mixed $args 
+     */
 	public function controllers($args) {
 		list($plugin, $name) = $this->get_plugin_model_args($args);
 		$this->generate_controllers($plugin, $name);
 	}
 
+    /**
+     * Generate model for plugin
+     * wpmvc generate model <plugin> <model>
+     * @param mixed $args 
+     */
 	public function model($args) {
 		list($plugin, $name) = $this->get_plugin_model_args($args);
 		$this->generate_model($plugin, $name);
 	}
 
+    /**
+     * Generate models, views, and controllers for an entity
+     * wpmvc generate scaffold <plugin> <model>
+     * @param mixed $args 
+     */
 	public function scaffold($args) {
 		list($plugin, $name) = $this->get_plugin_model_args($args);
 		$this->generate_controllers($plugin, $name);
@@ -34,6 +57,11 @@ class GenerateShell extends MvcShell {
 		$this->generate_views($plugin, $name);
 	}
 
+    /**
+     * Generate all views for CRUD operations for model
+     * wpmvc generate views <plugin> <model>
+     * @param mixed $args 
+     */
 	public function views($args) {
 		list($plugin, $name) = $this->get_plugin_model_args($args);
 		$this->generate_views($plugin, $name);

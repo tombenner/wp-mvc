@@ -1,17 +1,34 @@
 <?php
-
+/**
+ *  Tool to automate deletion of files created by the Generate shell
+ */
 class DestroyShell extends MvcShell {
 
+    /**
+     * Deletes controller source files 
+     * wpmvc destroy <plugin> <resource>
+     * @param type $args 
+     */
 	public function controllers($args) {
 		list($plugin, $name) = $this->get_plugin_model_args($args);
 		$this->destroy_controllers($plugin, $name);
 	}
 
+    /**
+     * Deletes model source files
+     * wpmvc destroy <plugin> <resource>
+     * @param type $args 
+     */
 	public function model($args) {
 		list($plugin, $name) = $this->get_plugin_model_args($args);
 		$this->destroy_model($plugin, $name);
 	}
 
+    /**
+     * Deletes model, controller, and view files for a resource
+     * wpmvc destroy <plugin> <resource>
+     * @param type $args 
+     */
 	public function scaffold($args) {
 		list($plugin, $name) = $this->get_plugin_model_args($args);
 		$this->destroy_controllers($plugin, $name);
@@ -19,6 +36,11 @@ class DestroyShell extends MvcShell {
 		$this->destroy_views($plugin, $name);
 	}
 
+    /**
+     * Deletes view source files for a resource
+     * wpmvc destroy views <plugin> <resource>
+     * @param type $args 
+     */
 	public function views($args) {
 		list($plugin, $name) = $this->get_plugin_model_args($args);
 		$this->destroy_views($plugin, $name);

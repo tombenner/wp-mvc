@@ -1,5 +1,4 @@
 <?php
-
 class MvcShell {
 
 	protected $core_path = '';
@@ -9,23 +8,37 @@ class MvcShell {
 	
 		$this->core_path = MVC_CORE_PATH;
 		$this->file_includer = new MvcFileIncluder();
-	
+        
+        $this->file_includer->require_core_file("console/color.php");
+        $this->file_includer->require_core_file("console/table.php");
+        
 		$this->init($args);
-	
 	}
 	
-	// This can be overwritten by descendant classes to add custom functionality during shell initialization
-	protected function init($args) {
-	
-	}
+	/**
+     * Empty callback method. This can be overwritten by descendant classes to 
+     * add custom functionality during shell initialization
+     * 
+     * @param type $args 
+     */
+	protected function init($args) {}
 
 	public function main($args) {
-		$this->out('To handle commands without any arguments, please define a main() method in the shell.');
-	}
+        $this->out('To handle commands without any arguments, please define a main() method in the shell.');
+    }
 	
-	public function out($string) {
-		echo $string."\n";
+	public function out($string, $append_new_line = true) {
+		print($string);
+        if($append_new_line) { print("\n"); }
 	}
+    
+    public function nl($multiplier = 1) {
+        print(str_repeat("\n", $multiplier));
+    }
+    
+    public function hr($length = 40) {
+        printf("%s\n", str_repeat("-", $length));
+    }
 	
 	protected function load_helper($helper_name) {
 		$helper_name = $helper_name.'Helper';
