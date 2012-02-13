@@ -67,6 +67,15 @@ class GenerateShell extends MvcShell {
 		$this->generate_views($plugin, $name);
 	}
 	
+    /**
+     * Generate a basic wordpress widget
+     * @param array $args 
+     */
+    public function widget($args) {
+        list($plugin, $name) = $this->get_plugin_model_args($args);
+        $this->generate_widget($plugin, $name);
+    }
+    
 	private function generate_app($plugin) {
 	
 		$plugin_camelized = MvcInflector::camelize($plugin);
@@ -126,6 +135,37 @@ class GenerateShell extends MvcShell {
 		$this->templater->create('admin_controller', $target_path, $vars);
 		
 	}
+    
+    /**
+     * Generate a basic wordpress widget
+     * @param string $plugin plugin where widget will reside
+     * @param string $name  name of widget
+     */
+    private function generate_widget($plugin, $name) {
+        $plugin_app_path = $this->get_plugin_app_path($plugin);
+	
+        $title = MvcInflector::titleize($name);
+        
+        $file_name = MvcInflector::underscore($name);
+        
+        $class_name = sprintf("%s_%s", 
+                    MvcInflector::camelize($plugin), 
+                    MvcInflector::camelize($name)
+                    );
+        
+        $name_underscore = MvcInflector::underscore($class_name);
+        
+        $vars = array(
+            'name' => $name,
+            'title' => $title,
+            'name_underscore' => $name_underscore,
+            'class_name' => $class_name
+            );
+		
+		$target_path = $plugin_app_path.'widgets/'.$file_name.'.php';
+		$this->templater->create('widget', $target_path, $vars);
+        
+    }
 	
 	private function generate_model($plugin, $name) {
 		$plugin_app_path = $this->get_plugin_app_path($plugin);

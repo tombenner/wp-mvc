@@ -45,6 +45,15 @@ class DestroyShell extends MvcShell {
 		list($plugin, $name) = $this->get_plugin_model_args($args);
 		$this->destroy_views($plugin, $name);
 	}
+    
+    /**
+     * Delete a generated widget 
+     * @param mixed $args 
+     */
+    public function widget($args) {
+        list($plugin, $name) = $this->get_plugin_model_args($args);
+		$this->destroy_widget($plugin, $name);   
+    }
 	
 	private function destroy_controllers($plugin, $name) {
 		$plugin_app_path = $this->get_plugin_app_path($plugin);
@@ -72,6 +81,14 @@ class DestroyShell extends MvcShell {
 		$directory->delete($public_directory);
 		$directory->delete($admin_directory);
 	}
+    
+    private function destroy_widget($plugin, $name) {
+        $plugin_app_path = $this->get_plugin_app_path($plugin);
+        $file = new MvcFile();
+        $name_underscore = MvcInflector::underscore($name);
+        $target_path = $plugin_app_path.'widgets/'.$name_underscore.'.php';
+        $file->delete($target_path);
+    }
 	
 	private function get_plugin_model_args($args) {
 		if (empty($args[0]) || empty($args[1])) {
