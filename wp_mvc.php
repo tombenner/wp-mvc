@@ -36,4 +36,10 @@ add_filter('query_vars', array($mvc_loader, 'add_query_vars'));
 
 add_filter('template_redirect', array($mvc_loader, 'template_redirect'));
 
+
+// embed the javascript file that makes the AJAX request
+wp_enqueue_script( 'wpmvc-ajax', plugin_dir_url( __FILE__ ) . 'js/ajax.js', array( 'jquery' ) );
+// url to ajax  
+wp_localize_script( 'wpmvc-ajax', 'MvcAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
+
 ?>
