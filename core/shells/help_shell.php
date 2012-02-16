@@ -166,7 +166,7 @@ class HelpShell extends MvcShell {
 		try {
 			$shell = $this->get_shell_meta($name);
 		} catch (Exception $ex) {
-			$this->out('An Error Occurred');
+			$this->out('Error:');
 			$this->out($ex->getMessage());
 			return;
 		}
