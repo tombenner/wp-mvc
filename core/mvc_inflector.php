@@ -147,6 +147,7 @@ class MvcInflector {
 	
 	public static function camelize($string) {
 		$string = str_replace('_', ' ', $string);
+		$string = str_replace('-', ' ', $string);
 		$string = ucwords($string);
 		$string = str_replace(' ', '', $string);
 		return $string;

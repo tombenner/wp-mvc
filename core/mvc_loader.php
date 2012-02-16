@@ -123,31 +123,31 @@ class MvcLoader {
 		$this->load_functions();
 	
 	}
-    
-    public function register_widgets() {
-        foreach($this->plugin_app_paths as $plugin_app_path) {
-            $directory = $plugin_app_path . 'widgets/';
-            $widget_filenames = $this->file_includer->require_php_files_in_directory($directory);
+	
+	public function register_widgets() {
+		foreach ($this->plugin_app_paths as $plugin_app_path) {
+			$directory = $plugin_app_path.'widgets/';
+			$widget_filenames = $this->file_includer->require_php_files_in_directory($directory);
   
-            $pluginReplace = array(
-                WP_CONTENT_DIR,
-                "/plugins/",
-                "/app/"
-            );
-            
-            $plugin = str_replace($pluginReplace, "",$plugin_app_path);
+			$pluginReplace = array(
+				WP_CONTENT_DIR,
+				'/plugins/',
+				'/app/'
+			);
+			
+			$plugin = str_replace($pluginReplace, '',$plugin_app_path);
 
-            foreach($widget_filenames as $widget_file) {
-                $widget_name = str_replace(".php", "", $widget_file);
-                $widget_class = sprintf("%s_%s", 
-                        MvcInflector::camelize($plugin), 
-                        MvcInflector::camelize($widget_name)
-                        );
-                
-               register_widget($widget_class);
-            }
-        }
-    }
+			foreach ($widget_filenames as $widget_file) {
+				$widget_name = str_replace('.php', '', $widget_file);
+				$widget_class = sprintf("%s_%s",
+					MvcInflector::camelize($plugin),
+					MvcInflector::camelize($widget_name)
+				);
+				
+			   register_widget($widget_class);
+			}
+		}
+	}
 	
 	private function load_controllers() {
 	

@@ -1,15 +1,13 @@
 <?php
 
-
 class MvcShellDispatcher {
 
 	function __construct($args) {
 	
 		$this->file_includer = new MvcFileIncluder();
-        
-        $this->file_includer->require_core_file("console/color.php");
-   
-        
+		
+		$this->file_includer->require_core_file('console/color.php');
+		
 		$this->dispatch($args);
 	
 	}
@@ -18,10 +16,10 @@ class MvcShellDispatcher {
 	
 		MvcConfiguration::set('ExecutionContext', 'shell');
 
-        print(Console_Color::convert("\n%P%UWelcome to WPMVC Console!%n%n\n\n"));
+		echo Console_Color::convert("\n%P%UWelcome to WP MVC Console!%n%n\n\n");
 	
-        $shell_name = "help";
-        
+		$shell_name = 'help';
+		
 		if (!empty($args[1])) {
 			$shell_name = $args[1];
 		}
@@ -43,7 +41,6 @@ class MvcShellDispatcher {
 		$args = array_slice($args, 1);
 		$shell->{$method}($args);
 		
-	
 	}
 
 }
