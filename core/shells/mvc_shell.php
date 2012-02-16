@@ -23,7 +23,8 @@ class MvcShell {
 	 * 
 	 * @param type $args 
 	 */
-	protected function init($args) {}
+	protected function init($args) {
+	}
 
 	public function main($args) {
 		$this->out('To handle commands without any arguments, please define a main() method in the shell.');
@@ -41,7 +42,7 @@ class MvcShell {
 	}
 	
 	public function hr($length = 40) {
-		printf("%s\n", str_repeat('-', $length));
+		echo str_repeat('-', $length)."\n";
 	}
 	
 	protected function load_helper($helper_name) {

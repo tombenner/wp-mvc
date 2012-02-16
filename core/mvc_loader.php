@@ -139,12 +139,8 @@ class MvcLoader {
 
 			foreach ($widget_filenames as $widget_file) {
 				$widget_name = str_replace('.php', '', $widget_file);
-				$widget_class = sprintf("%s_%s",
-					MvcInflector::camelize($plugin),
-					MvcInflector::camelize($widget_name)
-				);
-				
-			   register_widget($widget_class);
+				$widget_class = MvcInflector::camelize($plugin).'_'.MvcInflector::camelize($widget_name);
+				register_widget($widget_class);
 			}
 		}
 	}
