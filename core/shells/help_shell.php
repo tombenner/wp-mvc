@@ -39,10 +39,10 @@ class HelpShell extends MvcShell {
 
 		$result = $this->file_includer->require_first_app_file_or_core_file($shell_path);
 
-		$clazz = new ReflectionClass($shell->class_name);
-		$methods = $clazz->getMethods(ReflectionMethod::IS_PUBLIC);
+		$class = new ReflectionClass($shell->class_name);
+		$methods = $class->getMethods(ReflectionMethod::IS_PUBLIC);
 
-		$shell->doc = $this->parse_doc_block($clazz->getDocComment());
+		$shell->doc = $this->parse_doc_block($class->getDocComment());
 
 		if (empty($shell->doc)) {
 			$shell->doc = '(No Documentation)';
