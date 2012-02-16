@@ -6,10 +6,6 @@
  */
 class HelpShell extends MvcShell {
 
-	protected function init($args) {
-		parent::init($args);
-	}
-
 	protected function get_shell_meta($name) {
 		$exclude_methods = array(
 			'__construct',
