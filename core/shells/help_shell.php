@@ -117,17 +117,16 @@ class HelpShell extends MvcShell {
 
 		foreach ($shells as $plugin => $shells) {
 
-			$plugin_name = MvcInflector::camelize(MvcInflector::underscore($plugin));
-			$plugin_label = Console_Color::convert('%W'.$plugin_name.'%n');
+			$plugin_label = MvcInflector::camelize(MvcInflector::underscore($plugin));
 
 			for ($i = 0; $i < count($shells); $i++) {
 				if ($i > 0) {
 					$plugin_label = ' ';
 				}
-
+				$shell_name = MvcInflector::camelize($shells[$i]);
 				$table->addRow(array(
 					$plugin_label,
-					MvcInflector::camelize($shells[$i])
+					Console_Color::convert('%_'.$shell_name.'%n')
 				));
 			}
 
