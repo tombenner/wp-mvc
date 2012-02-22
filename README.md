@@ -1,6 +1,6 @@
 WP MVC
 ==================================================
-An MVC framework for WordPress plugins
+An MVC framework for WordPress
 
 Description
 -----------
