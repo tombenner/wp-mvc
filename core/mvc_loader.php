@@ -262,22 +262,20 @@ class MvcLoader {
 			$model = MvcModelRegistry::get_model($model_name);
 			
 			if (!$model->hide_menu) {
-				$tableized = MvcInflector::tableize($model_name);
-				$pluralized = MvcInflector::pluralize($model_name);
-				$titleized = MvcInflector::titleize($model_name);
-				$pluralize_titleized = MvcInflector::pluralize_titleize($model_name);
+				$model_tableized = MvcInflector::tableize($model_name);
+				$model_pluralize_titleized = MvcInflector::pluralize_titleize($model_name);
 		
-				$controller_name = 'admin_'.$tableized;
+				$controller_name = 'admin_'.$model_tableized;
 			
-				$top_level_handle = 'mvc_'.$tableized;
+				$top_level_handle = 'mvc_'.$model_tableized;
 			
 				$admin_pages = $model->admin_pages;
 			
 				$method = $controller_name.'_index';
 				$this->dispatcher->{$method} = create_function('', 'MvcDispatcher::dispatch(array("controller" => "'.$controller_name.'", "action" => "index"));');
 				add_menu_page(
-					$pluralize_titleized,
-					$pluralize_titleized,
+					$model_pluralize_titleized,
+					$model_pluralize_titleized,
 					'administrator',
 					$top_level_handle,
 					array($this->dispatcher, $method),
@@ -298,7 +296,7 @@ class MvcLoader {
 					if ($admin_page['in_menu']) {
 						add_submenu_page(
 							$top_level_handle,
-							$admin_page['label'].' &lsaquo; '.$pluralize_titleized,
+							$admin_page['label'].' &lsaquo; '.$model_pluralize_titleized,
 							$admin_page['label'],
 							$admin_page['capability'],
 							$page_handle,
