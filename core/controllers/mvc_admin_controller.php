@@ -60,13 +60,7 @@ class MvcAdminController extends MvcController {
 	}
 	
 	public function set_objects() {
-		$this->params['page'] = empty($this->params['page_num']) ? 1 : $this->params['page_num'];
-		if (!empty($this->params['q']) && !empty($this->model->admin_searchable_fields)) {
-			$this->params['conditions'] = $this->model->get_keyword_conditions($this->model->admin_searchable_fields, $this->params['q']);
-			if (!empty($this->model->admin_search_joins)) {
-				$this->params['joins'] = $this->model->admin_search_joins;
-			}
-		}
+		$this->process_params_for_search();
 		$collection = $this->model->paginate($this->params);
 		$this->set('objects', $collection['objects']);
 		$this->set_pagination($collection);
@@ -88,6 +82,17 @@ class MvcAdminController extends MvcController {
 	}
 	
 	public function after_action($action) {
+	}
+	
+	protected function process_params_for_search() {
+		$this->params['page'] = empty($this->params['page_num']) ? 1 : $this->params['page_num'];
+		if (!empty($this->params['q']) && !empty($this->default_searchable_fields)) {
+			$this->params['conditions'] = $this->model->get_keyword_conditions($this->default_searchable_fields, $this->params['q']);
+			if (!empty($this->default_search_joins)) {
+				$this->params['joins'] = $this->default_search_joins;
+				$this->params['group'] = $this->model->name.'.'.$this->model->primary_key;
+			}
+		}
 	}
 
 }

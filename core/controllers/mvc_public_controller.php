@@ -18,13 +18,7 @@ class MvcPublicController extends MvcController {
 	}
 	
 	public function set_objects() {
-		$this->params['page'] = empty($this->params['page']) ? 1 : $this->params['page'];
-		if (!empty($this->params['q']) && !empty($this->model->public_searchable_fields)) {
-			$this->params['conditions'] = $this->model->get_keyword_conditions($this->model->public_searchable_fields, $this->params['q']);
-			if (!empty($this->model->public_search_joins)) {
-				$this->params['joins'] = $this->model->public_search_joins;
-			}
-		}
+		$this->process_params_for_search();
 		$collection = $this->model->paginate($this->params);
 		$this->set('objects', $collection['objects']);
 		$this->set_pagination($collection);
@@ -85,6 +79,17 @@ class MvcPublicController extends MvcController {
 		));
 		$title = $title_options['title'];
 		return $title;
+	}
+	
+	protected function process_params_for_search() {
+		$this->params['page'] = empty($this->params['page']) ? 1 : $this->params['page'];
+		if (!empty($this->params['q']) && !empty($this->default_searchable_fields)) {
+			$this->params['conditions'] = $this->model->get_keyword_conditions($this->default_searchable_fields, $this->params['q']);
+			if (!empty($this->default_search_joins)) {
+				$this->params['joins'] = $this->default_search_joins;
+				$this->params['group'] = $this->model->name.'.'.$this->model->primary_key;
+			}
+		}
 	}
 	
 	protected function clean_wp_query() {
