@@ -46,7 +46,6 @@ class MvcModel {
 		
 		$this->data_validator = new MvcDataValidator();
 		
-		$this->init_admin_columns();
 		$this->init_associations();
 		$this->init_schema();
 	
@@ -337,29 +336,6 @@ class MvcModel {
 			}
 		}
 		return true;
-	}
-	
-	private function init_admin_columns() {
-		$admin_columns = array();
-		foreach ($this->admin_columns as $key => $value) {
-			if (is_array($value)) {
-				if (!isset($value['label'])) {
-					$value['label'] = MvcInflector::titleize($key);
-				}
-			} else if (is_integer($key)) {
-				$key = $value;
-				if ($value == 'id') {
-					$value = array('label' => 'ID');
-				} else {
-					$value = array('label' => MvcInflector::titleize($value));
-				}
-			} else {
-				$value = array('label' => $value);
-			}
-			$value['key'] = $key;
-			$admin_columns[$key] = $value;
-		}
-		$this->admin_columns = $admin_columns;
 	}
 	
 	private function process_objects($objects, $options=array()) {

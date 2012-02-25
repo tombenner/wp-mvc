@@ -26,15 +26,15 @@
 <table class="widefat post fixed" cellspacing="0">
 
 	<thead>
-		<?php echo $helper->admin_header_cells($model); ?>
+		<?php echo $helper->admin_header_cells($this); ?>
 	</thead>
 
 	<tfoot>
-		<?php echo $helper->admin_header_cells($model); ?>
+		<?php echo $helper->admin_header_cells($this); ?>
 	</tfoot>
 
 	<tbody>
-		<?php echo $helper->admin_table_cells($model, $objects); ?>
+		<?php echo $helper->admin_table_cells($this, $objects); ?>
 	</tbody>
 	
 </table>

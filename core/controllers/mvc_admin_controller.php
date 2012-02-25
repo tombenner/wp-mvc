@@ -60,6 +60,7 @@ class MvcAdminController extends MvcController {
 	}
 	
 	public function set_objects() {
+		$this->init_default_columns();
 		$this->process_params_for_search();
 		$collection = $this->model->paginate($this->params);
 		$this->set('objects', $collection['objects']);
@@ -93,6 +94,37 @@ class MvcAdminController extends MvcController {
 				$this->params['group'] = $this->model->name.'.'.$this->model->primary_key;
 			}
 		}
+	}
+	
+	protected function init_default_columns() {
+		if (empty($this->default_columns)) {
+			MvcError::fatal('No columns defined for this view.  Please define them in the controller, like this:
+				<pre>
+					class '.MvcInflector::camelize($this->name).'Controller extends MvcAdminController {
+						var $default_columns = array(\'id\', \'name\');
+					}
+				</pre>');
+		}
+		$admin_columns = array();
+		foreach ($this->default_columns as $key => $value) {
+			if (is_array($value)) {
+				if (!isset($value['label'])) {
+					$value['label'] = MvcInflector::titleize($key);
+				}
+			} else if (is_integer($key)) {
+				$key = $value;
+				if ($value == 'id') {
+					$value = array('label' => 'ID');
+				} else {
+					$value = array('label' => MvcInflector::titleize($value));
+				}
+			} else {
+				$value = array('label' => $value);
+			}
+			$value['key'] = $key;
+			$admin_columns[$key] = $value;
+		}
+		$this->default_columns = $admin_columns;
 	}
 
 }

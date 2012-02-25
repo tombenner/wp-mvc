@@ -158,9 +158,9 @@ class MvcHelper {
 	
 	// Move these into an AdminHelper
 	
-	public function admin_header_cells($model) {
+	public function admin_header_cells($controller) {
 		$html = '';
-		foreach ($model->admin_columns as $key => $column) {
+		foreach ($controller->default_columns as $key => $column) {
 			$html .= $this->admin_header_cell($column['label']);
 		}
 		$html .= $this->admin_header_cell('');
@@ -172,36 +172,39 @@ class MvcHelper {
 		return '<th scope="col" class="manage-column">'.$label.'</th>';
 	}
 	
-	public function admin_table_cells($model, $objects) {
+	public function admin_table_cells($controller, $objects) {
 		$html = '';
 		foreach ($objects as $object) {
 			$html .= '<tr>';
-			foreach ($model->admin_columns as $key => $column) {
-				$html .= $this->admin_table_cell($model, $object, $column);
+			foreach ($controller->default_columns as $key => $column) {
+				$html .= $this->admin_table_cell($controller, $object, $column);
 			}
-			$html .= $this->admin_actions_cell($model, $object);
+			$html .= $this->admin_actions_cell($controller, $object);
 			$html .= '</tr>';
 		}
 		return $html;
 	}
 	
-	public function admin_table_cell($model, $object, $column) {
+	public function admin_table_cell($controller, $object, $column) {
 		if (!empty($column['value_method'])) {
-			$value = $model->{$column['value_method']}($object);
+			$value = $controller->{$column['value_method']}($object);
 		} else {
 			$value = $object->$column['key'];
 		}
 		return '<td>'.$value.'</td>';
 	}
 	
-	public function admin_actions_cell($model, $object) {
+	public function admin_actions_cell($controller, $object) {
 		$links = array();
 		$object_name = empty($object->__name) ? 'Item #'.$object->__id : $object->__name;
 		$encoded_object_name = $this->esc_attr($object_name);
-		$controller = MvcInflector::tableize($model->name);
-		$links[] = '<a href="'.MvcRouter::admin_url(array('controller' => $controller, 'action' => 'edit', 'object' => $object)).'" title="Edit '.$encoded_object_name.'">Edit</a>';
-		$links[] = '<a href="'.MvcRouter::public_url(array('controller' => $controller, 'action' => 'show', 'object' => $object)).'" title="View '.$encoded_object_name.'">View</a>';
-		$links[] = '<a href="'.MvcRouter::admin_url(array('controller' => $controller, 'action' => 'delete', 'object' => $object)).'" title="Delete '.$encoded_object_name.'" onclick="return confirm(&#039;Are you sure you want to delete '.$encoded_object_name.'?&#039;);">Delete</a>';
+		$controller_name = MvcInflector::tableize($controller->name);
+		if (strpos($controller_name, 'admin_') === 0) {
+			$controller_name = substr($controller_name, 6);
+		}
+		$links[] = '<a href="'.MvcRouter::admin_url(array('controller' => $controller_name, 'action' => 'edit', 'object' => $object)).'" title="Edit '.$encoded_object_name.'">Edit</a>';
+		$links[] = '<a href="'.MvcRouter::public_url(array('controller' => $controller_name, 'action' => 'show', 'object' => $object)).'" title="View '.$encoded_object_name.'">View</a>';
+		$links[] = '<a href="'.MvcRouter::admin_url(array('controller' => $controller_name, 'action' => 'delete', 'object' => $object)).'" title="Delete '.$encoded_object_name.'" onclick="return confirm(&#039;Are you sure you want to delete '.$encoded_object_name.'?&#039;);">Delete</a>';
 		$html = implode(' | ', $links);
 		return '<td>'.$html.'</td>';
 	}
