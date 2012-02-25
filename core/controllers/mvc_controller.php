@@ -6,6 +6,7 @@ class MvcController {
 	public $is_controller = true;
 	public $model = null;
 	public $name = '';
+	public $params = null;
 	public $view_rendered = false;
 	public $view_vars = array();
 	
@@ -161,6 +162,7 @@ class MvcController {
 			$this->main_view = $path;
 			// We're now entering the view, so $this should no longer be a controller
 			$this->is_controller = false;
+			$this->set('params', $this->params);
 			$this->render_view_with_view_vars($layout_directory.$layout, $options);
 			if (!$this->is_admin) {
 				die();
