@@ -13,16 +13,6 @@ class Event extends MvcModel {
 		)
 	);
 	
-	var $admin_search_joins = array('Speaker', 'Venue');
-	var $admin_searchable_fields = array('Speaker.first_name', 'Speaker.last_name', 'Venue.name');
-	var $admin_columns = array(
-		'id',
-		'date' => array('value_method' => 'admin_column_date'),
-		'time' => array('value_method' => 'admin_column_time'),
-		'venue' => array('value_method' => 'venue_edit_link'),
-		'speaker_names' => 'Speakers'
-	);
-	
 	public function after_find($object) {
 		if (isset($object->speakers)) {
 			$speaker_names = array();
@@ -35,18 +25,6 @@ class Event extends MvcModel {
 				$object->name .= ' at '.$object->venue->name;
 			}
 		}
-	}
-	
-	public function admin_column_date($object) {
-		return empty($object->date) ? null : date('F jS, Y', strtotime($object->date));
-	}
-	
-	public function admin_column_time($object) {
-		return empty($object->time) ? null : date('g:ia', strtotime($object->time));
-	}
-	
-	public function venue_edit_link($object) {
-		return empty($object->venue) ? null : HtmlHelper::admin_object_link($object->venue, array('controller' => 'venues', 'action' => 'edit'));
 	}
 	
 }

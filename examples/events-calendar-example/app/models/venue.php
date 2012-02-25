@@ -6,13 +6,6 @@ class Venue extends MvcModel {
 	var $display_field = 'name';
 	var $has_many = array('Event');
 	
-	var $admin_columns = array(
-		'id',
-		'name',
-		'url' => 'URL'
-	);
-	var $admin_searchable_fields = array('name');
-	
 	public function after_save($object) {
 		$this->update_sort_name($object);
 	}

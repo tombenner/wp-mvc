@@ -4,6 +4,17 @@ MvcConfiguration::set(array(
 	'Debug' => false
 ));
 
+MvcConfiguration::append(array(
+	'AdminPages' => array(
+		'speakers' => array(
+			'add',
+			'delete',
+			'edit',
+			'example_page'
+		)
+	)
+));
+
 add_action('mvc_admin_init', 'events_calendar_on_mvc_admin_init');
 
 function events_calendar_on_mvc_admin_init($options) {
