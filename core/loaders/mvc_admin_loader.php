@@ -52,25 +52,36 @@ class MvcAdminLoader extends MvcLoader {
 		
 		$menu_position = apply_filters('mvc_menu_position', $menu_position);
 		
-		foreach ($this->model_names as $model_name) {
+		$admin_pages = MvcConfiguration::get('AdminPages');
 		
-			$model = MvcModelRegistry::get_model($model_name);
-			
-			if (!$model->hide_menu) {
-				$model_tableized = MvcInflector::tableize($model_name);
-				$model_pluralize_titleized = MvcInflector::pluralize_titleize($model_name);
+		foreach ($this->admin_controller_names as $controller_name) {
 		
-				$controller_name = 'admin_'.$model_tableized;
+			if (isset($admin_pages[$controller_name])) {
+				if (empty($admin_pages[$controller_name]) || !$admin_pages[$controller_name]) {
+					continue;
+				}
+				$pages = $admin_pages[$controller_name];
+			} else {
+				$pages = null;
+			}
 			
-				$top_level_handle = 'mvc_'.$model_tableized;
+			$processed_pages = $this->process_admin_pages($controller_name, $pages);
 			
-				$admin_pages = $model->admin_pages;
+			$hide_menu = isset($pages['hide_menu']) ? $pages['hide_menu'] : false;
 			
-				$method = $controller_name.'_index';
-				$this->dispatcher->{$method} = create_function('', 'MvcDispatcher::dispatch(array("controller" => "'.$controller_name.'", "action" => "index"));');
+			if (!$hide_menu) {
+				
+				$controller_pluralize_titleized = MvcInflector::pluralize_titleize($controller_name);
+		
+				$admin_controller_name = 'admin_'.$controller_name;
+			
+				$top_level_handle = 'mvc_'.$controller_name;
+			
+				$method = $admin_controller_name.'_index';
+				$this->dispatcher->{$method} = create_function('', 'MvcDispatcher::dispatch(array("controller" => "'.$admin_controller_name.'", "action" => "index"));');
 				add_menu_page(
-					$model_pluralize_titleized,
-					$model_pluralize_titleized,
+					$controller_pluralize_titleized,
+					$controller_pluralize_titleized,
 					'administrator',
 					$top_level_handle,
 					array($this->dispatcher, $method),
@@ -78,12 +89,12 @@ class MvcAdminLoader extends MvcLoader {
 					$menu_position
 				);
 			
-				foreach ($admin_pages as $key => $admin_page) {
+				foreach ($processed_pages as $key => $admin_page) {
 				
-					$method = $controller_name.'_'.$admin_page['action'];
+					$method = $admin_controller_name.'_'.$admin_page['action'];
 				
 					if (!method_exists($this->dispatcher, $method)) {
-						$this->dispatcher->{$method} = create_function('', 'MvcDispatcher::dispatch(array("controller" => "'.$controller_name.'", "action" => "'.$admin_page['action'].'"));');
+						$this->dispatcher->{$method} = create_function('', 'MvcDispatcher::dispatch(array("controller" => "'.$admin_controller_name.'", "action" => "'.$admin_page['action'].'"));');
 					}
 				
 					$page_handle = $top_level_handle.'-'.$key;
@@ -91,7 +102,7 @@ class MvcAdminLoader extends MvcLoader {
 					if ($admin_page['in_menu']) {
 						add_submenu_page(
 							$top_level_handle,
-							$admin_page['label'].' &lsaquo; '.$model_pluralize_titleized,
+							$admin_page['label'].' &lsaquo; '.$controller_pluralize_titleized,
 							$admin_page['label'],
 							$admin_page['capability'],
 							$page_handle,
@@ -112,8 +123,57 @@ class MvcAdminLoader extends MvcLoader {
 				$menu_position++;
 
 			}
+			
 		}
 	
+	}
+	
+	protected function process_admin_pages($controller_name, $pages) {
+	
+		$titleized = MvcInflector::titleize($controller_name);
+	
+		$default_pages = array(
+			'add' => array(
+				'label' => 'Add New'
+			),
+			'delete' => array(
+				'label' => 'Delete '.$titleized,
+				'in_menu' => false
+			),
+			'edit' => array(
+				'label' => 'Edit '.$titleized,
+				'in_menu' => false
+			)
+		);
+		
+		if (!$pages) {
+			$pages = $default_pages;
+		}
+		
+		$processed_pages = array();
+		
+		foreach ($pages as $key => $value) {
+			if (is_int($key)) {
+				$key = $value;
+				$value = array();
+			}
+			if (!is_array($value)) {
+				continue;
+			}
+			$defaults = array(
+				'action' => $key,
+				'in_menu' => true,
+				'label' => MvcInflector::titleize($key),
+				'capability' => 'administrator'
+			);
+			if (isset($default_pages[$key])) {
+				$value = array_merge($default_pages[$key], $value);
+			}
+			$value = array_merge($defaults, $value);
+			$processed_pages[$key] = $value;
+		}
+		
+		return $processed_pages;
 	}
 	
 	public function add_admin_ajax_routes() {

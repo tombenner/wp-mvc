@@ -8,7 +8,6 @@ class MvcModel {
 	public $has_many = null;
 	public $has_and_belongs_to_many = null;
 	public $associations = null;
-	public $admin_pages = null;
 	public $validation_error = null;
 	public $validation_error_html = null;
 	public $hide_menu = false;
@@ -46,7 +45,6 @@ class MvcModel {
 		
 		$this->data_validator = new MvcDataValidator();
 		
-		$this->init_admin_pages();
 		$this->init_admin_columns();
 		$this->init_associations();
 		$this->init_schema();
@@ -338,45 +336,6 @@ class MvcModel {
 			}
 		}
 		return true;
-	}
-	
-	private function init_admin_pages() {
-		$titleized = MvcInflector::titleize($this->name);
-		$default_pages = array(
-			'add' => array(
-				'label' => 'Add New'
-			),
-			'delete' => array(
-				'label' => 'Delete '.$titleized,
-				'in_menu' => false
-			),
-			'edit' => array(
-				'label' => 'Edit '.$titleized,
-				'in_menu' => false
-			)
-		);
-		if (!isset($this->admin_pages)) {
-			$this->admin_pages = $default_pages;
-		}
-		$admin_pages = array();
-		foreach ($this->admin_pages as $key => $value) {
-			if (is_int($key)) {
-				$key = $value;
-				$value = array();
-			}
-			$defaults = array(
-				'action' => $key,
-				'in_menu' => true,
-				'label' => MvcInflector::titleize($key),
-				'capability' => 'administrator'
-			);
-			if (isset($default_pages[$key])) {
-				$value = array_merge($default_pages[$key], $value);
-			}
-			$value = array_merge($defaults, $value);
-			$admin_pages[$key] = $value;
-		}
-		$this->admin_pages = $admin_pages;
 	}
 	
 	private function init_admin_columns() {
