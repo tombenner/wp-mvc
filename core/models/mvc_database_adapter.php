@@ -42,6 +42,7 @@ class MvcDatabaseAdapter {
 			'from' => 'FROM '.$this->get_table_reference_sql($options),
 			'joins' => $this->get_joins_sql($options),
 			'where' => $this->get_where_sql($options),
+			'group' => $this->get_group_sql($options),
 			'order' => $this->get_order_sql($options),
 			'limit' => $this->get_limit_sql($options),
 		);
@@ -83,6 +84,13 @@ class MvcDatabaseAdapter {
 			return 'WHERE '.implode(' AND ', $sql_clauses);
 		}
 		return 'WHERE '.$conditions;
+	}
+	
+	public function get_group_sql($options=array()) {
+		if (empty($options['group'])) {
+			return '';
+		}
+		return 'GROUP BY '.$options['group'];
 	}
 	
 	public function get_where_sql_clauses($conditions, $options=array()) {

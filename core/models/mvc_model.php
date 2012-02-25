@@ -32,6 +32,7 @@ class MvcModel {
 			'conditions' => empty($this->conditions) ? null : $this->conditions,
 			'limit' => empty($this->limit) ? null : $this->limit,
 			'includes' => empty($this->includes) ? null : $this->includes,
+			'group' => empty($this->group) ? null : $this->group,
 			'per_page' => empty($this->per_page) ? 10 : $this->per_page,
 			'validate' => empty($this->validate) ? null : $this->validate
 		);
