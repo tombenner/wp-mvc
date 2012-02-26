@@ -2,6 +2,7 @@
 
 class MvcModel {
 
+	public $name = null;
 	public $table = null;
 	public $primary_key = 'id';
 	public $belongs_to = null;
