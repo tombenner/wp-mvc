@@ -355,15 +355,6 @@ class MvcModel {
 			$includes = array($includes);
 		}
 		
-		if (!empty($includes)) {
-			// Instantiate associated models, so that they don't need to be instantiated multiple times in the subsequent for loop
-			$models = array();
-			foreach ($includes as $key => $include) {
-				$model_name = is_string($include) ? $include : $key;
-				$models[$model_name] = new $model_name();
-			}
-		}
-		
 		$recursive = isset($options['recursive']) ? $options['recursive'] - 1 : 2;
 		
 		foreach ($objects as $key => $object) {
@@ -393,7 +384,7 @@ class MvcModel {
 					if (empty($association['fields'])) {
 						$association['fields'] = array($association['name'].'.*');
 					}
-					$model = $models[$model_name];
+					$model = MvcModelRegistry::get_model($model_name);
 					switch ($association['type']) {
 						case 'belongs_to':
 							$associated_object = $model->find_by_id($object->{$association['foreign_key']}, array(
