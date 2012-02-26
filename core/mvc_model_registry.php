@@ -18,6 +18,9 @@ class MvcModelRegistry {
 		$return = false;
 		if (isset($_this->__models[$key])) {
 			$return =& $_this->__models[$key];
+		} else if (class_exists($key)) {
+			$_this->__models[$key] = new $key();
+			$return =& $_this->__models[$key];
 		}
 		return $return;
 	}
