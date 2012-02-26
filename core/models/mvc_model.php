@@ -471,6 +471,9 @@ class MvcModel {
 	}
 	
 	protected function init_associations() {
+		if (!is_array($this->associations)) {
+			$this->associations = array();
+		}
 		if (!empty($this->belongs_to)) {
 			foreach ($this->belongs_to as $key => $value) {
 				$config = null;
@@ -494,9 +497,6 @@ class MvcModel {
 					);
 				}
 				if (!empty($config)) {
-					if (!is_array($this->associations)) {
-						$this->associations = array();
-					}
 					$this->associations[$association] = $config;
 				}
 			}
@@ -504,9 +504,6 @@ class MvcModel {
 		if (!empty($this->has_many)) {
 			foreach ($this->has_many as $association) {
 				if (is_string($association)) {
-					if (!is_array($this->associations)) {
-						$this->associations = array();
-					}
 					$config = array(
 						'type' => 'has_many',
 						'name' => $association,
@@ -520,9 +517,6 @@ class MvcModel {
 		}
 		if (!empty($this->has_and_belongs_to_many)) {
 			foreach ($this->has_and_belongs_to_many as $association_name => $association) {
-				if (!is_array($this->associations)) {
-					$this->associations = array();
-				}
 				if (isset($association['fields'])) {
 					foreach ($association['fields'] as $key => $field) {
 						$association['fields'][$key] = $association_name.'.'.$field;
