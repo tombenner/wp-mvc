@@ -252,6 +252,7 @@ class MvcFormHelper extends MvcHelper {
 						var name = option.text();
 						var list_item = \'<li><input type="hidden" name="'.$options['ids_input_name'].'[]" value="\'+id+\'" />\'+name+\' <a href="#" class="remove-item">Remove</a></li>\';
 						jQuery("#'.$options['list_id'].'").append(list_item);
+						jQuery(this).val(\'\');
 					}
 					return false;
 				});
