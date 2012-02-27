@@ -24,6 +24,20 @@ class MvcModelObject {
 				return $this->$property_name;
 			}
 		}
+		if ($this->__settings['model']['name'] == 'MvcWpPost') {
+			if (!empty($this->post_type)) {
+				if (substr($this->post_type, 0, 4) == 'mvc_') {
+					$model_name = MvcInflector::camelize(substr($this->post_type, 4));
+					$model = MvcModelRegistry::get_model($model_name);
+					$object = $model->find_one(array(
+						'post_id' => $this->ID,
+						'recursive' => 0
+					));
+					$this->$property_name = $object;
+					return $this->$property_name;
+				}
+			}
+		}
 		MvcError::warning('Undefined property: MvcModelObject::'.$property_name.'.');
 	}
 	

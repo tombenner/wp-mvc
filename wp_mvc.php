@@ -42,5 +42,6 @@ if (is_admin()) {
 
 add_action('init', array($loader, 'init'));
 add_action('widgets_init', array($loader, 'register_widgets'));
+add_filter('post_type_link', array($loader, 'filter_post_link'), 10, 2);
 
 ?>

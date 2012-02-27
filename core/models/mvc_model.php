@@ -13,8 +13,10 @@ class MvcModel {
 	public $validation_error = null;
 	public $validation_error_html = null;
 	public $hide_menu = false;
+	public $wp_post = null;
 	private $data_validator = null;
 	private $db_adapter = null;
+	private $wp_post_adapter = null;
 	
 	function __construct() {
 		
@@ -49,6 +51,21 @@ class MvcModel {
 		$this->data_validator = new MvcDataValidator();
 		
 		$this->init_schema();
+		
+		if ($this->wp_post) {
+			$this->wp_post_adapter = new MvcWpPostAdapter();
+			$this->wp_post_adapter->verify_settings($this);
+			if (empty($this->belongs_to)) {
+				$this->belongs_to = array();
+			}
+			$association = array(
+				'Post' => array(
+					'class' => 'MvcWpPost'
+				)
+			);
+			$this->belongs_to = array_merge($association, $this->belongs_to);
+		}
+		
 		$this->init_associations();
 		$this->init_properties();
 	
@@ -117,18 +134,32 @@ class MvcModel {
 	public function insert($data) {
 		$insert_id = $this->db_adapter->insert($data);
 		$this->insert_id = $insert_id;
+		if ($this->has_post()) {
+			$data[$this->primary_key] = $insert_id;
+			$this->save_post($data);
+		}
 		return $insert_id;
 	}
 	
-	public function update($id, $data) {
+	public function update($id, $data, $update_options=array()) {
 		$options = array(
 			'conditions' => array($this->name.'.'.$this->primary_key => $id)
 		);
-		$this->db_adapter->update_all($data, $options);
+		$this->db_adapter->update_all($data, $options, $update_options);
+		if ($this->has_post() && !(isset($update_options['bypass_save_post']) && $update_options['bypass_save_post'])) {
+			$object = $this->find_by_id($id);
+			$this->save_post($object);
+		}
 	}
 	
-	public function update_all($data, $options=array()) {
+	public function update_all($data, $options=array(), $update_options=array()) {
 		$this->db_adapter->update_all($data, $options);
+		if ($this->has_post() && !(isset($update_options['bypass_save_post']) && $update_options['bypass_save_post'])) {
+			$objects = $this->find($options);
+			foreach ($objects as $object) {
+				$this->save_post($object);
+			}
+		}
 	}
 	
 	public function delete($id) {
@@ -140,6 +171,14 @@ class MvcModel {
 	
 	public function delete_all($options=array()) {
 		$this->db_adapter->delete_all($options);
+	}
+	
+	public function save_post($object) {
+		$this->wp_post_adapter->save_post($this, $object);
+	}
+	
+	public function has_post() {
+		return $this->wp_post_adapter ? true : false;
 	}
 	
 	public function find($options=array()) {
@@ -180,7 +219,6 @@ class MvcModel {
 			'page' => $options['page']
 		);
 		return $response;
-	
 	}
 	
 	public function get_keyword_conditions($fields, $keywords) {

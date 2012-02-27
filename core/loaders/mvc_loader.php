@@ -53,6 +53,8 @@ abstract class MvcLoader {
 			'models/mvc_data_validator',
 			'models/mvc_model_object',
 			'models/mvc_model',
+			'models/mvc_wp_post_adapter',
+			'models/mvc_wp_post',
 			'helpers/mvc_helper',
 			'helpers/mvc_form_helper',
 			'helpers/mvc_html_helper',
@@ -119,6 +121,23 @@ abstract class MvcLoader {
 		$this->load_models();
 		$this->load_functions();
 	
+	}
+	
+	public function filter_post_link($permalink, $post) {
+		if (substr($post->post_type, 0, 4) == 'mvc_') {
+			$model_name = substr($post->post_type, 4);
+			$controller = MvcInflector::tableize($model_name);
+			$model_name = MvcInflector::camelize($model_name);
+			$model = MvcModelRegistry::get_model($model_name);
+			$object = $model->find_one(array('post_id' => $post->ID));
+			if ($object) {
+				$url = MvcRouter::public_url(array('object' => $object)); // ------ remove need for controller key
+				if ($url) {
+					return $url;
+				}
+			}
+		}
+		return $permalink;
 	}
 	
 	public function register_widgets() {
