@@ -205,7 +205,7 @@ class MvcController {
 			$path = $this->name.'/'.$path;
 		}
 		
-		if (!empty($options['collection'])) {
+		if (isset($options['collection'])) {
 			$var_name = empty($options['as']) ? 'object' : $options['as'];
 			foreach ($options['collection'] as $object) {
 				$view_vars = array();
