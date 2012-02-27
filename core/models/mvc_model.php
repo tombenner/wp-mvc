@@ -53,14 +53,14 @@ class MvcModel {
 		$this->init_schema();
 		
 		if ($this->wp_post) {
-			$this->wp_post_adapter = new MvcWpPostAdapter();
+			$this->wp_post_adapter = new MvcPostAdapter();
 			$this->wp_post_adapter->verify_settings($this);
 			if (empty($this->belongs_to)) {
 				$this->belongs_to = array();
 			}
 			$association = array(
 				'Post' => array(
-					'class' => 'MvcWpPost'
+					'class' => 'MvcPost'
 				)
 			);
 			$this->belongs_to = array_merge($association, $this->belongs_to);

@@ -1,6 +1,6 @@
 <?php
 
-class MvcWpPostAdapter {
+class MvcPostAdapter {
 
 	public function verify_settings($model) {
 		if (!isset($model->schema['post_id'])) {

@@ -24,7 +24,7 @@ class MvcModelObject {
 				return $this->$property_name;
 			}
 		}
-		if ($this->__settings['model']['name'] == 'MvcWpPost') {
+		if ($this->__settings['model']['name'] == 'MvcPost') {
 			if (!empty($this->post_type)) {
 				if (substr($this->post_type, 0, 4) == 'mvc_') {
 					$model_name = MvcInflector::camelize(substr($this->post_type, 4));
