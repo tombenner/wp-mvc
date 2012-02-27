@@ -38,7 +38,8 @@ class MvcModelObject {
 				}
 			}
 		}
-		MvcError::warning('Undefined property: MvcModelObject::'.$property_name.'.');
+		$class = empty($this->__model_name) ? 'MvcModelObject' : $this->__model_name;
+		MvcError::warning('Undefined property: '.$class.'::'.$property_name.'.');
 	}
 	
 	private function get_associated_objects($association) {
