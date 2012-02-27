@@ -5,12 +5,24 @@ class MvcRouter {
 	public $routes = array();
 
 	public function public_url($options=array()) {
+		$defaults = array(
+			'action' => 'index',
+			'controller' => null
+		);
+		$options = array_merge($defaults, $options);
 		$routes = self::get_public_routes();
 		$controller = $options['controller'];
-		$action = empty($options['action']) ? 'index' : $options['action'];
+		$action = $options['action'];
 		$matched_route = null;
 		if (!empty($options['object']) && is_object($options['object'])) {
-			$model_name = MvcInflector::camelize(MvcInflector::singularize($controller));
+			if (!empty($options['object']->__model_name) && !$controller) {
+				$model_name = $options['object']->__model_name;
+				$controller = MvcInflector::tableize($model_name);
+			} else if ($controller) {
+				$model_name = MvcInflector::camelize(MvcInflector::singularize($controller));
+			} else {
+				MvcError::warning('Incomplete arguments for MvcRouter::public_url().');
+			}
 			$model = MvcModelRegistry::get_model($model_name);
 			if (!empty($model) && method_exists($model, 'to_url')) {
 				$url = site_url('/');
@@ -52,9 +64,9 @@ class MvcRouter {
 			$path = rtrim($path, '/').'/';
 			$url .= $path;
 		} else {
-			$url .= $options['controller'].'/';
-			if (!empty($options['action']) && $options['action'] != 'show') {
-				$url .= $options['action'].'/';
+			$url .= $controller.'/';
+			if (!empty($action) && !in_array($action, array('show', 'index'))) {
+				$url .= $action.'/';
 			}
 			if (!empty($options['id'])) {
 				$url .= $options['id'].'/';
