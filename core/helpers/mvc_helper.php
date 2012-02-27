@@ -198,13 +198,9 @@ class MvcHelper {
 		$links = array();
 		$object_name = empty($object->__name) ? 'Item #'.$object->__id : $object->__name;
 		$encoded_object_name = $this->esc_attr($object_name);
-		$controller_name = MvcInflector::tableize($controller->name);
-		if (strpos($controller_name, 'admin_') === 0) {
-			$controller_name = substr($controller_name, 6);
-		}
-		$links[] = '<a href="'.MvcRouter::admin_url(array('controller' => $controller_name, 'action' => 'edit', 'object' => $object)).'" title="Edit '.$encoded_object_name.'">Edit</a>';
-		$links[] = '<a href="'.MvcRouter::public_url(array('controller' => $controller_name, 'action' => 'show', 'object' => $object)).'" title="View '.$encoded_object_name.'">View</a>';
-		$links[] = '<a href="'.MvcRouter::admin_url(array('controller' => $controller_name, 'action' => 'delete', 'object' => $object)).'" title="Delete '.$encoded_object_name.'" onclick="return confirm(&#039;Are you sure you want to delete '.$encoded_object_name.'?&#039;);">Delete</a>';
+		$links[] = '<a href="'.MvcRouter::admin_url(array('object' => $object, 'action' => 'edit')).'" title="Edit '.$encoded_object_name.'">Edit</a>';
+		$links[] = '<a href="'.MvcRouter::public_url(array('object' => $object)).'" title="View '.$encoded_object_name.'">View</a>';
+		$links[] = '<a href="'.MvcRouter::admin_url(array('object' => $object, 'action' => 'delete')).'" title="Delete '.$encoded_object_name.'" onclick="return confirm(&#039;Are you sure you want to delete '.$encoded_object_name.'?&#039;);">Delete</a>';
 		$html = implode(' | ', $links);
 		return '<td>'.$html.'</td>';
 	}

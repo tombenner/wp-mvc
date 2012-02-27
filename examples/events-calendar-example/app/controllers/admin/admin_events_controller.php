@@ -55,7 +55,7 @@ class AdminEventsController extends MvcAdminController {
 	}
 	
 	public function venue_edit_link($object) {
-		return empty($object->venue) ? null : HtmlHelper::admin_object_link($object->venue, array('controller' => 'venues', 'action' => 'edit'));
+		return empty($object->venue) ? null : HtmlHelper::admin_object_link($object->venue, array('action' => 'edit'));
 	}
 	
 }
