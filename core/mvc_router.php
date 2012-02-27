@@ -80,6 +80,9 @@ class MvcRouter {
 			if (empty($options['id']) && !empty($options['object']->__id)) {
 				$options['id'] = $options['object']->__id;
 			}
+			if (empty($options['controller']) && !empty($options['object']->__model_name)) {
+				$options['controller'] = MvcInflector::tableize($options['object']->__model_name);
+			}
 		}
 		$url = get_admin_url().'admin.php';
 		$params = http_build_query(self::admin_url_params($options));
