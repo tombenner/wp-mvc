@@ -166,10 +166,23 @@ class MvcModel {
 		$options = array(
 			'conditions' => array($this->primary_key => $id)
 		);
-		$this->db_adapter->delete_all($options);
+		$this->delete_all($options);
 	}
 	
 	public function delete_all($options=array()) {
+		$has_post = $this->has_post();
+		$before_delete_method_exists = method_exists($this, 'before_delete');
+		if ($has_post || $before_delete_method_exists) {
+			$objects = $this->find($options);
+			foreach ($objects as $object) {
+				if ($has_post) {
+					wp_delete_post($object->post_id, true);
+				}
+				if ($before_delete_method_exists) {
+					$this->before_delete($object);
+				}
+			}
+		}
 		$this->db_adapter->delete_all($options);
 	}
 	
