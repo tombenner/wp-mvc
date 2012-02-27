@@ -536,61 +536,79 @@ class MvcModel {
 			foreach ($this->belongs_to as $key => $value) {
 				$config = null;
 				if (is_string($value)) {
-					$association = $value;
+					$association_name = $value;
 					$config = array(
 						'type' => 'belongs_to',
-						'name' => $association,
-						'class' => $association,
-						'foreign_key' => MvcInflector::underscore($association).'_id',
+						'name' => $association_name,
+						'class' => $association_name,
+						'foreign_key' => MvcInflector::underscore($association_name).'_id',
 						'includes' => null
 					);
 				} else if (is_string($key) && is_array($value)) {
-					$association = $key;
+					$association_name = $key;
 					$config = array(
 						'type' => 'belongs_to',
-						'name' => empty($value['name']) ? $association : $value['name'],
-						'class' => empty($value['class']) ? $association : $value['class'],
-						'foreign_key' => empty($value['foreign_key']) ? MvcInflector::underscore($association).'_id' : $value['foreign_key'],
-						'includes' => null
+						'name' => empty($value['name']) ? $association_name : $value['name'],
+						'class' => empty($value['class']) ? $association_name : $value['class'],
+						'foreign_key' => empty($value['foreign_key']) ? MvcInflector::underscore($association_name).'_id' : $value['foreign_key'],
+						'includes' => isset($value['fields']) ? $value['fields'] : null,
 					);
 				}
 				if (!empty($config)) {
-					$this->associations[$association] = $config;
+					$this->associations[$association_name] = $config;
 				}
 			}
 		}
 		if (!empty($this->has_many)) {
-			foreach ($this->has_many as $association) {
-				if (is_string($association)) {
+			foreach ($this->has_many as $key => $value) {
+				$config = null;
+				if (is_string($value)) {
+					$association_name = $value;
 					$config = array(
 						'type' => 'has_many',
-						'name' => $association,
-						'class' => $association,
+						'name' => $association_name,
+						'class' => $association_name,
 						'foreign_key' => MvcInflector::underscore($this->name).'_id',
+						'fields' => null,
 						'includes' => null
 					);
-					$this->associations[$association] = $config;
+				} else if (is_string($key) && is_array($value)) {
+					$association_name = $key;
+					$config = array(
+						'type' => 'has_many',
+						'name' => empty($value['name']) ? $association_name : $value['name'],
+						'class' => empty($value['class']) ? $association_name : $value['class'],
+						'foreign_key' => empty($value['foreign_key']) ? MvcInflector::underscore($association_name).'_id' : $value['foreign_key'],
+						'fields' => isset($value['fields']) ? $value['fields'] : null,
+						'includes' => null
+					);
+				}
+				if (!empty($config)) {
+					$this->associations[$association_name] = $config;
 				}
 			}
 		}
 		if (!empty($this->has_and_belongs_to_many)) {
-			foreach ($this->has_and_belongs_to_many as $association_name => $association) {
-				if (isset($association['fields'])) {
-					foreach ($association['fields'] as $key => $field) {
-						$association['fields'][$key] = $association_name.'.'.$field;
+			foreach ($this->has_and_belongs_to_many as $key => $value) {
+				if (is_string($key) && is_array($value)) {
+					$association_name = $key;
+					if (isset($value['fields'])) {
+						foreach ($value['fields'] as $key => $field) {
+							$value['fields'][$key] = $association_name.'.'.$field;
+						}
 					}
+					$config = array(
+						'type' => 'has_and_belongs_to_many',
+						'name' => $association_name,
+						'class' => $association_name,
+						'foreign_key' => isset($value['foreign_key']) ? $value['foreign_key'] : MvcInflector::underscore($this->name).'_id',
+						'association_foreign_key' => isset($value['association_foreign_key']) ? $value['association_foreign_key'] : MvcInflector::underscore($association_name).'_id',
+						'join_table' => $this->process_table_name($value['join_table']),
+						'fields' => isset($value['fields']) ? $value['fields'] : null,
+						'includes' => isset($value['includes']) ? $value['includes'] : null
+					);
+					$this->associations[$association_name] = $config;
 				}
-				$config = array(
-					'type' => 'has_and_belongs_to_many',
-					'name' => $association_name,
-					'class' => $association_name,
-					'foreign_key' => isset($association['foreign_key']) ? $association['foreign_key'] : MvcInflector::underscore($this->name).'_id',
-					'association_foreign_key' => isset($association['association_foreign_key']) ? $association['association_foreign_key'] : MvcInflector::underscore($association_name).'_id',
-					'join_table' => $this->process_table_name($association['join_table']),
-					'fields' => isset($association['fields']) ? $association['fields'] : null,
-					'includes' => isset($association['includes']) ? $association['includes'] : null
-				);
-				$this->associations[$association_name] = $config;
 			}
 		}
 	}
