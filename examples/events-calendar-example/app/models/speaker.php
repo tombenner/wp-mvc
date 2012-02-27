@@ -5,6 +5,13 @@ class Speaker extends MvcModel {
 	var $order = 'Speaker.first_name, Speaker.last_name';
 	var $display_field = 'name';
 	var $has_many = array('Event');
+	var $wp_post = array(
+		'post_type' => array(
+			'fields' => array(
+				'post_content' => '$description'
+			)
+		)
+	);
 	var $validate = array(
 		// Use a custom regex for the validation
 		'first_name' => array(

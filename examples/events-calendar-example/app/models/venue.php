@@ -5,6 +5,9 @@ class Venue extends MvcModel {
 	var $default_order = 'sort_name';
 	var $display_field = 'name';
 	var $has_many = array('Event');
+	var $wp_post = array(
+		'post_type' => true
+	);
 	
 	public function after_save($object) {
 		$this->update_sort_name($object);
