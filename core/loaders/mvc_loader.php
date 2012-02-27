@@ -51,6 +51,7 @@ abstract class MvcLoader {
 			'models/mvc_database',
 			'models/mvc_data_validation_error',
 			'models/mvc_data_validator',
+			'models/mvc_model_object',
 			'models/mvc_model',
 			'helpers/mvc_helper',
 			'helpers/mvc_form_helper',

@@ -9,6 +9,7 @@ class MvcModel {
 	public $has_many = null;
 	public $has_and_belongs_to_many = null;
 	public $associations = null;
+	public $properties = null;
 	public $validation_error = null;
 	public $validation_error_html = null;
 	public $hide_menu = false;
@@ -47,15 +48,16 @@ class MvcModel {
 		
 		$this->data_validator = new MvcDataValidator();
 		
-		$this->init_associations();
 		$this->init_schema();
+		$this->init_associations();
+		$this->init_properties();
 	
 	}
 	
 	public function new_object($data) {
-		$object = false;
+		$object = new MvcModelObject($this);
 		foreach ($data as $field => $value) {
-			$object->{$field} = $value;
+			$object->$field = $value;
 		}
 		$object = $this->process_objects($object);
 		return $object;
@@ -359,6 +361,11 @@ class MvcModel {
 		
 		foreach ($objects as $key => $object) {
 		
+			if (get_class($object) != 'MvcModelObject') {
+				$array = get_object_vars($object);
+				$object = $this->new_object($array);
+			}
+			
 			if (!empty($this->primary_key)) {
 				$object->__id = $object->{$this->primary_key};
 			}
@@ -533,6 +540,24 @@ class MvcModel {
 					'includes' => isset($association['includes']) ? $association['includes'] : null
 				);
 				$this->associations[$association_name] = $config;
+			}
+		}
+	}
+	
+	protected function init_properties() {
+		$this->properties = array();
+		foreach ($this->associations as $association_name => $association) {
+			$property_name = null;
+			if ($association['type'] == 'belongs_to') {
+				$property_name = MvcInflector::underscore($association_name);
+			} else if (in_array($association['type'], array('has_many', 'has_and_belongs_to_many'))) {
+				$property_name = MvcInflector::tableize($association_name);
+			}
+			if ($property_name) {
+				$this->properties[$property_name] = array(
+					'type' => 'association',
+					'association' => $association
+				);
 			}
 		}
 	}
