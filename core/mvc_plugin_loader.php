@@ -3,10 +3,12 @@
 class MvcPluginLoader {
 	
 	protected $wpdb = null;
+	protected $file_includer = null;
 	
 	function __construct() {
 		global $wpdb;
 		$this->wpdb = $wpdb;
+		$this->file_includer = new MvcFileIncluder();
 		$this->init();
 	}
 	
@@ -16,6 +18,7 @@ class MvcPluginLoader {
 	public function activate_app($file_path) {
 		$plugin = $this->get_plugin_name_from_file_path($file_path);
 		$this->add_plugin($plugin);
+		$this->init_settings_defaults($file_path);
 	}
 	
 	public function deactivate_app($file_path) {
@@ -78,7 +81,32 @@ class MvcPluginLoader {
 		$plugins = get_option('mvc_plugins', array());
 		return $plugins;
 	}
-
+	
+	public function init_settings_defaults($file_path) {
+		$app_directory = dirname($file_path).'/app/';
+		$settings_directory = $app_directory.'settings/';
+		$settings_files = $this->file_includer->require_php_files_in_directory($settings_directory);
+		if (!empty($settings_files)) {
+			foreach ($settings_files as $file_path) {
+				$settings_class = MvcInflector::class_name_from_filename(basename($file_path));
+				$settings = new $settings_class();
+				$existing_values = get_option($settings->key);
+				if (!$existing_values) {
+					$values = array();
+					foreach ($settings->settings as $key => $setting) {
+						$value = null;
+						if (!empty($setting['default'])) {
+							$value = $setting['default'];
+						} else if (!empty($setting['default_method'])) {
+							$value = $this->{$setting['default_method']}();
+						}
+						$values[$key] = $value;
+					}
+					update_option($settings->key, $values);
+				}
+			}
+		}
+	}
 	
 }
 
