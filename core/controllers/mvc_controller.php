@@ -3,6 +3,8 @@
 class MvcController {
 	
 	protected $file_includer = null;
+	public $after = null;
+	public $before = null;
 	public $is_controller = true;
 	public $model = null;
 	public $name = '';
@@ -57,7 +59,14 @@ class MvcController {
 			}
 		}
 		$this->helper = new $helper_name();
-	
+		
+		if (is_string($this->before)) {
+			$this->before = array($this->before);
+		}
+		if (is_string($this->after)) {
+			$this->after = array($this->after);
+		}
+		
 	}
 	
 	public function index() {

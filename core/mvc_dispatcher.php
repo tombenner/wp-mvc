@@ -31,7 +31,17 @@ class MvcDispatcher {
 		
 		$controller->params = $params;
 		$controller->set('this', $controller);
+		if (!empty($controller->before)) {
+			foreach ($controller->before as $method) {
+				$controller->{$method}();
+			}
+		}
 		$controller->{$action}();
+		if (!empty($controller->after)) {
+			foreach ($controller->after as $method) {
+				$controller->{$method}();
+			}
+		}
 		$controller->after_action($action);
 		
 		if (!$controller->view_rendered) {
