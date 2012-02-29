@@ -12,7 +12,7 @@ class MvcModel {
 	public $properties = null;
 	public $validation_error = null;
 	public $validation_error_html = null;
-	public $hide_menu = false;
+	public $schema = null;
 	public $wp_post = null;
 	private $data_validator = null;
 	private $db_adapter = null;
