@@ -81,8 +81,9 @@ class MvcModel {
 	}
 	
 	public function create($data) {
+		$data = $this->object_to_array($data);
 		if (empty($data[$this->name])) {
-			return false;
+			$data = array($this->name => $data);
 		}
 		$model_data = $data[$this->name];
 		if (method_exists($this, 'before_save')) {
@@ -100,8 +101,9 @@ class MvcModel {
 	}
 	
 	public function save($data) {
+		$data = $this->object_to_array($data);
 		if (empty($data[$this->name])) {
-			return false;
+			$data = array($this->name => $data);
 		}
 		if (!empty($data[$this->name]['id'])) {
 			$model_data = $data[$this->name];
@@ -669,6 +671,13 @@ class MvcModel {
 				);
 			}
 		}
+	}
+	
+	protected function object_to_array($data) {
+		if (is_object($data)) {
+			return get_object_vars($data);
+		}
+		return $data;
 	}
 	
 	public function __call($method, $args) {
