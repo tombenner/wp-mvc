@@ -179,6 +179,7 @@ class MvcModel {
 	public function delete_all($options=array()) {
 		$has_post = $this->has_post();
 		$before_delete_method_exists = method_exists($this, 'before_delete');
+		$objects = null;
 		if ($has_post || $before_delete_method_exists) {
 			$objects = $this->find($options);
 			foreach ($objects as $object) {
@@ -190,7 +191,29 @@ class MvcModel {
 				}
 			}
 		}
+		$this->delete_dependent_associations($objects, $options);
 		$this->db_adapter->delete_all($options);
+	}
+	
+	protected function delete_dependent_associations($objects, $options=array()) {
+		if (empty($objects)) {
+			$objects = $this->find($options);
+		}
+		if (!empty($objects)) {
+			foreach ($this->associations as $association) {
+				if ($association['dependent']) {
+					if ($association['type'] == 'has_many') {
+						$model = MvcModelRegistry::get_model($association['class']);
+						foreach ($objects as $object) {
+							$options = array(
+								'conditions' => array($association['foreign_key'] => $object->{$this->primary_key})
+							);
+							$model->delete_all($options);
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	public function save_post($object) {
@@ -589,7 +612,8 @@ class MvcModel {
 						'name' => $association_name,
 						'class' => $association_name,
 						'foreign_key' => MvcInflector::underscore($association_name).'_id',
-						'includes' => null
+						'includes' => null,
+						'dependent' => false
 					);
 				} else if (is_string($key) && is_array($value)) {
 					$association_name = $key;
@@ -599,6 +623,7 @@ class MvcModel {
 						'class' => empty($value['class']) ? $association_name : $value['class'],
 						'foreign_key' => empty($value['foreign_key']) ? MvcInflector::underscore($association_name).'_id' : $value['foreign_key'],
 						'includes' => isset($value['fields']) ? $value['fields'] : null,
+						'dependent' => isset($value['dependent']) ? $value['dependent'] : false
 					);
 				}
 				if (!empty($config)) {
@@ -617,7 +642,8 @@ class MvcModel {
 						'class' => $association_name,
 						'foreign_key' => MvcInflector::underscore($this->name).'_id',
 						'fields' => null,
-						'includes' => null
+						'includes' => null,
+						'dependent' => false
 					);
 				} else if (is_string($key) && is_array($value)) {
 					$association_name = $key;
@@ -627,7 +653,8 @@ class MvcModel {
 						'class' => empty($value['class']) ? $association_name : $value['class'],
 						'foreign_key' => empty($value['foreign_key']) ? MvcInflector::underscore($this->name).'_id' : $value['foreign_key'],
 						'fields' => isset($value['fields']) ? $value['fields'] : null,
-						'includes' => null
+						'includes' => null,
+						'dependent' => isset($value['dependent']) ? $value['dependent'] : false
 					);
 				}
 				if (!empty($config)) {
@@ -652,7 +679,8 @@ class MvcModel {
 						'association_foreign_key' => isset($value['association_foreign_key']) ? $value['association_foreign_key'] : MvcInflector::underscore($association_name).'_id',
 						'join_table' => $this->process_table_name($value['join_table']),
 						'fields' => isset($value['fields']) ? $value['fields'] : null,
-						'includes' => isset($value['includes']) ? $value['includes'] : null
+						'includes' => isset($value['includes']) ? $value['includes'] : null,
+						'dependent' => isset($value['dependent']) ? $value['dependent'] : false
 					);
 					$this->associations[$association_name] = $config;
 				}
