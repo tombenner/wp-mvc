@@ -93,9 +93,14 @@ class MvcModel {
 		}
 		$id = $this->insert($model_data);
 		$this->update_associations($id, $model_data);
-		if (method_exists($this, 'after_save')) {
+		if (method_exists($this, 'after_create') || method_exists($this, 'after_save')) {
 			$object = $this->find_by_id($id);
-			$this->after_save($object);
+			if (method_exists($this, 'after_create')) {
+				$this->after_create($object);
+			}
+			if (method_exists($this, 'after_save')) {
+				$this->after_save($object);
+			}
 		}
 		return $id;
 	}
