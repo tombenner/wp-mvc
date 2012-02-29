@@ -105,10 +105,11 @@ class MvcAdminLoader extends MvcLoader {
 					}
 				
 					$page_handle = $top_level_handle.'-'.$key;
+					$parent_slug = empty($admin_page['parent_slug']) ? $top_level_handle : $admin_page['parent_slug'];
 				
 					if ($admin_page['in_menu']) {
 						add_submenu_page(
-							$top_level_handle,
+							$parent_slug,
 							$admin_page['label'].' &lsaquo; '.$controller_pluralize_titleized,
 							$admin_page['label'],
 							$admin_page['capability'],
