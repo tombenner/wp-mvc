@@ -6,9 +6,11 @@ class MvcDatabaseAdapter {
 	public $defaults;
 
 	function __construct() {
-	
 		$this->db = new MvcDatabase();
+	}
 	
+	public function escape($value) {
+		return $this->db->escape($value);
 	}
 	
 	public function set_defaults($defaults) {
@@ -110,14 +112,14 @@ class MvcDatabaseAdapter {
 				$key = $this->defaults['model_name'].'.'.$key;
 			}
 			$operator = preg_match('/\s+(<|>|<=|>=|<>|\!=|[\w\s]+)/', $key) ? ' ' : ' = ';
-			$sql_clauses[] = $this->db->escape($key).$operator.'"'.$this->db->escape($value).'"';
+			$sql_clauses[] = $this->escape($key).$operator.'"'.$this->escape($value).'"';
 		}
 		return $sql_clauses;
 	}
 	
 	public function get_order_sql($options=array()) {
 		$order = empty($options['order']) ? $this->defaults['order'] : $options['order'];
-		return $order ? 'ORDER BY '.$this->db->escape($order) : '';
+		return $order ? 'ORDER BY '.$this->escape($order) : '';
 	}
 	
 	public function get_limit_sql($options=array()) {
@@ -125,17 +127,17 @@ class MvcDatabaseAdapter {
 			$per_page = empty($options['per_page']) ? $this->defaults['per_page'] : $options['per_page'];
 			$page = $options['page'];
 			$offset = ($page - 1) * $per_page;
-			return 'LIMIT '.$this->db->escape($offset).', '.$this->db->escape($per_page);
+			return 'LIMIT '.$this->escape($offset).', '.$this->escape($per_page);
 		}
 		$limit = empty($options['limit']) ? $this->defaults['limit'] : $options['limit'];
-		return $limit ? 'LIMIT '.$this->db->escape($limit) : '';
+		return $limit ? 'LIMIT '.$this->escape($limit) : '';
 	}
 	
 	public function get_set_sql($data) {
 		$clauses = array();
 		foreach ($data as $key => $value) {
 			if (is_string($value) || is_numeric($value)) {
-				$clauses[] = $key.' = "'.$this->db->escape($value).'"';
+				$clauses[] = $key.' = "'.$this->escape($value).'"';
 			}
 		}
 		$sql = implode(', ', $clauses);
@@ -152,7 +154,7 @@ class MvcDatabaseAdapter {
 	public function get_insert_values_sql($data) {
 		$values = array();
 		foreach ($data as $value) {
-			$values[] = '"'.$this->db->escape($value).'"';
+			$values[] = '"'.$this->escape($value).'"';
 		}
 		$sql = '('.implode(', ', $values).')';
 		return $sql;
