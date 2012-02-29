@@ -5,6 +5,7 @@ class MvcRouter {
 	public $routes = array();
 
 	public function public_url($options=array()) {
+		$options = apply_filters('mvc_before_public_url', $options);
 		$defaults = array(
 			'action' => 'index',
 			'controller' => null
