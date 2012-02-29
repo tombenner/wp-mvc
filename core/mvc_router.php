@@ -27,7 +27,13 @@ class MvcRouter {
 			$model = MvcModelRegistry::get_model($model_name);
 			if (!empty($model) && method_exists($model, 'to_url')) {
 				$url = site_url('/');
-				$url .= $model->to_url($options['object']);
+				$method = new ReflectionMethod(get_class($model), 'to_url');
+				$parameter_count = $method->getNumberOfParameters();
+				if ($parameter_count == 2) {
+					$url .= $model->to_url($options['object'], $options);
+				} else {
+					$url .= $model->to_url($options['object']);
+				}
 				return $url;
 			}
 			if (empty($options['id']) && !empty($options['object']->__id)) {
