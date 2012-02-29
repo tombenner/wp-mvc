@@ -234,6 +234,46 @@ class MvcModel {
 		return $response;
 	}
 	
+	public function count($options=array()) {
+		$clauses = $this->db_adapter->get_sql_select_clauses($options);
+		$clauses['select'] = 'SELECT COUNT(*)';
+		$sql = implode(' ', $clauses);
+		$result = $this->db_adapter->get_var($sql);
+		return $result;
+	}
+	
+	public function max($column, $options=array()) {
+		$clauses = $this->db_adapter->get_sql_select_clauses($options);
+		$clauses['select'] = 'SELECT MAX('.$this->db_adapter->escape($column).')';
+		$sql = implode(' ', $clauses);
+		$result = $this->db_adapter->get_var($sql);
+		return $result;
+	}
+	
+	public function min($column, $options=array()) {
+		$clauses = $this->db_adapter->get_sql_select_clauses($options);
+		$clauses['select'] = 'SELECT MIN('.$this->db_adapter->escape($column).')';
+		$sql = implode(' ', $clauses);
+		$result = $this->db_adapter->get_var($sql);
+		return $result;
+	}
+	
+	public function sum($column, $options=array()) {
+		$clauses = $this->db_adapter->get_sql_select_clauses($options);
+		$clauses['select'] = 'SELECT SUM('.$this->db_adapter->escape($column).')';
+		$sql = implode(' ', $clauses);
+		$result = $this->db_adapter->get_var($sql);
+		return $result;
+	}
+	
+	public function average($column, $options=array()) {
+		$clauses = $this->db_adapter->get_sql_select_clauses($options);
+		$clauses['select'] = 'SELECT AVERAGE('.$this->db_adapter->escape($column).')';
+		$sql = implode(' ', $clauses);
+		$result = $this->db_adapter->get_var($sql);
+		return $result;
+	}
+	
 	public function get_keyword_conditions($fields, $keywords) {
 		$conditions = array();
 		if (is_string($keywords)) {
