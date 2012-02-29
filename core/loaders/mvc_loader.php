@@ -243,6 +243,12 @@ abstract class MvcLoader {
 	protected function load_functions() {
 	
 		$this->file_includer->require_php_files_in_directory($this->core_path.'functions/');
+		
+		foreach ($this->plugin_app_paths as $plugin_app_path) {
+		
+			$this->file_includer->require_php_files_in_directory($plugin_app_path.'functions/');
+			
+		}
 	
 	}
 
