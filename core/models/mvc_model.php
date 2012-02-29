@@ -625,7 +625,7 @@ class MvcModel {
 						'type' => 'has_many',
 						'name' => empty($value['name']) ? $association_name : $value['name'],
 						'class' => empty($value['class']) ? $association_name : $value['class'],
-						'foreign_key' => empty($value['foreign_key']) ? MvcInflector::underscore($association_name).'_id' : $value['foreign_key'],
+						'foreign_key' => empty($value['foreign_key']) ? MvcInflector::underscore($this->name).'_id' : $value['foreign_key'],
 						'fields' => isset($value['fields']) ? $value['fields'] : null,
 						'includes' => null
 					);
