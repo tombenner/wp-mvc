@@ -33,9 +33,9 @@ class MvcSettings {
 		$options = get_option($this->key);
 		$value = isset($options[$setting_key]) ? $options[$setting_key] : null;
 		if (is_null($value)) {
-			if ($setting['default']) {
+			if (!empty($setting['default'])) {
 				$value = $setting['default'];
-			} else if ($setting['default_method']) {
+			} else if (!empty($setting['default_method'])) {
 				$value = $this->{$setting['default_method']}();
 			}
 		}
