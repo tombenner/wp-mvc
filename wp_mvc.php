@@ -21,6 +21,7 @@ if (is_admin()) {
 	
 	add_action('admin_init', array($loader, 'admin_init'));
 	add_action('admin_menu', array($loader, 'add_menu_pages'));
+	add_action('admin_menu', array($loader, 'add_settings_pages'));
 	add_action('plugins_loaded', array($loader, 'add_admin_ajax_routes'));
 
 } else {

@@ -23,6 +23,15 @@ function mvc_model($model_name) {
 	return null;
 }
 
+function mvc_setting($settings_name, $setting_key) {
+	$settings_name = 'mvc_'.MvcInflector::underscore($settings_name);
+	$option = get_option($settings_name);
+	if (isset($option[$setting_key])) {
+		return $option[$setting_key];
+	}
+	return null;
+}
+
 function mvc_render_to_string($view, $vars=array()) {
 	$view_pieces = explode('/', $view);
 	$model_tableized = $view_pieces[0];

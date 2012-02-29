@@ -4,7 +4,14 @@ require_once 'mvc_loader.php';
 
 class MvcAdminLoader extends MvcLoader {
 	
+	public $settings = null;
+	
 	public function admin_init() {
+		$this->register_settings();
+		$this->dispatch();
+	}
+	
+	public function dispatch() {
 		
 		global $plugin_page;
 		
@@ -41,7 +48,7 @@ class MvcAdminLoader extends MvcLoader {
 			$title = apply_filters('mvc_admin_title', $title);
 		
 		}
-		
+	
 	}
 	
 	public function add_menu_pages() {
@@ -174,6 +181,43 @@ class MvcAdminLoader extends MvcLoader {
 		}
 		
 		return $processed_pages;
+	}
+	
+	public function init_settings() {
+		$this->settings = array();
+		if (!empty($this->settings_names) && empty($this->settings)) {
+			foreach ($this->settings_names as $settings_name) {
+				$instance = MvcSettingsRegistry::get_settings($settings_name);
+				$this->settings[$settings_name] = array(
+					'settings' => $instance->settings
+				);
+			}
+		}
+	}
+	
+	public function register_settings() {
+		$this->init_settings();
+		foreach ($this->settings as $settings_name => $settings) {
+			$instance = MvcSettingsRegistry::get_settings($settings_name);
+			$title = $instance->title;
+			$settings_key = $instance->key;
+			$section_key = $settings_key.'_main';
+			add_settings_section($section_key, '', array($instance, 'description'), $settings_key);
+			register_setting($settings_key, $settings_key, array($instance, 'validate_fields'));
+			foreach ($instance->settings as $setting_key => $setting) {
+				add_settings_field($setting_key, $setting['label'], array($instance, 'display_field_'.$setting_key), $settings_key, $section_key);
+			}
+		}
+	}
+	
+	public function add_settings_pages() {
+		$this->init_settings();
+		foreach ($this->settings as $settings_name => $settings) {
+			$title = MvcInflector::titleize($settings_name);
+			$title = str_replace(' Settings', '', $title);
+			$instance = MvcSettingsRegistry::get_settings($settings_name);
+			add_options_page($title, $title, 'manage_options', $instance->key, array($instance, 'page'));
+		}
 	}
 	
 	public function add_admin_ajax_routes() {

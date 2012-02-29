@@ -40,10 +40,12 @@ abstract class MvcLoader {
 			'mvc_file_includer',
 			'mvc_model_registry',
 			'mvc_object_registry',
+			'mvc_settings_registry',
 			'mvc_plugin_loader',
 			'mvc_templater',
 			'mvc_inflector',
 			'mvc_router',
+			'mvc_settings',
 			'controllers/mvc_controller',
 			'controllers/mvc_admin_controller',
 			'controllers/mvc_public_controller',
@@ -124,6 +126,7 @@ abstract class MvcLoader {
 		$this->load_controllers();
 		$this->load_libs();
 		$this->load_models();
+		$this->load_settings();
 		$this->load_functions();
 	
 	}
@@ -216,6 +219,24 @@ abstract class MvcLoader {
 			$model_instance = new $model_class();
 			MvcModelRegistry::add_model($model, &$model_instance);
 		}
+		
+	}
+	
+	protected function load_settings() {
+		
+		$settings_names = array();
+		
+		foreach ($this->plugin_app_paths as $plugin_app_path) {
+		
+			$settings_filenames = $this->file_includer->require_php_files_in_directory($plugin_app_path.'settings/');
+			
+			foreach ($settings_filenames as $filename) {
+				$settings_names[] = MvcInflector::class_name_from_filename($filename);
+			}
+		
+		}
+		
+		$this->settings_names = $settings_names;
 		
 	}
 	
