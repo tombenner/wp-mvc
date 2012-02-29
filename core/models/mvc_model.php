@@ -105,10 +105,10 @@ class MvcModel {
 		if (empty($data[$this->name])) {
 			$data = array($this->name => $data);
 		}
-		if (!empty($data[$this->name]['id'])) {
+		if (!empty($data[$this->name][$this->primary_key])) {
 			$model_data = $data[$this->name];
-			$id = $model_data['id'];
-			unset($model_data['id']);
+			$id = $model_data[$this->primary_key];
+			unset($model_data[$this->primary_key]);
 			$valid = $this->validate_data($model_data);
 			if ($valid !== true) {
 				$this->validation_error = $valid;
