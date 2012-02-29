@@ -3,6 +3,7 @@
 class MvcDatabaseAdapter {
 
 	public $db;
+	public $defaults;
 
 	function __construct() {
 	
