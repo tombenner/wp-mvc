@@ -15,6 +15,10 @@ class MvcModelObject {
 		$this->__model_name = $model->name;
 	}
 	
+	public function to_array() {
+		return get_object_vars($this);
+	}
+	
 	public function __get($property_name) {
 		if (!empty($this->__settings['properties'][$property_name])) {
 			$property = $this->__settings['properties'][$property_name];
