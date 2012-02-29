@@ -217,7 +217,7 @@ abstract class MvcLoader {
 			$this->model_names[] = $model;
 			$model_class = MvcInflector::camelize($model);
 			$model_instance = new $model_class();
-			MvcModelRegistry::add_model($model, &$model_instance);
+			MvcModelRegistry::add_model($model, $model_instance);
 		}
 		
 	}

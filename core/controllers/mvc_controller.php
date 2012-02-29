@@ -140,7 +140,7 @@ class MvcController {
 		}
 		if (!empty($object)) {
 			$this->set('object', $object);
-			MvcObjectRegistry::add_object($this->model->name, &$this->object);
+			MvcObjectRegistry::add_object($this->model->name, $this->object);
 			return true;
 		}
 		MvcError::warning('Object not found.');
