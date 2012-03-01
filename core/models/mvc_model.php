@@ -717,6 +717,13 @@ class MvcModel {
 		if (substr($method, 0, 8) == 'find_by_') {
 			$attribute = substr($method, 8);
 			if (isset($this->schema[$attribute])) {
+				$object = $this->find(array('conditions' => array($attribute => $args[0])));
+				return $object;
+			}
+		}
+		if (substr($method, 0, 12) == 'find_one_by_') {
+			$attribute = substr($method, 12);
+			if (isset($this->schema[$attribute])) {
 				$object = $this->find_one(array('conditions' => array($attribute => $args[0])));
 				return $object;
 			}
