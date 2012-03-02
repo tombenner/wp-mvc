@@ -24,6 +24,8 @@ class MvcModel {
 		
 		$this->name = preg_replace('/Model$/', '', get_class($this));
 		
+		$this->check_for_obsolete_functionality();
+		
 		$table = empty($this->table) ? $wpdb->prefix.MvcInflector::tableize($this->name) : $this->process_table_name($this->table);
 		
 		$defaults = array(
@@ -702,6 +704,27 @@ class MvcModel {
 					'type' => 'association',
 					'association' => $association
 				);
+			}
+		}
+	}
+	
+	protected function check_for_obsolete_functionality() {
+		$obsolete_attributes = array(
+			'admin_pages' => array('should be defined as \'AdminPages\' in MvcConfiguration', 'http://wpmvc.org/documentation/1.2/66/adminpages/'),
+			'admin_columns' => array('should be defined as \'default_columns\' in the admin controller', 'http://wpmvc.org/documentation/1.2/16/default_columns/'),
+			'admin_searchable_fields' => array('should be defined as \'default_searchable_fields\' in the admin controller', 'http://wpmvc.org/documentation/1.2/18/default_searchable_fields/'),
+			'admin_search_joins' => array('should be defined as \'default_searchable_joins\' in the admin controller', 'http://wpmvc.org/documentation/1.2/17/default_search_joins/'),
+			'public_searchable_fields' => array('should be defined as \'default_searchable_fields\' in the public controller', 'http://wpmvc.org/documentation/1.2/18/default_searchable_fields/'),
+			'public_search_joins' => array('should be defined as \'default_searchable_joins\' in the public controller', 'http://wpmvc.org/documentation/1.2/17/default_search_joins/'),
+			'hide_menu' => array('should be defined as \'in_menu\' in \'AdminPages\' in MvcConfiguration', 'http://wpmvc.org/documentation/1.2/66/adminpages/')
+		);
+		foreach ($obsolete_attributes as $attribute => $value) {
+			if (isset($this->$attribute)) {
+				$message = $value[0];
+				$url = $value[1];
+				$message = 'The \''.$attribute.'\' attribute (in the '.$this->name.' model) '.$message.' as of WP MVC 1.2';
+				$message .= ' (<a href="'.$url.'">read more</a>).';
+				MvcError::fatal($message);
 			}
 		}
 	}
