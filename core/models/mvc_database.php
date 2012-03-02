@@ -26,6 +26,10 @@ class MvcDatabase {
 		return $this->wpdb->query($string);
 	}
 	
+	public function insert_id() {
+		return $this->wpdb->insert_id;
+	}
+	
 	public function escape($string) {
 		return mysql_real_escape_string($string);
 	}

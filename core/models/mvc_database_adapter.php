@@ -174,7 +174,7 @@ class MvcDatabaseAdapter {
 		);
 		$sql = implode(' ', $clauses);
 		$this->query($sql);
-		$insert_id = mysql_insert_id();
+		$insert_id = $this->db->insert_id();
 		return $insert_id;
 	}
 	
