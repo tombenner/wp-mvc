@@ -26,25 +26,39 @@ class MvcFileIncluder {
 	}
 	
 	public function require_first_app_file_or_core_file($filepath) {
-		if (!$this->include_first_app_file($filepath)) {
-			if (!$this->include_core_file('pluggable/'.$filepath)) {
-				$this->require_core_file($filepath);
-			}
+		if ($this->include_first_app_file($filepath)) {
+			return true;
 		}
+		if ($this->include_core_file('pluggable/'.$filepath)) {
+			return true;
+		}
+		if ($this->require_core_file($filepath)) {
+			return true;
+		}
+		return false;
 	}
 	
 	public function require_all_app_files_or_core_file($filepath) {
-		if (!$this->include_all_app_files($filepath)) {
-			if (!$this->include_core_file('pluggable/'.$filepath)) {
-				$this->require_core_file($filepath);
-			}
+		if ($this->include_all_app_files($filepath)) {
+			return true;
 		}
+		if ($this->include_core_file('pluggable/'.$filepath)) {
+			return true;
+		}
+		if ($this->require_core_file($filepath)) {
+			return true;
+		}
+		return false;
 	}
 	
 	public function require_core_file($filepath) {
-		if (!$this->include_core_file('pluggable/'.$filepath)) {
-			$this->require_file($this->core_path.$filepath);
+		if ($this->include_core_file('pluggable/'.$filepath)) {
+			return true;
 		}
+		if ($this->require_file($this->core_path.$filepath)) {
+			return true;
+		}
+		return false;
 	}
 	
 	public function require_first_app_file($filepath) {
@@ -136,6 +150,7 @@ class MvcFileIncluder {
 	
 	private function require_file($filepath) {
 		require_once $filepath;
+		return true;
 	}
 	
 	private function include_file($filepath) {
