@@ -139,7 +139,7 @@ abstract class MvcLoader {
 			$model = MvcModelRegistry::get_model($model_name);
 			$object = $model->find_one(array('post_id' => $post->ID));
 			if ($object) {
-				$url = MvcRouter::public_url(array('object' => $object)); // ------ remove need for controller key
+				$url = MvcRouter::public_url(array('object' => $object));
 				if ($url) {
 					return $url;
 				}
