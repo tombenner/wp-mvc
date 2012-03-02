@@ -24,10 +24,20 @@ class MvcShellDispatcher {
 			$shell_name = $args[1];
 		}
 	
+		$shell_title = MvcInflector::camelize($shell_name);
 		$shell_name .= '_shell';
 		$shell_class_name = MvcInflector::camelize($shell_name);
-	
-		$this->file_includer->require_first_app_file_or_core_file('shells/'.$shell_name.'.php');
+		
+		$shell_path = 'shells/'.$shell_name.'.php';
+		$shell_exists = $this->file_includer->include_first_app_file_or_core_file($shell_path);
+		
+		if (!$shell_exists) {
+			echo 'Sorry, a shell named "'.$shell_name.'" couldn\'t be found in any of the MVC plugins.';
+			echo "\n";
+			echo 'Please make sure a shell class exists in "app/'.$shell_path.'", or execute "./wpmvc" to see a list of available shells.';
+			echo "\n";
+			die();
+		}
 		
 		$args = array_slice($args, 2);
 		
@@ -39,7 +49,13 @@ class MvcShellDispatcher {
 		
 		$method = $args[0];
 		$args = array_slice($args, 1);
+		if ($shell_name != 'help_shell') {
+			$shell->out(Console_Color::convert("\n%_[Running ".$shell_title."::".$method."]%n"));
+		}
 		$shell->{$method}($args);
+		if ($shell_name != 'help_shell') {
+			$shell->out(Console_Color::convert("\n%_[Complete]%n"));
+		}
 		
 	}
 
