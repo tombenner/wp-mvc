@@ -49,6 +49,7 @@ abstract class MvcLoader {
 			'controllers/mvc_controller',
 			'controllers/mvc_admin_controller',
 			'controllers/mvc_public_controller',
+			'functions/functions',
 			'models/mvc_database_adapter',
 			'models/mvc_database',
 			'models/mvc_data_validation_error',
@@ -241,8 +242,6 @@ abstract class MvcLoader {
 	}
 	
 	protected function load_functions() {
-	
-		$this->file_includer->require_php_files_in_directory($this->core_path.'functions/');
 		
 		foreach ($this->plugin_app_paths as $plugin_app_path) {
 		
