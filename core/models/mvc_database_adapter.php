@@ -103,9 +103,18 @@ class MvcDatabaseAdapter {
 		$sql_clauses = array();
 		foreach ($conditions as $key => $value) {
 			if (is_array($value)) {
-				$clauses = $this->get_where_sql_clauses($value);
-				$logical_operator = $key == 'OR' ? ' OR ' : ' AND ';
-				$sql_clauses[] = '('.implode($logical_operator, $clauses).')';
+				if (is_string($key) && !in_array($key, array('OR', 'AND'))) {
+					$values = array();
+					foreach ($value as $val) {
+						$values[] = '"'.$this->escape($val).'"';
+					}
+					$values = implode(',', $values);
+					$sql_clauses[] = $this->escape($key).' IN ('.$values.')';
+				} else {
+					$clauses = $this->get_where_sql_clauses($value);
+					$logical_operator = $key == 'OR' ? ' OR ' : ' AND ';
+					$sql_clauses[] = '('.implode($logical_operator, $clauses).')';
+				}
 				continue;
 			}
 			if (strpos($key, '.') === false && $use_table_alias) {
