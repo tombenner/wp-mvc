@@ -16,11 +16,17 @@ class GenerateShell extends MvcShell {
 	/**
 	 * Generate a MVC Plugin.
 	 * wpmvc generate plugin <plugin>
+	 * To include wp-mvc in the generated plugin, run
+	 * wpmvc generate plugin <plugin> bundleDependencies 
 	 * @param mixed $args 
 	 */
 	public function plugin($args) {
 		if (empty($args[0])) {
 			MvcError::fatal('Please specify a name for the plugin (e.g. "wpmvc generate plugin MyPlugin").');
+		}
+		if ($args[1] == 'bundleDependencies') {
+			global $wpmvcBundleDependencies;
+			$wpmvcBundleDependencies = 'bundleDependencies';
 		}
 		$plugin = $args[0];
 		$this->generate_app($plugin);
@@ -79,7 +85,7 @@ class GenerateShell extends MvcShell {
 	}
 	
 	private function generate_app($plugin) {
-	
+		global $wpmvcBundleDependencies;
 		$plugin_camelized = MvcInflector::camelize($plugin);
 		$plugin_titleized = MvcInflector::titleize($plugin);
 		$plugin_underscored = MvcInflector::underscore($plugin);
@@ -117,9 +123,28 @@ class GenerateShell extends MvcShell {
 		$this->templater->create('plugin', $target_path, $vars);
 		
 		$target_path = $plugin_path.$plugin_underscored.'_loader.php';
-		$this->templater->create('plugin_loader', $target_path, $vars);
-		
+		$this->templater->create('plugin_loader', $target_path, $vars, $bundle);
+		if ($wpmvcBundleDependencies == 'bundleDependencies') {
+			mkdir($plugin_path.'wpmvc');
+			$this->recurse_copy(dirname(dirname(dirname(__FILE__))), $plugin_path.'wpmvc/');
+		}
 	}
+	
+	private function recurse_copy($src,$dst) { 
+		$dir = opendir($src); 
+		@mkdir($dst); 
+		while(false !== ( $file = readdir($dir)) ) { 
+		    if (( $file != '.' ) && ( $file != '..' )) { 
+			if ( is_dir($src . '/' . $file) ) { 
+			    $this->recurse_copy($src . '/' . $file,$dst . '/' . $file); 
+			} 
+			else {
+			    copy($src . '/' . $file,$dst . '/' . $file); 
+			} 
+		    } 
+		} 
+		closedir($dir); 
+	    } 
 	
 	private function generate_controllers($plugin, $name) {
 		
