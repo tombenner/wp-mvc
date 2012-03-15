@@ -123,7 +123,7 @@ class GenerateShell extends MvcShell {
 		$this->templater->create('plugin', $target_path, $vars);
 		
 		$target_path = $plugin_path.$plugin_underscored.'_loader.php';
-		$this->templater->create('plugin_loader', $target_path, $vars, $bundle);
+		$this->templater->create('plugin_loader', $target_path, $vars);
 		if ($wpmvcBundleDependencies == 'bundleDependencies') {
 			mkdir($plugin_path.'wpmvc');
 			$this->recurse_copy(dirname(dirname(dirname(__FILE__))), $plugin_path.'wpmvc/');
