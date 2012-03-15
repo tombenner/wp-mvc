@@ -140,7 +140,7 @@ class MvcFormHelper extends MvcHelper {
 		
 		$options = array_merge($defaults, $options);
 		$options['options'] = empty($options['options']) ? array() : $options['options'];
-		$options['name'] = $field_name;
+		$options['name'] = $this->input_name($field_name);
 		$attributes_html = self::attributes_html($options, 'select');
 		$html = '<select'.$attributes_html.'>';
 		if ($options['empty']) {
