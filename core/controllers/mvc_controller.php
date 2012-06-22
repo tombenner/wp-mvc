@@ -106,7 +106,7 @@ class MvcController {
 			$this->{$helper_method_name} = new $helper_name();
 		
 			if ($helper_name == 'FormHelper') {
-				$this->{$helper_method_name}->controller = false;
+				$this->{$helper_method_name}->controller = new stdClass();
 				$this->{$helper_method_name}->controller->action = $this->action;
 				$this->{$helper_method_name}->controller->name = $this->name;
 			}
