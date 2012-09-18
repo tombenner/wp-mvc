@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+   <title>default_search_joins | WP MVC</title>
+
+   <link rel="stylesheet" href="/wp-mvc/css/syntax.css" type="text/css" />
+   <link rel="stylesheet" href="/wp-mvc/css/default.css" type="text/css" media="screen, projection" />
+   <link rel="stylesheet" href="/wp-mvc/css/documentation.css" type="text/css" media="screen, projection" />
+</head>
+<body>
+
+  <a href="https://github.com/tombenner/wp-mvc"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+
+  <div id="container">
+  
+    <div id="nav">
+      
+      <div id="header">
+        <a href="/wp-mvc/" id="logo">WP MVC</a>
+      </div>
+
+      <ul class="doc-nav" id="sections"><li class="in-active-tree"><a href="/wp-mvc/documentation/installation">Installation</a><ul><li><a href="/wp-mvc/documentation/installation/installing_example_plugins.html">Installing Example Plugins</a></li></ul></li><li class="in-active-tree"><a href="/wp-mvc/documentation/tutorial">Tutorial</a><ul><li><a href="/wp-mvc/documentation/tutorial/create_the_plugin.html">Create the Plugin</a></li><li><a href="/wp-mvc/documentation/tutorial/create_the_database_table.html">Create the Database Table</a></li><li><a href="/wp-mvc/documentation/tutorial/create_the_models_views_and_controllers.html">Create the Models Views and Controllers</a></li></ul></li><li class="in-active-tree"><a href="/wp-mvc/documentation/creating_plugins">Creating Plugins</a><ul><li><a href="/wp-mvc/documentation/creating_plugins/generating_code.html">Generating Code</a></li></ul></li><li class="in-active-tree"><a href="/wp-mvc/documentation/creating_database_tables.html">Creating Database Tables</a></li><li class="in-active-tree"><a href="/wp-mvc/documentation/models">Models</a><ul><li><a href="/wp-mvc/documentation/models/saving_data">Saving Data</a><ul><li><a href="/wp-mvc/documentation/models/saving_data/create.html">create</a></li><li><a href="/wp-mvc/documentation/models/saving_data/save.html">save</a></li><li><a href="/wp-mvc/documentation/models/saving_data/update.html">update</a></li><li><a href="/wp-mvc/documentation/models/saving_data/update_all.html">update_all</a></li><li><a href="/wp-mvc/documentation/models/saving_data/insert.html">insert</a></li></ul></li><li><a href="/wp-mvc/documentation/models/retrieving_data">Retrieving Data</a><ul><li><a href="/wp-mvc/documentation/models/retrieving_data/find.html">find</a></li><li><a href="/wp-mvc/documentation/models/retrieving_data/find_one.html">find_one</a></li><li><a href="/wp-mvc/documentation/models/retrieving_data/find_by_id.html">find_by_id</a></li><li><a href="/wp-mvc/documentation/models/retrieving_data/find_by__.html">find_by_*</a></li><li><a href="/wp-mvc/documentation/models/retrieving_data/find_one_by__.html">find_one_by_*</a></li><li><a href="/wp-mvc/documentation/models/retrieving_data/paginate.html">paginate</a></li><li><a href="/wp-mvc/documentation/models/retrieving_data/count.html">count</a></li><li><a href="/wp-mvc/documentation/models/retrieving_data/max.html">max</a></li><li><a href="/wp-mvc/documentation/models/retrieving_data/min.html">min</a></li><li><a href="/wp-mvc/documentation/models/retrieving_data/sum.html">sum</a></li><li><a href="/wp-mvc/documentation/models/retrieving_data/average.html">average</a></li></ul></li><li><a href="/wp-mvc/documentation/models/deleting_data">Deleting Data</a><ul><li><a href="/wp-mvc/documentation/models/deleting_data/delete.html">delete</a></li><li><a href="/wp-mvc/documentation/models/deleting_data/delete_all.html">delete_all</a></li></ul></li><li><a href="/wp-mvc/documentation/models/validations.html">Validations</a></li><li><a href="/wp-mvc/documentation/models/associations">Associations</a><ul><li><a href="/wp-mvc/documentation/models/associations/belongs_to.html">Belongs To</a></li><li><a href="/wp-mvc/documentation/models/associations/has_many.html">Has Many</a></li><li><a href="/wp-mvc/documentation/models/associations/has_and_belongs_to_many.html">Has and Belongs To Many</a></li><li><a href="/wp-mvc/documentation/models/associations/dependent_associations.html">Dependent Associations</a></li></ul></li><li><a href="/wp-mvc/documentation/models/model_attributes">Model Attributes</a><ul><li><a href="/wp-mvc/documentation/models/model_attributes/table.html">table</a></li><li><a href="/wp-mvc/documentation/models/model_attributes/database.html">database</a></li><li><a href="/wp-mvc/documentation/models/model_attributes/includes.html">includes</a></li><li><a href="/wp-mvc/documentation/models/model_attributes/order.html">order</a></li><li><a href="/wp-mvc/documentation/models/model_attributes/display_field.html">display_field</a></li><li><a href="/wp-mvc/documentation/models/model_attributes/primary_key.html">primary_key</a></li><li><a href="/wp-mvc/documentation/models/model_attributes/selects.html">selects</a></li><li><a href="/wp-mvc/documentation/models/model_attributes/per_page.html">per_page</a></li><li><a href="/wp-mvc/documentation/models/model_attributes/hide_menu.html">hide_menu</a></li></ul></li><li><a href="/wp-mvc/documentation/models/model_methods">Model Methods</a><ul><li><a href="/wp-mvc/documentation/models/model_methods/after_find.html">after_find</a></li><li><a href="/wp-mvc/documentation/models/model_methods/after_save.html">after_save</a></li><li><a href="/wp-mvc/documentation/models/model_methods/to_url.html">to_url</a></li></ul></li></ul></li><li class="in-active-tree"><a href="/wp-mvc/documentation/controllers">Controllers</a><ul class="in-active-tree"><li class="in-active-tree"><a href="/wp-mvc/documentation/controllers/controller_methods">Controller Methods</a><ul><li><a href="/wp-mvc/documentation/controllers/controller_methods/set.html">set</a></li><li><a href="/wp-mvc/documentation/controllers/controller_methods/set_object.html">set_object</a></li><li><a href="/wp-mvc/documentation/controllers/controller_methods/set_objects.html">set_objects</a></li><li><a href="/wp-mvc/documentation/controllers/controller_methods/set_pagination.html">set_pagination</a></li><li><a href="/wp-mvc/documentation/controllers/controller_methods/load_helper.html">load_helper</a></li><li><a href="/wp-mvc/documentation/controllers/controller_methods/load_model.html">load_model</a></li><li><a href="/wp-mvc/documentation/controllers/controller_methods/load_models.html">load_models</a></li><li><a href="/wp-mvc/documentation/controllers/controller_methods/redirect.html">redirect</a></li><li><a href="/wp-mvc/documentation/controllers/controller_methods/flash.html">flash</a></li><li><a href="/wp-mvc/documentation/controllers/controller_methods/create_or_save.html">create_or_save</a></li></ul></li><li class="in-active-tree"><a href="/wp-mvc/documentation/controllers/controller_attributes">Controller Attributes</a><ul class="in-active-tree"><li class="in-active-tree"><a href="/wp-mvc/documentation/controllers/controller_attributes/before.html">before</a></li><li class="in-active-tree"><a href="/wp-mvc/documentation/controllers/controller_attributes/after.html">after</a></li><li class="in-active-tree"><a href="/wp-mvc/documentation/controllers/controller_attributes/default_searchable_fields.html">default_searchable_fields</a></li><li class="active in-active-tree"><a href="/wp-mvc/documentation/controllers/controller_attributes/default_search_joins.html">default_search_joins</a></li><li class="in-active-tree"><a href="/wp-mvc/documentation/controllers/controller_attributes/default_columns.html">default_columns</a></li></ul></li></ul></li><li class="in-active-tree"><a href="/wp-mvc/documentation/views">Views</a><ul><li><a href="/wp-mvc/documentation/views/layouts">Layouts</a><ul><li><a href="/wp-mvc/documentation/views/layouts/specifying_a_layout.html">Specifying a Layout</a></li></ul></li><li><a href="/wp-mvc/documentation/views/views_within_views.html">Views Within Views</a></li><li><a href="/wp-mvc/documentation/views/using_helpers.html">Using Helpers</a></li><li><a href="/wp-mvc/documentation/views/view_methods">View Methods</a><ul><li><a href="/wp-mvc/documentation/views/view_methods/pagination.html">pagination</a></li><li><a href="/wp-mvc/documentation/views/view_methods/render_view.html">render_view</a></li></ul></li></ul></li><li class="in-active-tree"><a href="/wp-mvc/documentation/helpers">Helpers</a><ul><li><a href="/wp-mvc/documentation/helpers/creating_helpers.html">Creating Helpers</a></li><li><a href="/wp-mvc/documentation/helpers/core_helpers">Core Helpers</a><ul><li><a href="/wp-mvc/documentation/helpers/core_helpers/html.html">HTML</a></li><li><a href="/wp-mvc/documentation/helpers/core_helpers/form.html">Form</a></li><li><a href="/wp-mvc/documentation/helpers/core_helpers/form_tags.html">Form Tags</a></li></ul></li></ul></li><li class="in-active-tree"><a href="/wp-mvc/documentation/functions">Functions</a><ul><li><a href="/wp-mvc/documentation/functions/is_mvc_page.html">is_mvc_page</a></li><li><a href="/wp-mvc/documentation/functions/mvc_model.html">mvc_model</a></li><li><a href="/wp-mvc/documentation/functions/mvc_public_url.html">mvc_public_url</a></li><li><a href="/wp-mvc/documentation/functions/mvc_admin_url.html">mvc_admin_url</a></li><li><a href="/wp-mvc/documentation/functions/mvc_css_url.html">mvc_css_url</a></li><li><a href="/wp-mvc/documentation/functions/mvc_js_url.html">mvc_js_url</a></li><li><a href="/wp-mvc/documentation/functions/mvc_render_to_string.html">mvc_render_to_string</a></li><li><a href="/wp-mvc/documentation/functions/mvc_get_plugins.html">mvc_get_plugins</a></li></ul></li><li class="in-active-tree"><a href="/wp-mvc/documentation/routing">Routing</a><ul><li><a href="/wp-mvc/documentation/routing/pretty_urls.html">Pretty URLs</a></li></ul></li><li class="in-active-tree"><a href="/wp-mvc/documentation/utilities">Utilities</a><ul><li><a href="/wp-mvc/documentation/utilities/inflector">Inflector</a><ul><li><a href="/wp-mvc/documentation/utilities/inflector/inflector_methods.html">Inflector Methods</a></li><li><a href="/wp-mvc/documentation/utilities/inflector/adding_rules_to_inflector.html">Adding Rules To Inflector</a></li></ul></li></ul></li><li class="in-active-tree"><a href="/wp-mvc/documentation/configuration">Configuration</a><ul><li><a href="/wp-mvc/documentation/configuration/debug.html">Debug</a></li><li><a href="/wp-mvc/documentation/configuration/adminpages.html">AdminPages</a></li></ul></li><li class="in-active-tree"><a href="/wp-mvc/documentation/wordpress_data_integration">Wordpress Data Integration</a><ul><li><a href="/wp-mvc/documentation/wordpress_data_integration/models_for_wordpress_tables.html">Models For Wordpress Tables</a></li><li><a href="/wp-mvc/documentation/wordpress_data_integration/synchronizing_models_with_posts">Synchronizing Models With Posts</a><ul><li><a href="/wp-mvc/documentation/wordpress_data_integration/synchronizing_models_with_posts/no_associated_custom_post_type.html">No Associated Custom Post Type</a></li><li><a href="/wp-mvc/documentation/wordpress_data_integration/synchronizing_models_with_posts/default_custom_post_type.html">Default Custom Post Type</a></li><li><a href="/wp-mvc/documentation/wordpress_data_integration/synchronizing_models_with_posts/customized_custom_post_type.html">Customized Custom Post Type</a></li></ul></li><li><a href="/wp-mvc/documentation/wordpress_data_integration/quick_settings_pages.html">Quick Settings Pages</a></li></ul></li></ul>
+      
+      <div class="extra">
+        <a href="/wp-mvc/download.html">Download</a>
+      </div>
+      
+      <div class="extra">
+        <a href="/wp-mvc/contact.html">Contact</a>
+      </div>
+      
+      <div class="extra">
+        <a href="https://github.com/tombenner/wp-mvc">Source</a>
+      </div>
+      
+      <div class="extra extra-small">
+        Powered by <a href="https://github.com/tombenner/jdoc">JDoc</a>
+      </div>
+      
+    </div>
+
+    <div id="content">
+    
+      <div class="documentation-content">
+  <h2>default_search_joins</h2>
+  <p>This can be set to make searches in the administrative interface or in the default public search include the specified associations as joins.  This is helpful if you'd like to include fields from associations in <code>default_searchable_fields</code>.</p>
+
+<div class="highlight"><pre><code class="php"><span class="cp">&lt;?php</span>
+<span class="c1">// Event belongs_to Venue and has_and_belongs_to_many Speakers</span>
+
+<span class="k">class</span> <span class="nc">Event</span> <span class="k">extends</span> <span class="nx">MvcModel</span> <span class="p">{</span>
+
+  <span class="k">var</span> <span class="nv">$belongs_to</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;Venue&#39;</span><span class="p">);</span>
+  <span class="k">var</span> <span class="nv">$has_and_belongs_to_many</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+    <span class="s1">&#39;Speaker&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span>
+      <span class="s1">&#39;join_table&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;{prefix}events_speakers&#39;</span><span class="p">,</span>
+      <span class="s1">&#39;fields&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;first_name&#39;</span><span class="p">,</span> <span class="s1">&#39;last_name&#39;</span><span class="p">)</span>
+    <span class="p">)</span>
+  <span class="p">);</span>
+
+<span class="p">}</span>
+
+<span class="c1">// We can then set $default_search_joins and $default_searchable_fields to include Speaker and Venue</span>
+
+<span class="k">class</span> <span class="nc">AdminEventsController</span> <span class="k">extends</span> <span class="nx">MvcAdminController</span> <span class="p">{</span>
+
+  <span class="k">var</span> <span class="nv">$default_search_joins</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;Speaker&#39;</span><span class="p">,</span> <span class="s1">&#39;Venue&#39;</span><span class="p">);</span>
+  <span class="k">var</span> <span class="nv">$default_searchable_fields</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;Speaker.first_name&#39;</span><span class="p">,</span> <span class="s1">&#39;Speaker.last_name&#39;</span><span class="p">,</span> <span class="s1">&#39;Venue.name&#39;</span><span class="p">);</span>
+  <span class="k">var</span> <span class="nv">$default_columns</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+    <span class="s1">&#39;id&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;date&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;value_method&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;admin_column_date&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;time&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;value_method&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;admin_column_time&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;venue&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;value_method&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;venue_edit_link&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;speaker_names&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Speakers&#39;</span>
+  <span class="p">);</span>
+
+<span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</code></pre>
+</div>
+
+
+
+
+</div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>

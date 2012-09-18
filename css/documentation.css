@@ -1,0 +1,66 @@
+#nav #sections > li > a {
+  font-size:15px;
+  padding:2px 0;
+}
+#nav #sections.doc-nav a {
+  color:inherit;
+}
+#nav #sections.doc-nav ul {
+  margin-bottom:0 !important;
+
+}
+#nav #sections.doc-nav > li li {
+  margin-left:10px;
+}
+#nav #sections.doc-nav > li ul,
+#nav #sections.doc-nav > li li {
+  display:none;
+}
+#nav #sections.doc-nav ul.in-active-tree,
+#nav #sections.doc-nav li.in-active-tree {
+  display:block;
+}
+#nav #sections.doc-nav a,
+#nav #sections.doc-nav > li > a {
+  font-weight:normal;
+}
+#nav #sections.doc-nav li.active > a {
+  font-weight:bold !important;
+}
+.doc-child-header {
+  border-bottom:1px solid #ccc;
+  margin-bottom:7px;
+}
+.doc-child-header .doc-child-link {
+  float:right;
+  font-size:11px;
+  margin-top:4px;
+}
+.doc-error {
+    background:#fff;
+    position:absolute;
+    width:900px;
+    padding:20px;
+    border:2px solid #ccc;
+}
+/*Layout modifications*/
+body #container {
+  width:1000px;
+}
+body #content {
+  width:678px;
+}
+body #content h2 {
+  margin-top:0;
+}
+#nav a {
+  font-weight:normal;
+}
+#nav .extra-small {
+  font-size:10px;
+}
+#nav .extra-small a {
+  color:#555;
+  font-size:inherit;
+  display:inline;
+}

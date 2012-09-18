@@ -1,8 +1,0 @@
-#!/bin/bash
-mvc_core_path="$(dirname $0)/core/"
-# Allow for a custom path to the PHP executable to be set in $WPMVC_PHP
-if [ -n "$WPMVC_PHP" ]; then
-	eval "${WPMVC_PHP} -q ${mvc_core_path}wpmvc.php $@"
-else
-	php -q "${mvc_core_path}wpmvc.php" "$@"
-fi
