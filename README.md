@@ -11,13 +11,9 @@ WordPress supports a number of specific content types natively, but setting up c
 
 WP MVC fills this gap. The basic idea is that you create an app/ directory that contains a file structure similar to other MVC frameworks (controllers/, helpers/, models/, views/, etc) and set up models, views, and controllers just as you would in other frameworks. WP MVC runs this code in the context of WordPress (i.e. you can still use all of WordPress's functionality inside of app/). Since WordPress already provides an administrative system, admin actions and views in app/ are run in that context, with WP MVC adding all of the necessary WordPress actions and filters to make this possible without the developer needing to lift a finger. An [Administration Menu](http://codex.wordpress.org/Administration_Menus) is automatically created for each model, but it can be customized or omitted.
 
-For more extensive documentation, and to see what WP MVC is capable of, please visit [wpmvc.org](http://wpmvc.org).
+For more extensive documentation, and to see what WP MVC is capable of, please visit [wpmvc.org](http://wpmvc.org).  Check out the [tutorial](http://wpmvc.org/documentation/tutorial/) to see how quickly you can get an app up and running.
 
 If you'd like to grab development releases, see what new features are being added, or browse the source code please visit the [GitHub repo](http://github.com/tombenner/wp-mvc).
-
-This is free and open source software. If you like it and want to encourage further development, please [flattr it][FlattrLink]. Thanks!
-
-[![][FlattrButton]][FlattrLink]
 
 Installation
 ------------
@@ -43,7 +39,7 @@ It only takes four simple steps to create a basic WP MVC-based plugin:
 1. Create the initial code for the models, views, and controllers using a single command for each resource
 1. Modify the generated models, views, and controllers to customize the app
 
-For a simple example tutorial on this, please see the [tutorial on wpmvc.org](http://wpmvc.org/documentation/70/tutorial/).
+For a simple example tutorial on this, please see the [tutorial on wpmvc.org](http://wpmvc.org/documentation/tutorial/).
 
 Frequently Asked Questions
 --------------------------
@@ -58,6 +54,3 @@ If there's functionality that you'd like to use that isn't implemented in the ex
 
 * [WordPress Forum](http://wordpress.org/tags/wp-mvc?forum_id=10)
 * [GitHub](http://github.com/tombenner)
-
-[FlattrLink]: https://flattr.com/thing/487376/WP-MVC
-[FlattrButton]: http://api.flattr.com/button/button-static-50x60.png
