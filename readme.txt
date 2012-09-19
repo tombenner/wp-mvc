@@ -2,7 +2,7 @@
 Contributors: tombenner
 Tags: mvc, framework, model, view, controller, development, plugin
 Requires at least: 3.0
-Tested up to: 3.3.1
+Tested up to: 3.4.2
 Stable tag: 1.2
 
 WP MVC is a full-fledged MVC framework, similar to CakePHP and Rails, that developers can use inside of WordPress.
@@ -18,8 +18,6 @@ WP MVC fills this gap. The basic idea is that you create an app/ directory that 
 For more extensive documentation, and to see what WP MVC is capable of, please visit [wpmvc.org](http://wpmvc.org).
 
 If you'd like to grab development releases, see what new features are being added, or browse the source code please visit the [GitHub repo](http://github.com/tombenner/wp-mvc).
-
-This is free and open source software. If you like it and want to encourage further development, please [flattr it](https://flattr.com/thing/487376/WP-MVC). Thanks!
 
 == Installation ==
 
@@ -44,7 +42,7 @@ It only takes four simple steps to create a basic WP MVC-based plugin:
 1. Create the initial code for the models, views, and controllers using a single command for each resource
 1. Modify the generated models, views, and controllers to customize the app
 
-For a simple example tutorial on this, please see the [tutorial on wpmvc.org](http://wpmvc.org/documentation/70/tutorial/).
+For a simple example tutorial on this, please see the [tutorial on wpmvc.org](http://wpmvc.org/documentation/tutorial/).
 
 == Frequently Asked Questions ==
 
@@ -70,7 +68,6 @@ If there's functionality that you'd like to use that isn't implemented in the ex
 == Changelog ==
 
 = 1.2 =
-Please see the [Release Notes](http://wpmvc.org/documentation/1.2/114/release-notes-v-1-2/) for a full list
 
 * Model objects now have magic properties for accessing their associations (e.g. $event->venue, $event->speakers)
 * Added model classes for most of the native WP tables (e.g. MvcPost, MvcUser), which can be used in the MVC context (e.g. as associations)
