@@ -3,7 +3,9 @@
 class MvcPostAdapter {
 
 	public function verify_settings($model) {
-		if (!isset($model->schema['post_id'])) {
+		if (empty($model->schema)) {
+			MvcError::warning('The schema for '.$model->name.' is empty. It\'s likely that the plugin generating this table isn\'t working, or you may need to deactivate and activate it.  Please make sure that the table "'.$model->table.'" exists.');
+		} else if (!isset($model->schema['post_id'])) {
 			MvcError::fatal('To associate posts with '.$model->name.', its table needs to have a column named "post_id" of type BIGINT(20).  Please run the following SQL to add and index the column:
 <pre>
 ALTER TABLE '.$model->table.' ADD COLUMN post_id BIGINT(20);
