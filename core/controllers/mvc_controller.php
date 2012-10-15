@@ -173,9 +173,6 @@ class MvcController {
 			$this->is_controller = false;
 			$this->set('params', $this->params);
 			$this->render_view_with_view_vars($layout_directory.$layout, $options);
-			if (!$this->is_admin) {
-				die();
-			}
 		// Rendering from within a view
 		} else {
 			$this->render_view_from_view($path, $options);

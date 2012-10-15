@@ -108,7 +108,14 @@ class MvcPublicLoader extends MvcLoader {
 		if ($routing_params) {
 			$mvc_params = $routing_params;
 			do_action('mvc_public_init', $routing_params);
+
+			// Pre filter
+			$routing_params = apply_filters('wpmvc_routing_params', $routing_params);
+
+			// Post filter
+			ob_start();
 			$this->dispatcher->dispatch($routing_params);
+			echo apply_filters('wpmvc_dispatcher', ob_get_clean(), $routing_params);
 		}
 	}
 	
