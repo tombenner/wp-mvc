@@ -189,7 +189,7 @@ class MvcAdminLoader extends MvcLoader {
 				'action' => $key,
 				'in_menu' => true,
 				'label' => MvcInflector::titleize($key),
-				$plugin_admin_role_or_capability
+				'capability' => $plugin_admin_role_or_capability
 			);
 			if (isset($default_pages[$key])) {
 				$value = array_merge($default_pages[$key], $value);
