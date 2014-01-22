@@ -127,9 +127,8 @@ class GenerateShell extends MvcShell {
 	
 		$name_tableized = MvcInflector::tableize($name);
 		$name_pluralized = MvcInflector::pluralize($name);
-		
-		$vars = array('name_pluralized' => $name_pluralized);
-		
+		$fields= $this->get_table_fields($name);
+		$vars = array('name_pluralized' => $name_pluralized,'fields'=>$fields);
 		$target_path = $plugin_app_path.'controllers/'.$name_tableized.'_controller.php';
 		$this->templater->create('public_controller', $target_path, $vars);
 		
@@ -177,7 +176,7 @@ class GenerateShell extends MvcShell {
 	}
 	
 	private function generate_views($plugin, $name) {
-		
+
 		$plugin_app_path = $this->get_plugin_app_path($plugin);
 	
 		$name_tableized = MvcInflector::tableize($name);
@@ -191,7 +190,9 @@ class GenerateShell extends MvcShell {
 		$admin_directory = $plugin_app_path.'views/admin/'.$name_tableized.'/';
 		$directory->create($admin_directory);
 		
+		$fields= $this->get_table_fields($name);
 		$vars = array(
+		'fields' => $fields,
 			'name_tableized' => $name_tableized,
 			'name_titleized' => $name_titleized,
 			'name_titleized_pluralized' => $name_titleized_pluralized,
@@ -206,7 +207,17 @@ class GenerateShell extends MvcShell {
 		$this->templater->create('views/admin/edit', $admin_directory.'/edit.php', $vars);
 		
 	}
-	
+	private function get_table_fields($name)
+	{
+	global $wpdb;
+	$defaults = array('model_name' => $name,'table' => $wpdb->prefix.$name);
+		$this->db_adapter = new MvcDatabaseAdapter();
+		$this->db_adapter->set_defaults($defaults);
+		$sql = ' DESCRIBE '.$wpdb->prefix.$name;
+		$results = $this->db_adapter->get_results($sql);
+		
+		return $results;
+	}
 	private function get_plugin_model_args($args) {
 		if (empty($args[0]) || empty($args[1])) {
 			MvcError::fatal('Please specify a plugin and name for the model.');
