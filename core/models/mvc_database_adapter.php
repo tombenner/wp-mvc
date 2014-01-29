@@ -156,7 +156,7 @@ class MvcDatabaseAdapter {
 	public function get_insert_columns_sql($data) {
 		$columns = array_keys($data);
 		$columns = $this->db->escape_array($columns);
-		$sql = '('.implode(', ', $columns).')';
+		$sql = '(`'.implode('`, `', $columns).'`)';
 		return $sql;
 	}
 	
