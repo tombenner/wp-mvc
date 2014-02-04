@@ -126,6 +126,10 @@ class MvcFormHelper extends MvcHelper {
 	}
 	
 	public function select($field_name, $options=array()) {
+		$defaults = array(
+			'label' => MvcInflector::titleize($field_name)
+		);
+		$options = array_merge($defaults, $options);
 		$html = $this->before_input($field_name, $options);
 		$html .= $this->select_tag($field_name, $options);
 		$html .= $this->after_input($field_name, $options);
