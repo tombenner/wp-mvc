@@ -43,9 +43,14 @@ class MvcAdminController extends MvcController {
 			if (empty($object['id'])) {
 				$this->model->create($this->params['data']);
 				$id = $this->model->insert_id;
+				if($id)
+				{
 				$url = MvcRouter::admin_url(array('controller' => $this->name, 'action' => 'edit', 'id' => $id));
 				$this->flash('notice', 'Successfully created!');
 				$this->redirect($url);
+				}
+				else
+				$this->flash('error', $this->model->validation_error_html);
 			} else {
 				if ($this->model->save($this->params['data'])) {
 					$this->flash('notice', 'Successfully saved!');
