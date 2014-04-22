@@ -67,6 +67,9 @@ class MvcAdminLoader extends MvcLoader {
 		// MvcConfiguration::append(array(
 		//   'PluginAdminRoleOrCapabilities' => array(
 		//     'speakers' => 'edit_posts'
+		//   ),
+		//   'AdminPages' => array(
+		//        'checks' => array('label' => 'Checks', 'capability' => 'check'),
 		//   )
 		// ));
 		// if no role/capability is set default role will be set to administrator
