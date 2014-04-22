@@ -61,8 +61,28 @@ class MvcAdminLoader extends MvcLoader {
 		
 		$admin_pages = MvcConfiguration::get('AdminPages');
 		
+		// Add this to your plugin's bootstrap file to grant
+		// users access to controllers based on role/capability.
+		// e.g:
+		// MvcConfiguration::append(array(
+		//   'PluginAdminRoleOrCapabilities' => array(
+		//     'speakers' => 'edit_posts'
+		//   ),
+		//   'AdminPages' => array(
+		//        'checks' => array('label' => 'Checks', 'capability' => 'check'),
+		//   )
+		// ));
+		// if no role/capability is set default role will be set to administrator
+		$plugin_admin_role_or_capabilities = MvcConfiguration::get('PluginAdminRoleOrCapabilities');
+
 		foreach ($this->admin_controller_names as $controller_name) {
 		
+			if (!isset($plugin_admin_role_or_capabilities) || empty($plugin_admin_role_or_capabilities[$controller_name])) {
+				$plugin_admin_role_or_capability = 'administrator';
+			} else {
+				$plugin_admin_role_or_capability = $plugin_admin_role_or_capabilities[$controller_name];
+			}
+			
 			if (isset($admin_pages[$controller_name])) {
 				if (empty($admin_pages[$controller_name]) || !$admin_pages[$controller_name]) {
 					continue;
@@ -89,7 +109,7 @@ class MvcAdminLoader extends MvcLoader {
 				add_menu_page(
 					$controller_titleized,
 					$controller_titleized,
-					'administrator',
+					$plugin_admin_role_or_capability,
 					$top_level_handle,
 					array($this->dispatcher, $method),
 					null,

@@ -198,9 +198,26 @@ class MvcHelper {
 		$links = array();
 		$object_name = empty($object->__name) ? 'Item #'.$object->__id : $object->__name;
 		$encoded_object_name = $this->esc_attr($object_name);
-		$links[] = '<a href="'.MvcRouter::admin_url(array('object' => $object, 'action' => 'edit')).'" title="Edit '.$encoded_object_name.'">Edit</a>';
-		$links[] = '<a href="'.MvcRouter::public_url(array('object' => $object)).'" title="View '.$encoded_object_name.'">View</a>';
-		$links[] = '<a href="'.MvcRouter::admin_url(array('object' => $object, 'action' => 'delete')).'" title="Delete '.$encoded_object_name.'" onclick="return confirm(&#039;Are you sure you want to delete '.$encoded_object_name.'?&#039;);">Delete</a>';
+		
+		//Customize the links
+		$links = array();
+		if(isset($controller->links_list) && is_array($controller->links_list) && count($controller->links_list) > 0) {
+			foreach($controller->links_list as $link) {
+				if(isset($link['level']) && strtolower($link['level']) == 'admin')
+					$href = MvcRouter::admin_url(array('object' => $object, 'action' => $link['action']));
+				else
+					$href = MvcRouter::public_url(array('object' => $object, 'action' => $link['action']));
+				
+				//Atribute
+				$params = isset($link['params']) ? $link['params'] : '';
+				$links[] = '<a href="'.$href.'" title="'.$link['label'].' '.$encoded_object_name.'"'.$params.'>'.$link['label'].'</a>';
+			}
+		}
+		else {
+			$links[] = '<a href="'.MvcRouter::admin_url(array('object' => $object, 'action' => 'edit')).'" title="Edit '.$encoded_object_name.'">Edit</a>';
+			$links[] = '<a href="'.MvcRouter::public_url(array('object' => $object)).'" title="View '.$encoded_object_name.'">View</a>';
+			$links[] = '<a href="'.MvcRouter::admin_url(array('object' => $object, 'action' => 'delete')).'" title="Delete '.$encoded_object_name.'" onclick="return confirm(&#039;Are you sure you want to delete '.$encoded_object_name.'?&#039;);">Delete</a>';
+		}
 		$html = implode(' | ', $links);
 		return '<td>'.$html.'</td>';
 	}
