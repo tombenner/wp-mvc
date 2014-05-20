@@ -138,7 +138,7 @@ abstract class MvcLoader {
 			$controller = MvcInflector::tableize($model_name);
 			$model_name = MvcInflector::camelize($model_name);
 			$model = MvcModelRegistry::get_model($model_name);
-			$object = $model->find_one(array('post_id' => $post->ID));
+			$object = $model->find_one_by_post_id($post->ID);
 			if ($object) {
 				$url = MvcRouter::public_url(array('object' => $object));
 				if ($url) {
