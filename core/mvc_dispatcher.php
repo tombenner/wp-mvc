@@ -2,7 +2,7 @@
 
 class MvcDispatcher {
 
-	function dispatch($options=array()) {
+	static function dispatch($options=array()) {
 		
 		$controller_name = $options['controller'];
 		$action = $options['action'];
@@ -50,7 +50,7 @@ class MvcDispatcher {
 	
 	}
 	
-	private function escape_params($params) {
+	static function escape_params($params) {
 		if (is_array($params)) {
 			foreach ($params as $key => $value) {
 				if (is_string($value)) {

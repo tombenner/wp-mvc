@@ -7,7 +7,8 @@ class MvcSettingsRegistry {
 	private function &get_instance() {
 		static $instance = array();
 		if (!$instance) {
-			$instance[0] =& new MvcSettingsRegistry();
+			$mvc_settings_registry = new MvcSettingsRegistry();
+			$instance[0] =& $mvc_settings_registry;
 		}
 		return $instance[0];
 	}
