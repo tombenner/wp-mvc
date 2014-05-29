@@ -4,6 +4,7 @@ class MvcModel {
 
 	public $name = null;
 	public $table = null;
+	public $database = null;
 	public $primary_key = 'id';
 	public $belongs_to = null;
 	public $has_many = null;
@@ -576,7 +577,7 @@ class MvcModel {
 	protected function init_schema() {
 		$sql = '
 			DESCRIBE
-				'.$this->table;
+				'.$this->table_reference;
 		$results = $this->db_adapter->get_results($sql);
 		
 		$schema = array();
