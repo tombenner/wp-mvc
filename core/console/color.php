@@ -103,7 +103,7 @@ class Console_Color
      * @access public
      * @return string
      */
-    function color($color = null, $style = null, $background = null) // {{{
+    static function color($color = null, $style = null, $background = null) // {{{
     {
         $colors = &$GLOBALS['_CONSOLE_COLOR_CODES'];
         if (is_array($color)) {
@@ -214,7 +214,7 @@ class Console_Color
      * @access public
      * @return string
      */
-    function convert($string, $colored = true)
+    static function convert($string, $colored = true)
     {
         static $conversions = array ( // static so the array doesn't get built
                                       // everytime

@@ -23,7 +23,7 @@ class MvcShell {
 	 * 
 	 * @param type $args 
 	 */
-	protected function init($args) {
+	protected function init($args=array()) {
 	}
 
 	public function main($args) {
