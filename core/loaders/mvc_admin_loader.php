@@ -93,7 +93,7 @@ class MvcAdminLoader extends MvcLoader {
 					$top_level_handle,
 					array($this->dispatcher, $method),
 					null,
-					$menu_position
+					null //$menu_position
 				);
 			
 				foreach ($processed_pages as $key => $admin_page) {
