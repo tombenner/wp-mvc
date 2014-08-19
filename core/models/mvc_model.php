@@ -339,7 +339,7 @@ class MvcModel {
 		return $result;
 	}
 	
-	private function process_find_options($options) {
+	protected function process_find_options($options) {
 		if (!empty($options['joins'])) {
 			if (is_string($options['joins'])) {
 				$options['joins'] = array($options['joins']);
@@ -465,7 +465,7 @@ class MvcModel {
 		return true;
 	}
 	
-	private function process_objects($objects, $options=array()) {
+	protected function process_objects($objects, $options=array()) {
 		if (!is_array($objects) && !is_object($objects)) {
 			return null;
 		}
