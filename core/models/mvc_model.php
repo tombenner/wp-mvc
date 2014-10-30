@@ -16,7 +16,7 @@ class MvcModel {
 	public $schema = null;
 	public $wp_post = null;
 	private $data_validator = null;
-	private $db_adapter = null;
+	protected $db_adapter = null;
 	private $wp_post_adapter = null;
 	
 	function __construct() {
