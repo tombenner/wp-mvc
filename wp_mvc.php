@@ -24,25 +24,27 @@ if (is_admin()) {
 	add_action('admin_menu', array($loader, 'add_settings_pages'));
 	add_action('plugins_loaded', array($loader, 'add_admin_ajax_routes'));
 
-} else {
+} 
+require_once MVC_PLUGIN_PATH.'core/loaders/mvc_public_loader.php';
+$loader = new MvcPublicLoader();
+$loader->init();
 
-	// Load public functionality
-	
-	require_once MVC_PLUGIN_PATH.'core/loaders/mvc_public_loader.php';
-	$loader = new MvcPublicLoader();
-	
-	// Filters for public URLs
-	add_filter('wp_loaded', array($loader, 'flush_rewrite_rules'));
-	add_filter('rewrite_rules_array', array($loader, 'add_rewrite_rules'));
-	add_filter('query_vars', array($loader, 'add_query_vars'));
-	add_filter('template_redirect', array($loader, 'template_redirect'));
-
+function load_default_query_vars() {
+	global $wp;
+	foreach (array('mvc_controller','mvc_action','mvc_id') as $qv) {
+		$wp->add_query_var( $qv );
+	}
 }
+// Load public functionality
+
+add_filter('wp_loaded', 'load_default_query_vars');
+add_filter('wp_loaded', array($loader, 'load_query_vars'));
+add_action('template_redirect', array($loader, 'template_redirect'));
+
+
 
 // Load global functionality
 
 add_action('init', array($loader, 'init'));
 add_action('widgets_init', array($loader, 'register_widgets'));
 add_filter('post_type_link', array($loader, 'filter_post_link'), 10, 2);
-
-?>
