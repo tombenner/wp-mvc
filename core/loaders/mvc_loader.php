@@ -123,7 +123,7 @@ abstract class MvcLoader {
 	}
 	
 	public function init() {
-	
+
 		$this->load_controllers();
 		$this->load_libs();
 		$this->load_models();
