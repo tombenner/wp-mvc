@@ -31,7 +31,7 @@ class MvcDatabase {
 	}
 	
 	public function escape($string) {
-		return mysql_real_escape_string($string);
+		return esc_sql($string);
 	}
 	
 	public function escape_array($array) {

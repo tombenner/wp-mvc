@@ -25,20 +25,20 @@ if (is_admin()) {
 	add_action('plugins_loaded', array($loader, 'add_admin_ajax_routes'));
 
 } 
+
+// Load public functionality
 require_once MVC_PLUGIN_PATH.'core/loaders/mvc_public_loader.php';
 $loader = new MvcPublicLoader();
 $loader->init();
 
 function load_default_query_vars() {
 	global $wp;
-	foreach (array('mvc_controller','mvc_action','mvc_id') as $qv) {
+	foreach(array('mvc_controller','mvc_action','mvc_id') as $qv) {
 		$wp->add_query_var( $qv );
 	}
 }
-// Load public functionality
 
-add_filter('wp_loaded', 'load_default_query_vars');
-add_filter('wp_loaded', array($loader, 'load_query_vars'));
+add_action('wp_loaded', 'load_default_query_vars');
 add_action('template_redirect', array($loader, 'template_redirect'));
 
 
