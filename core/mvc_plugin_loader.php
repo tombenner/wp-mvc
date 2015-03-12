@@ -115,9 +115,8 @@ class MvcPluginLoader {
 		$loader->init();
 		$rules = $loader->get_new_rules();
 		foreach($rules as $regex => $redirect) {
-			add_rewrite_rule($regex, $redirect);
+			add_rewrite_rule($regex, $redirect,'top');
 		}
-		$loader->load_query_vars();
 		$loader->flush_rewrite_rules();
 	}
 	
