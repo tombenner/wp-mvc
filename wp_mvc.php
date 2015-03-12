@@ -31,17 +31,9 @@ require_once MVC_PLUGIN_PATH.'core/loaders/mvc_public_loader.php';
 $loader = new MvcPublicLoader();
 $loader->init();
 
-function load_default_query_vars() {
-	global $wp;
-	foreach(array('mvc_controller','mvc_action','mvc_id') as $qv) {
-		$wp->add_query_var( $qv );
-	}
-}
-
-add_action('wp_loaded', 'load_default_query_vars');
+add_filter('rewrite_rules_array', array($loader, 'add_rewrite_rules'));
+add_filter('query_vars', array($loader, 'add_query_vars'));
 add_action('template_redirect', array($loader, 'template_redirect'));
-
-
 
 // Load global functionality
 
