@@ -29,7 +29,6 @@ if (is_admin()) {
 // Load public functionality
 require_once MVC_PLUGIN_PATH.'core/loaders/mvc_public_loader.php';
 $loader = new MvcPublicLoader();
-$loader->init();
 
 add_filter('rewrite_rules_array', array($loader, 'add_rewrite_rules'));
 add_filter('query_vars', array($loader, 'add_query_vars'));
