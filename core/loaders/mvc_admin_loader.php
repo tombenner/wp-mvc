@@ -7,10 +7,6 @@ class MvcAdminLoader extends MvcLoader {
 	public $settings = null;
 	
 	public function admin_init() {
-		$this->load_controllers();
-		$this->load_libs();
-		$this->load_settings();
-		$this->load_functions();
 		$this->register_settings();
 		$this->dispatch();
 	}

@@ -167,7 +167,7 @@ abstract class MvcLoader {
 		}
 	}
 	
-	protected function load_controllers() {
+	public function load_controllers() {
 	
 		foreach ($this->plugin_app_paths as $plugin_app_path) {
 		
