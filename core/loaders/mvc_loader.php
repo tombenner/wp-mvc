@@ -225,7 +225,7 @@ abstract class MvcLoader {
 		
 	}
 	
-	protected function load_settings() {
+	public function load_settings() {
 		
 		$settings_names = array();
 		
