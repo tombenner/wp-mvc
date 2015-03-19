@@ -3,6 +3,7 @@
 abstract class MvcLoader {
 
 	protected $admin_controller_names = array();
+	protected $admin_controller_capabilities = array();
 	protected $core_path = '';
 	protected $dispatcher = null;
 	protected $file_includer = null;
@@ -26,10 +27,11 @@ abstract class MvcLoader {
 		$this->file_includer = new MvcFileIncluder();
 		$this->file_includer->include_all_app_files('config/bootstrap.php');
 		$this->file_includer->include_all_app_files('config/routes.php');
-		
+
 		$this->dispatcher = new MvcDispatcher();
 		
 	}
+
 	
 	protected function load_core() {
 		
@@ -167,7 +169,7 @@ abstract class MvcLoader {
 		}
 	}
 	
-	public function load_controllers() {
+	protected function load_controllers() {
 	
 		foreach ($this->plugin_app_paths as $plugin_app_path) {
 		
@@ -176,7 +178,13 @@ abstract class MvcLoader {
 			
 			foreach ($admin_controller_filenames as $filename) {
 				if (preg_match('/admin_([^\/]+)_controller\.php/', $filename, $match)) {
-					$this->admin_controller_names[] = $match[1];
+                    $controller_name = $match[1];
+					$this->admin_controller_names[] = $controller_name;
+                    $capabilities = MvcConfiguration::get('admin_controller_capabilities');
+                    if (empty($capabilities) || !isset($capabilities[$controller_name])) {
+                        $capabilities = array($controller_name => 'administrator');
+                    }
+                    $this->admin_controller_capabilities[$controller_name] = $capabilities[$controller_name];
 				}
 			}
 			
@@ -225,7 +233,7 @@ abstract class MvcLoader {
 		
 	}
 	
-	public function load_settings() {
+	protected function load_settings() {
 		
 		$settings_names = array();
 		
