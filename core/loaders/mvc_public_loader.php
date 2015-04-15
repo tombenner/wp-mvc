@@ -8,6 +8,16 @@ class MvcPublicLoader extends MvcLoader {
 		global $wp_rewrite;
 		$wp_rewrite->flush_rules(false);
 	}
+
+	public function load_rewrite_rules() {
+		if (empty($this->public_controller_names)) {
+			$this->init();
+		}
+		$rules = $this->get_new_rules();
+		foreach($rules as $regex => $redirect) {
+			add_rewrite_rule($regex, $redirect,'top');
+		}
+	}
 	
 	public function add_rewrite_rules($rules = array()) {
 		$new_rules = $this->get_new_rules();		

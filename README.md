@@ -2,11 +2,6 @@ WP MVC
 ==================================================
 An MVC framework for WordPress
 
-About This Branch
-----------------
-
-I have been using this framework as the basis for numerous custom plugins on a high-traffic website and have discovered a bug. Basically, WP-MVC reloads the rewrite rules on every page load, which physically removes and re-adds them from the database with each load. This is warned against in the latest version of the Wordpress documentation as a very bad idea: http://codex.wordpress.org/Function_Reference/flush_rewrite_rules . It means that under high-concurrency traffic spikes, this can result in routes being momentarily unavailable at time of page load, resulting in intermittent 404 errors. In my testing of high-concurrency, this could spike up to 10% of the time, (ab -n 100 -c 10) and has been very difficult and frustrating to diagnose due to the intermittent nature of the problem. My current pull request: #42 addresses this issue. If anyone knows how to reach Tom Benner (I have been trying repeatedly) please let me know, since as it is now the WP-MVC framework from his master branch is not suitable for high-traffic websites. It is otherwise a really great framework, and I would love to see it become concurrency-safe on the master branch.
-
 Description
 -----------
 
