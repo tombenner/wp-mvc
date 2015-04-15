@@ -67,6 +67,11 @@ If there's functionality that you'd like to use that isn't implemented in the ex
 
 == Changelog ==
 
+= 1.3 =
+
+ * Added support for high-concurrency, high-traffic websites by refactoring rewrite rules
+ * Restructured classes to perform silently with WP_DEBUG set to true
+
 = 1.2 =
 
 * Model objects now have magic properties for accessing their associations (e.g. $event->venue, $event->speakers)
