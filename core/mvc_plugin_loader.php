@@ -19,6 +19,7 @@ class MvcPluginLoader {
 		$plugin = $this->get_plugin_name_from_file_path($file_path);
 		$this->add_plugin($plugin);
 		$this->init_settings_defaults($file_path);
+		$this->load_plugin_routes();
 	}
 	
 	public function deactivate_app($file_path) {
@@ -107,7 +108,12 @@ class MvcPluginLoader {
 			}
 		}
 	}
+
+	protected function load_plugin_routes() {
+		require_once MVC_PLUGIN_PATH.'core/loaders/mvc_public_loader.php';
+		$loader = new MvcPublicLoader();
+		$loader->add_rewrite_rules();
+		$loader->flush_rewrite_rules();
+	}
 	
 }
-
-?>

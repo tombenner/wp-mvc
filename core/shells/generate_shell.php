@@ -8,7 +8,7 @@ class GenerateShell extends MvcShell {
 
 	private $templater = null;
 
-	public function init() {
+	public function init($args = array()) {
 		$this->templater = new MvcTemplater();
 		$this->templater->set_template_directory($this->core_path.'templates/plugin/app/');
 	}

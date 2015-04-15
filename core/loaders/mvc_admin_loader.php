@@ -7,6 +7,8 @@ class MvcAdminLoader extends MvcLoader {
 	public $settings = null;
 	
 	public function admin_init() {
+		$this->load_controllers();
+		$this->load_settings();
 		$this->register_settings();
 		$this->dispatch();
 	}
@@ -52,6 +54,7 @@ class MvcAdminLoader extends MvcLoader {
 	}
 	
 	public function add_menu_pages() {
+
 		
 		global $_registered_pages;
 	
@@ -86,10 +89,11 @@ class MvcAdminLoader extends MvcLoader {
 			
 				$method = $admin_controller_name.'_index';
 				$this->dispatcher->{$method} = create_function('', 'MvcDispatcher::dispatch(array("controller" => "'.$admin_controller_name.'", "action" => "index"));');
+                		$capability = $this->admin_controller_capabilities[ $controller_name ];
 				add_menu_page(
 					$controller_titleized,
 					$controller_titleized,
-					'administrator',
+					$capability,
 					$top_level_handle,
 					array($this->dispatcher, $method),
 					null,
@@ -168,11 +172,12 @@ class MvcAdminLoader extends MvcLoader {
 			if (!is_array($value)) {
 				continue;
 			}
+            		$capability = $this->admin_controller_capabilities[ $controller_name ];
 			$defaults = array(
 				'action' => $key,
 				'in_menu' => true,
 				'label' => MvcInflector::titleize($key),
-				'capability' => 'administrator'
+				'capability' => $capability
 			);
 			if (isset($default_pages[$key])) {
 				$value = array_merge($default_pages[$key], $value);
@@ -183,7 +188,7 @@ class MvcAdminLoader extends MvcLoader {
 		
 		return $processed_pages;
 	}
-	
+
 	public function init_settings() {
 		$this->settings = array();
 		if (!empty($this->settings_names) && empty($this->settings)) {

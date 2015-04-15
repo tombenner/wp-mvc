@@ -2,17 +2,18 @@
 
 class MvcConfiguration {
 
-	function &get_instance($boot = true) {
+	static function &get_instance($boot = true) {
 		static $instance = array();
 		
 		if (!$instance) {
-			$instance[0] =& new MvcConfiguration();
+			$mvc_configuration = new MvcConfiguration();
+			$instance[0] =& $mvc_configuration;
 		}
 		
 		return $instance[0];
 	}
 
-	function set($config, $value = null) {
+	static function set($config, $value = null) {
 		$_this =& MvcConfiguration::get_instance();
 
 		if (!is_array($config)) {
@@ -33,7 +34,7 @@ class MvcConfiguration {
 		return true;
 	}
 
-	function append($config, $value = null) {
+	static function append($config, $value = null) {
 		$_this =& MvcConfiguration::get_instance();
 
 		if (!is_array($config)) {
@@ -51,7 +52,7 @@ class MvcConfiguration {
 		return true;
 	}
 
-	function get($config) {
+	static function get($config) {
 		$_this =& MvcConfiguration::get_instance();
 
 		if (strpos($config, '.') !== false) {

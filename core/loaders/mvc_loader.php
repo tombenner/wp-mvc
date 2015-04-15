@@ -3,6 +3,7 @@
 abstract class MvcLoader {
 
 	protected $admin_controller_names = array();
+	protected $admin_controller_capabilities = array();
 	protected $core_path = '';
 	protected $dispatcher = null;
 	protected $file_includer = null;
@@ -17,6 +18,8 @@ abstract class MvcLoader {
 		}
 		
 		$this->core_path = MVC_CORE_PATH;
+
+		$this->query_vars = array('mvc_controller','mvc_action','mvc_id','mvc_extra');
 		
 		$this->load_core();
 		$this->load_plugins();
@@ -24,10 +27,11 @@ abstract class MvcLoader {
 		$this->file_includer = new MvcFileIncluder();
 		$this->file_includer->include_all_app_files('config/bootstrap.php');
 		$this->file_includer->include_all_app_files('config/routes.php');
-		
+
 		$this->dispatcher = new MvcDispatcher();
 		
 	}
+
 	
 	protected function load_core() {
 		
@@ -123,7 +127,7 @@ abstract class MvcLoader {
 	}
 	
 	public function init() {
-	
+
 		$this->load_controllers();
 		$this->load_libs();
 		$this->load_models();
@@ -138,7 +142,7 @@ abstract class MvcLoader {
 			$controller = MvcInflector::tableize($model_name);
 			$model_name = MvcInflector::camelize($model_name);
 			$model = MvcModelRegistry::get_model($model_name);
-			$object = $model->find_one(array('post_id' => $post->ID));
+			$object = $model->find_one_by_post_id($post->ID);
 			if ($object) {
 				$url = MvcRouter::public_url(array('object' => $object));
 				if ($url) {
@@ -174,7 +178,13 @@ abstract class MvcLoader {
 			
 			foreach ($admin_controller_filenames as $filename) {
 				if (preg_match('/admin_([^\/]+)_controller\.php/', $filename, $match)) {
-					$this->admin_controller_names[] = $match[1];
+                    $controller_name = $match[1];
+					$this->admin_controller_names[] = $controller_name;
+                    $capabilities = MvcConfiguration::get('admin_controller_capabilities');
+                    if (empty($capabilities) || !isset($capabilities[$controller_name])) {
+                        $capabilities = array($controller_name => 'administrator');
+                    }
+                    $this->admin_controller_capabilities[$controller_name] = $capabilities[$controller_name];
 				}
 			}
 			

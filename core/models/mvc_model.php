@@ -4,6 +4,7 @@ class MvcModel {
 
 	public $name = null;
 	public $table = null;
+	public $database = null;
 	public $primary_key = 'id';
 	public $belongs_to = null;
 	public $has_many = null;
@@ -15,7 +16,7 @@ class MvcModel {
 	public $schema = null;
 	public $wp_post = null;
 	private $data_validator = null;
-	private $db_adapter = null;
+	protected $db_adapter = null;
 	private $wp_post_adapter = null;
 	
 	function __construct() {
@@ -338,7 +339,7 @@ class MvcModel {
 		return $result;
 	}
 	
-	private function process_find_options($options) {
+	protected function process_find_options($options) {
 		if (!empty($options['joins'])) {
 			if (is_string($options['joins'])) {
 				$options['joins'] = array($options['joins']);
@@ -464,7 +465,7 @@ class MvcModel {
 		return true;
 	}
 	
-	private function process_objects($objects, $options=array()) {
+	protected function process_objects($objects, $options=array()) {
 		if (!is_array($objects) && !is_object($objects)) {
 			return null;
 		}
@@ -576,7 +577,7 @@ class MvcModel {
 	protected function init_schema() {
 		$sql = '
 			DESCRIBE
-				'.$this->table;
+				'.$this->table_reference;
 		$results = $this->db_adapter->get_results($sql);
 		
 		$schema = array();

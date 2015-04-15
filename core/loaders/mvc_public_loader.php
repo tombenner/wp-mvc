@@ -3,14 +3,30 @@
 require_once 'mvc_loader.php';
 
 class MvcPublicLoader extends MvcLoader {
-	
-	public function flush_rewrite_rules($rules) {
+
+	public function flush_rewrite_rules($rules = array()) {
 		global $wp_rewrite;
-		
-		$wp_rewrite->flush_rules();
+		$wp_rewrite->flush_rules(false);
+	}
+
+	public function load_rewrite_rules() {
+		if (empty($this->public_controller_names)) {
+			$this->init();
+		}
+		$rules = $this->get_new_rules();
+		foreach($rules as $regex => $redirect) {
+			add_rewrite_rule($regex, $redirect,'top');
+		}
 	}
 	
-	public function add_rewrite_rules($rules) {
+	public function add_rewrite_rules($rules = array()) {
+		$new_rules = $this->get_new_rules();		
+		$rules = array_merge($new_rules, $rules);
+		$rules = apply_filters('mvc_public_rewrite_rules', $rules);
+		return $rules;
+	}
+
+	public function get_new_rules() {	
 		global $wp_rewrite;
 		
 		$new_rules = array();
@@ -40,12 +56,9 @@ class MvcPublicLoader extends MvcLoader {
 				$new_rules = array_merge($route_rules, $new_rules);
 			}
 		}
-		
-		$rules = array_merge($new_rules, $rules);
-		$rules = apply_filters('mvc_public_rewrite_rules', $rules);
-		return $rules;
+		return $new_rules;
 	}
-	
+
 	protected function get_rewrite_rules($route_path, $route_defaults, $controller, $first_query_var_match_index=0) {
 
 		add_rewrite_tag('%'.$controller.'%', '(.+)');
@@ -94,10 +107,21 @@ class MvcPublicLoader extends MvcLoader {
 		
 		return $controller_rules;
 	}
+
+	public function get_query_vars() {
+		return $this->query_vars;
+	}
 	
-	public function add_query_vars($vars) {
+	public function add_query_vars($vars = array()) {
 		$vars = array_merge($vars, $this->query_vars);
 		return $vars;
+	}
+
+	public function load_query_vars() {
+		global $wp;
+		foreach ($this->query_vars as $qv) {
+			$wp->add_query_var( $qv );
+		}
 	}
 	
 	public function template_redirect() {
