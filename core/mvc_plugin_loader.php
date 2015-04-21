@@ -113,7 +113,7 @@ class MvcPluginLoader {
 		require_once MVC_PLUGIN_PATH.'core/loaders/mvc_public_loader.php';
 		$public_loader = new MvcPublicLoader();
         $public_loader->init();
-		$public_loader->add_rewrite_rules();
+		$public_loader->load_rewrite_rules();
 		$public_loader->flush_rewrite_rules();
 	}
 	
