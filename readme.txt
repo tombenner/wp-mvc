@@ -69,7 +69,7 @@ If there's functionality that you'd like to use that isn't implemented in the ex
 
 = 1.3 =
 
- * Added support for high-concurrency, high-traffic websites by refactoring rewrite rules
+ * Added support for high-concurrency, high-traffic websites by refactoring rewrite rule initialization
  * Restructured classes to perform silently with WP_DEBUG set to true
 
 = 1.2 =

@@ -111,9 +111,10 @@ class MvcPluginLoader {
 
 	protected function load_plugin_routes() {
 		require_once MVC_PLUGIN_PATH.'core/loaders/mvc_public_loader.php';
-		$loader = new MvcPublicLoader();
-		$loader->add_rewrite_rules();
-		$loader->flush_rewrite_rules();
+		$public_loader = new MvcPublicLoader();
+        $public_loader->init();
+		$public_loader->load_rewrite_rules();
+		$public_loader->flush_rewrite_rules();
 	}
 	
 }
