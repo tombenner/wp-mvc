@@ -9,7 +9,7 @@ Author URI: https://github.com/tombenner
 */
 
 if (!defined('MVC_PLUGIN_PATH')) {
-	define('MVC_PLUGIN_PATH', dirname(__FILE__).'/');
+    define('MVC_PLUGIN_PATH', dirname(__FILE__).'/');
 }
 
 // Load public functionality
@@ -18,23 +18,23 @@ $public_loader = new MvcPublicLoader();
 
 if (is_admin()) {
 
-	// Load admin functionality
-	require_once MVC_PLUGIN_PATH.'core/loaders/mvc_admin_loader.php';
-	$admin_loader = new MvcAdminLoader();
-	
-	add_action('wp_loaded', array($public_loader,'load_rewrite_rules'));
-	add_action('admin_init', array($admin_loader, 'admin_init'));
-	add_action('admin_menu', array($admin_loader, 'add_menu_pages'));
-	add_action('admin_menu', array($admin_loader, 'add_settings_pages'));
-	add_action('plugins_loaded', array($admin_loader, 'add_admin_ajax_routes'));
+    // Load admin functionality
+    require_once MVC_PLUGIN_PATH.'core/loaders/mvc_admin_loader.php';
+    $admin_loader = new MvcAdminLoader();
+    
+    add_action('wp_loaded', array($public_loader,'load_rewrite_rules'));
+    add_action('admin_init', array($admin_loader, 'admin_init'));
+    add_action('admin_menu', array($admin_loader, 'add_menu_pages'));
+    add_action('admin_menu', array($admin_loader, 'add_settings_pages'));
+    add_action('plugins_loaded', array($admin_loader, 'add_admin_ajax_routes'));
     wp_mvc_load_global_functionality($admin_loader);
 
 }  else {
 
     // filters for public urls
-	add_filter('rewrite_rules_array', array($public_loader, 'add_rewrite_rules'));
-	add_filter('query_vars', array($public_loader, 'add_query_vars'));
-	add_action('template_redirect', array($public_loader, 'template_redirect'));
+    add_filter('rewrite_rules_array', array($public_loader, 'add_rewrite_rules'));
+    add_filter('query_vars', array($public_loader, 'add_query_vars'));
+    add_action('template_redirect', array($public_loader, 'template_redirect'));
     wp_mvc_load_global_functionality($public_loader);
 }
 

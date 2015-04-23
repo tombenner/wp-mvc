@@ -5,5 +5,5 @@
 <p>Here are all of the speakers, ordered by last name:</p>
 
 <?php foreach($speakers as $object): ?>
-	<?php $this->render_view('speakers/_item', array('locals' => array('object' => $object))); ?>
+    <?php $this->render_view('speakers/_item', array('locals' => array('object' => $object))); ?>
 <?php endforeach; ?>

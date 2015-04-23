@@ -2,8 +2,8 @@
 
 class <?php echo $name ?> extends MvcModel {
 
-	var $display_field = 'name';
-	
+    var $display_field = 'name';
+    
 }
 
 <?php echo '?>'; ?>
