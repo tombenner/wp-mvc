@@ -5,5 +5,5 @@
 <?php $this->render_view('speakers/_info', array('collection' => $object->speakers, 'as' => 'object')); ?>
 
 <p>
-	<?php echo $this->html->link('&#8592; All Events', array('controller' => 'events')); ?>
+    <?php echo $this->html->link('&#8592; All Events', array('controller' => 'events')); ?>
 </p>
