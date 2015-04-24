@@ -1,12 +1,16 @@
 <?php
 
-$wordpress_path = getenv('WPMVC_WORDPRESS_PATH');
-$wordpress_path = $wordpress_path ? rtrim($wordpress_path, '/').'/' : dirname(__FILE__).'/../../../../';
+$wordpress_path = getenv( 'WPMVC_WORDPRESS_PATH' );
+$wordpress_path = $wordpress_path ? rtrim( $wordpress_path, '/' ) . '/' : dirname( __FILE__ ) . '/../../../../';
 
-require_once $wordpress_path.'wp-load.php';
+require_once $wordpress_path . 'wp-load.php';
 
-$shell = new MvcShellDispatcher($argv);
+// Make sure the plugin has been activated.
+if ( ! is_plugin_active( 'wp-mvc/wp_mvc.php' ) ) {
+	echo "The WP MVC plugin is not active.\n";
+	exit( 1 );
+}
+
+$shell = new MvcShellDispatcher( $argv );
 
 echo "\n";
-
-?>
