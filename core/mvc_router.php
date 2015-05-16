@@ -114,7 +114,7 @@ class MvcRouter {
         return $params;
     }
     
-    public function admin_page_param($options=array()) {
+    static function admin_page_param($options=array()) {
         if (is_string($options)) {
             $options = array('model' => $options);
         }
