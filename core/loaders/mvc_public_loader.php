@@ -6,7 +6,9 @@ class MvcPublicLoader extends MvcLoader {
 
     public function flush_rewrite_rules($rules = array()) {
         global $wp_rewrite;
-        $wp_rewrite->flush_rules(false);
+        if (is_object($wp_rewrite)) {
+            $wp_rewrite->flush_rules(false);
+        }
     }
 
     public function load_rewrite_rules() {
