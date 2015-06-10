@@ -123,7 +123,8 @@ ALTER TABLE '.$model->table.' ADD INDEX (post_id);
                 'show_in_menu' => false,
                 'show_in_nav_menus' => true,
                 'hierarchical' => false,
-                'supports' => array('title', 'editor')
+                'supports' => array('title', 'editor'),
+                'menu_icon' => 'dashicons-admin-generic'
             );
             $args = is_array($settings['post_type']['args']) ? $settings['post_type']['args'] : array();
             $args = array_merge($default_args, $args);
