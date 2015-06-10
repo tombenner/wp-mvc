@@ -80,23 +80,36 @@ class MvcAdminLoader extends MvcLoader {
             $hide_menu = isset($pages['hide_menu']) ? $pages['hide_menu'] : false;
             
             if (!$hide_menu) {
-                
+
+                $menu_icon = 'dashicons-admin-generic'; 
+                /* check if there is a corresponding model with a menu_icon post type argument */
+                try {
+                    $model_name = MvcInflector::singularize(MvcInflector::camelize($controller_name));
+                    $model = mvc_model($model_name);
+                    if(isset($model->wp_post['post_type']['args']['menu_icon'])) {
+                        $menu_icon = $model->wp_post['post_type']['args']['menu_icon'];    
+                    }
+                } catch (Exception $e) {
+                    ; //not every controller must have a corresponding model, continue silently
+                }
+
                 $controller_titleized = MvcInflector::titleize($controller_name);
         
                 $admin_controller_name = 'admin_'.$controller_name;
             
                 $top_level_handle = 'mvc_'.$controller_name;
+
             
                 $method = $admin_controller_name.'_index';
                 $this->dispatcher->{$method} = create_function('', 'MvcDispatcher::dispatch(array("controller" => "'.$admin_controller_name.'", "action" => "index"));');
-                        $capability = $this->admin_controller_capabilities[ $controller_name ];
+                $capability = $this->admin_controller_capabilities[ $controller_name ];
                 add_menu_page(
                     $controller_titleized,
                     $controller_titleized,
                     $capability,
                     $top_level_handle,
                     array($this->dispatcher, $method),
-                    null,
+                    $menu_icon,
                     $menu_position
                 );
             

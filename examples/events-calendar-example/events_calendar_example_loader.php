@@ -62,7 +62,9 @@ class EventsCalendarExampleLoader extends MvcPluginLoader {
               last_name varchar(255) default NULL,
               url varchar(255) default NULL,
               description text,
-              PRIMARY KEY  (id)
+              post_id BIGINT(20),
+              PRIMARY KEY  (id),
+              KEY post_id (post_id)
             )';
         dbDelta($sql);
     
@@ -78,7 +80,9 @@ class EventsCalendarExampleLoader extends MvcPluginLoader {
               city varchar(100) default NULL,
               state varchar(100) default NULL,
               zip varchar(20) default NULL,
-              PRIMARY KEY  (id)
+              post_id BIGINT(20),
+              PRIMARY KEY  (id),
+              KEY post_id (post_id)
             )';
         dbDelta($sql);
         

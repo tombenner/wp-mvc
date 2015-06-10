@@ -6,7 +6,7 @@ class Venue extends MvcModel {
     var $display_field = 'name';
     var $has_many = array('Event');
     var $wp_post = array(
-        'post_type' => true
+        'post_type' => true,
     );
     
     public function after_save($object) {
