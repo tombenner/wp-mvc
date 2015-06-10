@@ -7,6 +7,9 @@ class Speaker extends MvcModel {
     var $has_many = array('Event');
     var $wp_post = array(
         'post_type' => array(
+            'args' => array(
+                'menu_icon' => 'dashicons-businessman'
+            ),
             'fields' => array(
                 'post_content' => '$description'
             )
