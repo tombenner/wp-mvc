@@ -4,6 +4,7 @@ $wordpress_path = getenv( 'WPMVC_WORDPRESS_PATH' );
 $wordpress_path = $wordpress_path ? rtrim( $wordpress_path, '/' ) . '/' : dirname( __FILE__ ) . '/../../../../';
 
 require_once $wordpress_path . 'wp-load.php';
+require_once $wordpress_path . 'wp-admin/includes/plugin.php';
 
 // Make sure the plugin has been activated.
 if ( ! is_plugin_active( 'wp-mvc/wp_mvc.php' ) ) {
