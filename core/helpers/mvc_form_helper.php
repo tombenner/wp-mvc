@@ -125,6 +125,20 @@ class MvcFormHelper extends MvcHelper {
         return $html;
     }
     
+    public function password_input($field_name, $options=array()) {
+        $defaults = array(
+            'id' => $this->input_id($field_name),
+            'name' => $this->input_name($field_name),
+            'type' => 'password'
+        );
+        $options = array_merge($defaults, $options);
+        $attributes_html = self::attributes_html($options, 'input');
+        $html = $this->before_input($field_name, $options);
+        $html .= '<input'.$attributes_html.' />';
+        $html .= $this->after_input($field_name, $options);
+        return $html;
+    }
+    
     public function select($field_name, $options=array()) {
         $html = $this->before_input($field_name, $options);
         $html .= $this->select_tag($field_name, $options);
