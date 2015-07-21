@@ -752,7 +752,7 @@ class MvcModel {
                 return $object;
             }
         }
-        MvcError::fatal('Undefined method: '.$class.'::'.$method.'.');
+        MvcError::fatal('Undefined method: '.get_class($this).'::'.$method.'.');
     }
 
 }
