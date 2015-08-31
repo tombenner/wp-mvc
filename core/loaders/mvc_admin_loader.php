@@ -33,8 +33,10 @@ class MvcAdminLoader extends MvcLoader {
             global $title;
             
             // Necessary for flash()-related functionality
-            session_start();
-         
+            if (session_id() == '') {
+                session_start();
+            }
+            
             $action = empty($plugin_page_split[1]) ? 'index' : $plugin_page_split[1];
             
             $mvc_admin_init_args = array(
