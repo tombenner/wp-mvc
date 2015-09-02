@@ -15,12 +15,12 @@ function mvc_plugin_app_url($plugin) {
 function mvc_model($model_name) {
     $model_underscore = MvcInflector::underscore($model_name);
     $file_includer = new MvcFileIncluder();
-    $file_includer->require_first_app_file('models/'.$model_underscore.'.php');
+    $file_includer->include_first_app_file('models/'.$model_underscore.'.php');
     if (class_exists($model_name)) {
         return new $model_name();
     }
-    MvcError::warning('Unable to load the "'.$model_name.'" model.');
-    return null;
+
+    throw new Exception('Unable to load the "'.$model_name.'" model.');
 }
 
 function mvc_setting($settings_name, $setting_key) {
