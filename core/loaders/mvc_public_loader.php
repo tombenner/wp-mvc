@@ -111,17 +111,30 @@ class MvcPublicLoader extends MvcLoader {
     }
 
     public function get_query_vars() {
-        return $this->query_vars;
+        return array_merge($this->query_vars, $this->get_user_defined_query_vars());
     }
-    
+
+    public function get_user_defined_query_vars()
+    {
+        $vars = array();
+        $params = MvcConfiguration::get('RouteParams');
+        foreach($params as $param){
+            $param = 'mvc_' . $param;
+            $vars[] = $param;
+        }
+
+        return $vars;
+    }
+
     public function add_query_vars($vars = array()) {
-        $vars = array_merge($vars, $this->query_vars);
+        $vars = array_merge($vars, $this->get_query_vars());
         return $vars;
     }
 
     public function load_query_vars() {
         global $wp;
-        foreach ($this->query_vars as $qv) {
+        $query_vars = $this->get_query_vars();
+        foreach ($query_vars as $qv) {
             $wp->add_query_var( $qv );
         }
     }
@@ -142,7 +155,7 @@ class MvcPublicLoader extends MvcLoader {
         global $wp_query;
         
         $controller = $wp_query->get('mvc_controller');
-        
+
         if ($controller) {
             $query_params = $wp_query->query;
             $params = array();
@@ -150,6 +163,7 @@ class MvcPublicLoader extends MvcLoader {
                 $key = preg_replace('/^(mvc_)/', '', $key);
                 $params[$key] = $value;
             }
+
             return $params;
         }
         
