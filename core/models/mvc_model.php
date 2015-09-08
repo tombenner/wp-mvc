@@ -528,10 +528,9 @@ class MvcModel {
                     if (empty($association['fields'])) {
                         $association['fields'] = array($association['name'].'.*');
                     }
-                    $model = MvcModelRegistry::get_model($association['class']);/* todo: geändert*/
+                    $model = MvcModelRegistry::get_model($association['class']);
                     switch ($association['type']) {
                         case 'belongs_to':
-                        	//print_r($model_name);die;
                             $associated_object = $model->find_by_id($object->{$association['foreign_key']}, array(
                                 'recursive' => $recursive
                             ));
