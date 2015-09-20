@@ -338,7 +338,7 @@ class MvcModel {
         $result = $this->db_adapter->get_var($sql);
         return $result;
     }
-    
+
     protected function process_find_options($options) {
         if (!empty($options['joins'])) {
             if (is_string($options['joins'])) {
@@ -346,48 +346,61 @@ class MvcModel {
             }
             foreach ($options['joins'] as $key => $join) {
                 if (is_string($join)) {
-                    $join_model_name = $join;
-                    if (!empty($this->associations[$join_model_name])) {
-                        $association = $this->associations[$join_model_name];
-                        
-                        $join_model = new $join_model_name();
-                        
-                        switch ($association['type']) {
-                            case 'belongs_to':
-                                $join = array(
-                                    'table' => $join_model->table,
-                                    'on' => $join_model_name.'.'.$join_model->primary_key.' = '.$this->name.'.'.$association['foreign_key'],
-                                    'alias' => $join_model_name
-                                );
-                                break;
-                                
-                            case 'has_many':
-                                // To do: test this
-                                $join = array(
-                                    'table' => $this->table,
-                                    'on' => $join_model_name.'.'.$association['foreign_key'].' = '.$this->name.'.'.$this->primary_key,
-                                    'alias' => $join_model_name
-                                );
-                                break;
-                            
-                            case 'has_and_belongs_to_many':
-                                $join_table_alias = $join_model_name.$this->name;
-                                // The join for the HABTM join table
-                                $join = array(
-                                    'table' => $this->process_table_name($association['join_table']),
-                                    'on' => $join_table_alias.'.'.$association['foreign_key'].' = '.$this->name.'.'.$this->primary_key,
-                                    'alias' => $join_table_alias
-                                );
-                                // The join for the association model's table
-                                $second_join = array(
-                                    'table' => $join_model->table,
-                                    'on' => $join_table_alias.'.'.$association['association_foreign_key'].' = '.$join_model_name.'.'.$join_model->primary_key,
-                                    'alias' => $join_model_name
-                                );
-                                $options['joins'][] = $second_join;
-                                break;
-                        }
-                    }
+					$join_name = $join;
+					$join_model_name = $join;
+					$join_type = 'JOIN';
+				} else {
+					$join_name = $key;
+					$join_model_name = isset($join['class']) ? $join['class'] : $key;
+					$join_type  = isset($join['type']) ? $join['type'] : 'JOIN';
+				}
+
+				if (!empty($this->associations[$join_name])) {
+					$association = $this->associations[$join_name];
+
+					$join_model = new $join_model_name();
+
+					switch ($association['type']) {
+						case 'belongs_to':
+							$join = array(
+								'table' => $join_model->table,
+								'on' => $join_name.'.'.$join_model->primary_key.' = '.$this->name.'.'.$association['foreign_key'],
+								'alias' => $join_name,
+								'type' => $join_type
+							);
+
+							break;
+
+						case 'has_many':
+							$join = array(
+								'table' => $join_model->table,
+								'on' => $join_name.'.'.$association['foreign_key'].' = '.$this->name.'.'.$this->primary_key,
+								'alias' => $join_name,
+								'type' => $join_type
+							);
+
+							break;
+
+						case 'has_and_belongs_to_many':
+							$join_table_alias = $join_model_name.$this->name;
+							// The join for the HABTM join table
+							$join = array(
+								'table' => $this->process_table_name($association['join_table']),
+								'on' => $join_table_alias.'.'.$association['foreign_key'].' = '.$this->name.'.'.$this->primary_key,
+								'alias' => $join_table_alias,
+								'type' => $join_type
+							);
+							// The join for the association model's table
+							$second_join = array(
+								'table' => $join_model->table,
+								'on' => $join_table_alias.'.'.$association['association_foreign_key'].' = '.$join_model_name.'.'.$join_model->primary_key,
+								'alias' => $join_model_name,
+								'type' => $join_type
+							);
+							$options['joins'][] = $second_join;
+							break;
+					}
+
                     $options['joins'][$key] = $join;
                 }
             }
@@ -515,7 +528,7 @@ class MvcModel {
                     if (empty($association['fields'])) {
                         $association['fields'] = array($association['name'].'.*');
                     }
-                    $model = MvcModelRegistry::get_model($model_name);
+                    $model = MvcModelRegistry::get_model($association['class']);
                     switch ($association['type']) {
                         case 'belongs_to':
                             $associated_object = $model->find_by_id($object->{$association['foreign_key']}, array(
