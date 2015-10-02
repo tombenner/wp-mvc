@@ -118,9 +118,11 @@ class MvcPublicLoader extends MvcLoader {
     {
         $vars = array();
         $params = MvcConfiguration::get('RouteParams');
-        foreach($params as $param){
-            $param = 'mvc_' . $param;
-            $vars[] = $param;
+        if ( isset( $params ) ) {
+            foreach($params as $param){
+                $param = 'mvc_' . $param;
+                $vars[] = $param;
+            }
         }
 
         return $vars;
