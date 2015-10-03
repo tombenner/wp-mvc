@@ -234,8 +234,11 @@ class MvcFormHelper extends MvcHelper {
         
         $html = $this->before_input($options['select_name'], $select_options);
         $html .= $this->select_tag($options['select_name'], $select_options);
-        
-        $associated_objects = empty($this->object->{MvcInflector::tableize($model_name)}) ? array() : $this->object->{MvcInflector::tableize($model_name)};
+
+        // Fetch all associated objects.
+        // If there aren't any, return empty array
+        $associated_objects = $this->object->{MvcInflector::tableize($model_name)};
+        $associated_objects = empty($associated_objects) ? array() : $associated_objects;
         
         // An empty value is necessary to ensure that data with name $options['ids_input_name'] is submitted; otherwise,
         // if no association objects were selected the save() method wouldn't know that this association data is being
