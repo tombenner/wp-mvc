@@ -2,8 +2,8 @@
 Contributors: tombenner, robertpeake
 Tags: mvc, framework, model, view, controller, development, plugin
 Requires at least: 3.0
-Tested up to: 4.2.2
-Stable tag: 1.3.1
+Tested up to: 4.3
+Stable tag: 1.3.3
 
 WP MVC is a full-fledged MVC framework, similar to CakePHP and Rails, that developers can use inside of WordPress.
 
@@ -46,6 +46,10 @@ For a simple example tutorial on this, please see the [tutorial on wpmvc.org](ht
 
 == Frequently Asked Questions ==
 
+= I am getting a 404 when I add a new route =
+
+You need to go to Settings > Permalinks and click "save". This <a href="https://codex.wordpress.org/Function_Reference/flush_rewrite_rules">flushes the WordPress rewrite rules</a>. For performance reasons, the rewrite rules are only flushed either when the plugin is activated or when the Permalinks are saved. So, if you are developing with the plugin activated and adding controller routes as you go, you need to use this approach to flush the rewrite rules and use your new URL endpoints.
+
 = What relation does this have to other MVC frameworks? =
 
 WP MVC is a full-fledged MVC framework, but behind the scenes it uses existing WordPress functionality to lessen its footprint and better interface with the parent WordPress application. The developer will not need to know about much of this, though, and may merely treat it as another MVC framework. It draws on concepts and workflows from other MVC frameworks; Rails and CakePHP are the biggest influences, and you may see some of their naming conventions being used.
@@ -66,6 +70,12 @@ If there's functionality that you'd like to use that isn't implemented in the ex
 5. The code of the "admin/add" view in the previous screenshot. Forms can be easily created using the form helper, which includes an `input()` method that automatically determines the data type of the field and shows an appropriate input tag. Methods for most types of inputs (textareas, hidden inputs, select tags, checkboxes, etc) are also available, as are association-related input methods like `belongs_to_dropdown()` and `has_many_dropdown()`.
 
 == Changelog ==
+
+= 1.3.3. =
+ * Resolve conflict with other plugins when session already begun
+
+= 1.3.2 =
+ * Minor bugfix with undefined var in method-not-found error for models
 
 = 1.3.1 =
  * Fixed bug with event calendar example giving error on plugin activation
