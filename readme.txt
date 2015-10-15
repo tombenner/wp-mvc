@@ -1,11 +1,11 @@
 === WP MVC ===
-Contributors: tombenner
+Contributors: tombenner, robertpeake
 Tags: mvc, framework, model, view, controller, development, plugin
 Requires at least: 3.0
-Tested up to: 3.1.1
-Stable tag: 1.1
+Tested up to: 4.2.2
+Stable tag: 1.3.1
 
-WP MVC is a full-fledged MVC framework, similar to CakePHP and Rails, that developers can use to create WordPress plugins.
+WP MVC is a full-fledged MVC framework, similar to CakePHP and Rails, that developers can use inside of WordPress.
 
 == Description ==
 
@@ -17,18 +17,19 @@ WP MVC fills this gap. The basic idea is that you create an app/ directory that 
 
 For more extensive documentation, and to see what WP MVC is capable of, please visit [wpmvc.org](http://wpmvc.org).
 
-If youÕd like to grab development releases, see what new features are being added, or browse the source code please visit the [GitHub repo](http://github.com/tombenner/wp-mvc).
+If you'd like to grab development releases, see what new features are being added, or browse the source code please visit the [GitHub repo](http://github.com/tombenner/wp-mvc).
 
 == Installation ==
 
-1. Upload `wp-mvc` to the `wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Either set up the example plugin to see how WP MVC works or start creating an application using the code generation utility `wpmvc`:
+1. Put `wp-mvc` into the `wp-content/plugins` directory
+1. Activate the plugin in the "Plugins" menu in WordPress
+1. Make sure that [Pretty Permalinks](http://codex.wordpress.org/Introduction_to_Blogging#Pretty_Permalinks) are enabled and working
+1. Either set up one of the example plugins to see how WP MVC works or start creating a plugin using the code generation utility `wpmvc`:
 
-#### Setting up the example WP MVC-based plugin:
+#### Setting up one of the example WP MVC-based plugins:
 
-1. Move its directory (e.g. `wp-content/plugins/wp-mvc/examples/events-calendar-example`) into the `wp-content/plugins/` directory (e.g. `wp-content/plugins/events-calendar-example`)
-1. Activate the plugin through the "Plugins" menu in WordPress
+1. Copy its directory (e.g. `wp-content/plugins/wp-mvc/examples/events-calendar-example`) into the `wp-content/plugins` directory (e.g. `wp-content/plugins/events-calendar-example`)
+1. Activate the plugin in the "Plugins" menu in WordPress
 
 After doing so, you should see administrative menus for each model in WordPress, and you'll be able to browse to URLs like `/events/`, `/events/1/`, `/venues/`, etc to see the public-facing views.
 
@@ -41,7 +42,7 @@ It only takes four simple steps to create a basic WP MVC-based plugin:
 1. Create the initial code for the models, views, and controllers using a single command for each resource
 1. Modify the generated models, views, and controllers to customize the app
 
-For a simple example tutorial on this, please see the [tutorial on wpmvc.org](http://wpmvc.org/documentation/70/tutorial/).
+For a simple example tutorial on this, please see the [tutorial on wpmvc.org](http://wpmvc.org/documentation/tutorial/).
 
 == Frequently Asked Questions ==
 
@@ -51,11 +52,50 @@ WP MVC is a full-fledged MVC framework, but behind the scenes it uses existing W
 
 = Is feature X available? =
 
-This framework is still in development. Most of the functionality that's available is used in the example application, so if there's functionality that you'd like to use that isn't implemented in there, it may not exist yet. However, if it's something that is widely useful, I'd certainly be willing to implement it myself or to accept any well-written code that implements it. Please feel free to either add a topic in the WordPress forum or contact me through GitHub for any such requests:
+If there's functionality that you'd like to use that isn't implemented in the example plugins or mentioned on [wpmvc.org](http://wpmvc.org), it may not exist yet. However, if it's something that is widely useful, I'd certainly be willing to implement it myself or to accept any well-written code that implements it. Please feel free to either add a topic in the WordPress forum or contact me through GitHub for any such requests:
 
 * [WordPress Forum](http://wordpress.org/tags/wp-mvc?forum_id=10)
-* [GitHub](http://github.com/tombenner/)
+* [GitHub](http://github.com/tombenner)
 
 == Screenshots ==
 
 1. If you've worked with MVC frameworks before, the file structure for WP MVC will look refreshingly familiar.
+2. Administration Menus are added automatically for each model, but they can be customized or omitted.
+3. An example of the default "admin/index" view, which includes search functionality and pagination by default and can be customized.
+4. An example of the default "admin/add" view. See the next screenshot for the code that creates it.
+5. The code of the "admin/add" view in the previous screenshot. Forms can be easily created using the form helper, which includes an `input()` method that automatically determines the data type of the field and shows an appropriate input tag. Methods for most types of inputs (textareas, hidden inputs, select tags, checkboxes, etc) are also available, as are association-related input methods like `belongs_to_dropdown()` and `has_many_dropdown()`.
+
+== Changelog ==
+
+= 1.3.1 =
+ * Fixed bug with event calendar example giving error on plugin activation
+ * Added support for displaying custom menu icons (change the model $wp_post['post_type']['args']['menu_icon'] to a valid dashicon class name: https://developer.wordpress.org/resource/dashicons/#admin-site )
+
+= 1.3 =
+
+ * Added support for high-concurrency, high-traffic websites by refactoring rewrite rule initialization
+ * Restructured classes to perform silently with WP_DEBUG set to true
+
+= 1.2 =
+
+* Model objects now have magic properties for accessing their associations (e.g. $event->venue, $event->speakers)
+* Added model classes for most of the native WP tables (e.g. MvcPost, MvcUser), which can be used in the MVC context (e.g. as associations)
+* Support for the automatic creation/updating of a post for each object of a model, so that objects can be commented on, added in menus, etc
+* Support for easily creating admin settings pages through MvcSettings
+* Associations can be dependent (e.g. if List has_many ListItems, when List is deleted, its ListItems can be automatically deleted)
+* Moved configuration of admin menus from model to MvcConfiguration
+* Moved configuration of admin_columns, admin_searchable_fields, and admin_search_joins from the model to the controller
+* The 'controller' argument is no longer necessary for MvcRouter URL methods if 'object' is given
+* Added a number of filters (e.g. MvcController::before and after, MvcModel::after_create(), 'mvc_before_public_url')
+* Added 'group' clause to model select queries
+* Added methods for aggregate select queries (e.g. $model->count(), max(), min(), sum(), average())
+* Added MvcFormTagsHelper for creating inputs outside of object-related forms
+* Let MvcModel::create() and save() accept objects
+* Let MvcModel::to_url() optionally accept a second argument ($options)
+* Allowed for a custom 'parent_slug' value in an admin menu page config
+
+= 1.1.5 =
+* Support for generating, destroying, and registering widgets
+* Added HelpShell
+* Allowed for a custom PHP executable to be set in the environment variable $WPMVC_PHP
+* Allowed for the path to WordPress to be set in the environment variable $WPMVC_WORDPRESS_PATH

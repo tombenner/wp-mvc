@@ -12,15 +12,15 @@ register_activation_hook(__FILE__, 'events_calendar_example_activate');
 register_deactivation_hook(__FILE__, 'events_calendar_example_deactivate');
 
 function events_calendar_example_activate() {
-	require_once dirname(__FILE__).'/events_calendar_example_loader.php';
-	$loader = new EventsCalendarExampleLoader();
-	$loader->activate();
+    require_once dirname(__FILE__).'/events_calendar_example_loader.php';
+    $loader = new EventsCalendarExampleLoader();
+    $loader->activate();
 }
 
 function events_calendar_example_deactivate() {
-	require_once dirname(__FILE__).'/events_calendar_example_loader.php';
-	$loader = new EventsCalendarExampleLoader();
-	$loader->deactivate();
+    require_once dirname(__FILE__).'/events_calendar_example_loader.php';
+    $loader = new EventsCalendarExampleLoader();
+    $loader->deactivate();
 }
 
 ?>
