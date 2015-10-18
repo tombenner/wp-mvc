@@ -18,13 +18,11 @@ class MvcFormHelper extends MvcHelper {
         if ($object_id) {
             $router_options['id'] = $object_id;
         }
-        
-        if ($options['public']) {
-            $html = '<form action="'.MvcRouter::public_url($router_options).'" method="post">';
-        } else {
-            $html = '<form action="'.MvcRouter::admin_url($router_options).'" method="post">';
-        }
-        
+
+        $enctype = isset($options['enctype']) ? ' enctype="'.$options['enctype'].'"' : '';
+        $url = $options['public'] ? MvcRouter::public_url($router_options) : MvcRouter::admin_url($router_options);
+        $html = '<form action="'.$url.'" method="post"'.$enctype.'>';
+
         if ($object_id) {
             $html .= '<input type="hidden" id="'.$this->input_id('hidden_id').'" name="'.$this->input_name('id').'" value="'.$object_id.'" />';
         }
