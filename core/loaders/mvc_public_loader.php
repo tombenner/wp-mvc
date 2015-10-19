@@ -171,6 +171,18 @@ class MvcPublicLoader extends MvcLoader {
         
         return false;
     }
+    
+    public function add_public_ajax_routes() {
+        $routes = MvcRouter::get_public_ajax_routes();
+        if (!empty($routes)) {
+            foreach ($routes as $route) {
+                $route['is_public_ajax'] = true;
+                $method = 'public_ajax_'.$route['wp_action'];
+                $this->dispatcher->{$method} = create_function('', 'MvcDispatcher::dispatch(array("controller" => "'.$route['controller'].'", "action" => "'.$route['action'].'"));die();');
+                add_action('wp_ajax_nopriv'.$route['wp_action'], array($this->dispatcher, $method));
+            }
+        }
+    }
 
 }
 

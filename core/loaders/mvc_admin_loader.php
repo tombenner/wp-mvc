@@ -247,9 +247,8 @@ class MvcAdminLoader extends MvcLoader {
             foreach ($routes as $route) {
                 $route['is_admin_ajax'] = true;
                 $method = 'admin_ajax_'.$route['wp_action'];
-                $ajax_request = isset($route['nopriv']) && $route['nopriv'] == true ? 'wp_ajax_nopriv_' : 'wp_ajax_';
                 $this->dispatcher->{$method} = create_function('', 'MvcDispatcher::dispatch(array("controller" => "'.$route['controller'].'", "action" => "'.$route['action'].'"));die();');
-                add_action($ajax_request.$route['wp_action'], array($this->dispatcher, $method));
+                add_action('wp_ajax_'.$route['wp_action'], array($this->dispatcher, $method));
             }
         }
     

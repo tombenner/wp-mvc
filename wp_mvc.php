@@ -27,6 +27,7 @@ if (is_admin()) {
     add_action('admin_menu', array($admin_loader, 'add_menu_pages'));
     add_action('admin_menu', array($admin_loader, 'add_settings_pages'));
     add_action('plugins_loaded', array($admin_loader, 'add_admin_ajax_routes'));
+    add_action('plugins_loaded', array($public_loader, 'add_public_ajax_routes'));
     wp_mvc_load_global_functionality($admin_loader);
 
 }  else {
