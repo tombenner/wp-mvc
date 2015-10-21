@@ -1,3 +1,3 @@
 <div>
-	<?php echo $this->html->venue_link($object); ?>
+    <?php echo $this->html->venue_link($object); ?>
 </div>
