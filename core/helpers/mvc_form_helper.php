@@ -72,6 +72,34 @@ class MvcFormHelper extends MvcHelper {
         return $html;
     }
     
+     public function number_input($field_name, $options=array()) {
+        $defaults = array(
+            'id' => $this->input_id($field_name),
+            'name' => $this->input_name($field_name),
+            'type' => 'number'
+        );
+        $options = array_merge($defaults, $options);
+        $attributes_html = self::attributes_html($options, 'input');
+        $html = $this->before_input($field_name, $options);
+        $html .= '<input'.$attributes_html.' />';
+        $html .= $this->after_input($field_name, $options);
+        return $html;
+    }
+    
+    public function email_input($field_name, $options=array()) {
+        $defaults = array(
+            'id' => $this->input_id($field_name),
+            'name' => $this->input_name($field_name),
+            'type' => 'email'
+        );
+        $options = array_merge($defaults, $options);
+        $attributes_html = self::attributes_html($options, 'input');
+        $html = $this->before_input($field_name, $options);
+        $html .= '<input'.$attributes_html.' />';
+        $html .= $this->after_input($field_name, $options);
+        return $html;
+    }
+    
     public function textarea_input($field_name, $options=array()) {
         $defaults = array(
             'id' => $this->input_id($field_name),
