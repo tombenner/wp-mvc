@@ -332,9 +332,9 @@ class MvcModel {
     
     protected function get_total_count($options=array()) {
         $clauses = $this->db_adapter->get_sql_select_clauses($options);
-        $clauses['select'] = 'SELECT COUNT(*) AS count';
         unset($clauses['limit']);
         $sql = implode(' ', $clauses);
+        $sql = 'SELECT COUNT(*) FROM('.$sql.') AS count';
         $result = $this->db_adapter->get_var($sql);
         return $result;
     }
