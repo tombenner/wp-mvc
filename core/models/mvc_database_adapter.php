@@ -123,7 +123,6 @@ class MvcDatabaseAdapter {
             $operator = preg_match('/\s+(<|>|<=|>=|<>|\!=|[\w\s]+)/', $key) ? ' ' : ' = ';
             $sql_clauses[] = $this->escape($key).$operator.'"'.$this->escape($value).'"';
         }
-        
         return $sql_clauses;
     }
     
