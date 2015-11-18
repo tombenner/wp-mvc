@@ -18,11 +18,13 @@ class MvcFormHelper extends MvcHelper {
         if ($object_id) {
             $router_options['id'] = $object_id;
         }
-
-        $enctype = isset($options['enctype']) ? ' enctype="'.$options['enctype'].'"' : '';
-        $url = $options['public'] ? MvcRouter::public_url($router_options) : MvcRouter::admin_url($router_options);
-        $html = '<form action="'.$url.'" method="post"'.$enctype.'>';
-
+        
+        if ($options['public']) {
+            $html = '<form action="'.MvcRouter::public_url($router_options).'" method="post">';
+        } else {
+            $html = '<form action="'.MvcRouter::admin_url($router_options).'" method="post">';
+        }
+        
         if ($object_id) {
             $html .= '<input type="hidden" id="'.$this->input_id('hidden_id').'" name="'.$this->input_name('id').'" value="'.$object_id.'" />';
         }
@@ -63,34 +65,6 @@ class MvcFormHelper extends MvcHelper {
             'id' => $this->input_id($field_name),
             'name' => $this->input_name($field_name),
             'type' => 'text'
-        );
-        $options = array_merge($defaults, $options);
-        $attributes_html = self::attributes_html($options, 'input');
-        $html = $this->before_input($field_name, $options);
-        $html .= '<input'.$attributes_html.' />';
-        $html .= $this->after_input($field_name, $options);
-        return $html;
-    }
-    
-     public function number_input($field_name, $options=array()) {
-        $defaults = array(
-            'id' => $this->input_id($field_name),
-            'name' => $this->input_name($field_name),
-            'type' => 'number'
-        );
-        $options = array_merge($defaults, $options);
-        $attributes_html = self::attributes_html($options, 'input');
-        $html = $this->before_input($field_name, $options);
-        $html .= '<input'.$attributes_html.' />';
-        $html .= $this->after_input($field_name, $options);
-        return $html;
-    }
-    
-    public function email_input($field_name, $options=array()) {
-        $defaults = array(
-            'id' => $this->input_id($field_name),
-            'name' => $this->input_name($field_name),
-            'type' => 'email'
         );
         $options = array_merge($defaults, $options);
         $attributes_html = self::attributes_html($options, 'input');
@@ -244,7 +218,7 @@ class MvcFormHelper extends MvcHelper {
         return $html;
     }
     
-    public function has_many_dropdown($model_name, $select_options, $options=array()) {
+    public function has_many_dropdown($model_name, $select_options, $options=array(), $associated_objects=false) {
         $defaults = array(
             'select_id' => $this->model_name.'_'.$model_name.'_select',
             'select_name' => $this->model_name.'_'.$model_name.'_select',
@@ -263,7 +237,9 @@ class MvcFormHelper extends MvcHelper {
 
         // Fetch all associated objects.
         // If there aren't any, return empty array
-        $associated_objects = $this->object->{MvcInflector::tableize($model_name)};
+        if($associated_objects === false){
+            $associated_objects = $this->object->{MvcInflector::tableize($model_name)};
+        }
         $associated_objects = empty($associated_objects) ? array() : $associated_objects;
         
         // An empty value is necessary to ensure that data with name $options['ids_input_name'] is submitted; otherwise,

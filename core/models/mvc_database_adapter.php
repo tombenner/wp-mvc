@@ -111,7 +111,7 @@ class MvcDatabaseAdapter {
                     $values = implode(',', $values);
                     $sql_clauses[] = $this->escape($key).' IN ('.$values.')';
                 } else {
-                    $clauses = $this->get_where_sql_clauses($value);
+                    $clauses = $this->get_where_sql_clauses($value, $options);
                     $logical_operator = $key == 'OR' ? ' OR ' : ' AND ';
                     $sql_clauses[] = '('.implode($logical_operator, $clauses).')';
                 }
