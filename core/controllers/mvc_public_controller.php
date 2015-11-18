@@ -36,6 +36,9 @@ class MvcPublicController extends MvcController {
             'current' => $collection['page'],
             'add_args' => $params
         );
+        
+        unset($collection['objects']);
+        $this->pagination = array_merge($collection, $this->pagination);
     }
     
     public function pagination($options=array()) {
