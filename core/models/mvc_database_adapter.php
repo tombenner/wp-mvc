@@ -148,6 +148,9 @@ class MvcDatabaseAdapter {
             if (is_string($value) || is_numeric($value)) {
                 $clauses[] = $key.' = "'.$this->escape($value).'"';
             }
+            else if($value == null){
+                $clauses[] = $key.' = NULL';
+            }
         }
         $sql = implode(', ', $clauses);
         return $sql;
