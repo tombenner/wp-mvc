@@ -120,8 +120,18 @@ class MvcDatabaseAdapter {
             if (strpos($key, '.') === false && $use_table_alias) {
                 $key = $this->defaults['model_name'].'.'.$key;
             }
-            $operator = preg_match('/\s+(<|>|<=|>=|<>|\!=|[\w\s]+)/', $key) ? ' ' : ' = ';
-            $sql_clauses[] = $this->escape($key).$operator.'"'.$this->escape($value).'"';
+            $operator = preg_match('/\s+(<|>|<=|>=|<>|\!=|IS|[\w\s]+)/', $key) ? ' ' : ' = ';
+            
+            $functions = array('NULL', 'NOW()');
+            if(in_array($value, $functions)){
+                if($value == "NULL" && trim($operator) == "="){
+                    $operator = " IS ";
+                }
+                $sql_clauses[] = $this->escape($key).$operator.$value;
+            }
+            else{
+                $sql_clauses[] = $this->escape($key).$operator.'"'.$this->escape($value).'"';
+            }
         }
         return $sql_clauses;
     }
@@ -166,7 +176,12 @@ class MvcDatabaseAdapter {
     public function get_insert_values_sql($data) {
         $values = array();
         foreach ($data as $value) {
-            $values[] = '"'.$this->escape($value).'"';
+            if($value == null){
+                $values[] = 'NULL';
+            }
+            else{
+                $values[] = '"'.$this->escape($value).'"';
+            }
         }
         $sql = '('.implode(', ', $values).')';
         return $sql;
