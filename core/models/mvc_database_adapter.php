@@ -124,7 +124,7 @@ class MvcDatabaseAdapter {
             
             $functions = array('NULL', 'NOW()');
             if(in_array($value, $functions)){
-                if($value == "NULL" && trim($operator) == "="){
+                if($value === "NULL" && trim($operator) == "="){
                     $operator = " IS ";
                 }
                 $sql_clauses[] = $this->escape($key).$operator.$value;
