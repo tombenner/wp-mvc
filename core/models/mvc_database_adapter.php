@@ -120,12 +120,17 @@ class MvcDatabaseAdapter {
             if (strpos($key, '.') === false && $use_table_alias) {
                 $key = $this->defaults['model_name'].'.'.$key;
             }
+
             $operator = preg_match('/\s+(<|>|<=|>=|<>|\!=|IS|[\w\s]+)/', $key) ? ' ' : ' = ';
             
-            $functions = array('NULL', 'NOW()');
-            if(in_array($value, $functions)){
-                if($value === "NULL" && trim($operator) == "="){
-                    $operator = " IS ";
+            $functions = array('NULL', 'NOW()', 'CURDATE()', 'CURTIME()', 'CURRENT_TIMESTAMP()', 'CURRENT_TIMESTAMP()');
+            
+            if(in_array($value, $functions) || is_null($value)){
+                if((is_null($value) || $value === 'NULL')){
+                    if(trim($operator) == "=")
+                        $operator = " IS ";
+                    else if(trim($operator) == "!=")
+                        $operator = " IS NOT ";
                 }
                 $sql_clauses[] = $this->escape($key).$operator.$value;
             }
