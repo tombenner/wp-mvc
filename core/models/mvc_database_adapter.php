@@ -131,6 +131,7 @@ class MvcDatabaseAdapter {
                         $operator = " IS ";
                     else if(trim($operator) == "!=")
                         $operator = " IS NOT ";
+                    $value = "NULL";
                 }
                 $sql_clauses[] = $this->escape($key).$operator.$value;
             }
