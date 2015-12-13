@@ -94,6 +94,10 @@ class MvcModel {
                 return false;
             }
         }
+        $valid = $this->validate_data($model_data);
+        if ($valid !== true) {
+            return false;
+        }
         $id = $this->insert($model_data);
         $this->update_associations($id, $model_data);
         if (method_exists($this, 'after_create') || method_exists($this, 'after_save')) {
@@ -119,9 +123,6 @@ class MvcModel {
             unset($model_data[$this->primary_key]);
             $valid = $this->validate_data($model_data);
             if ($valid !== true) {
-                $this->validation_error = $valid;
-                $this->validation_error_html = $this->validation_error->get_html();
-                $this->invalid_data = $model_data;
                 return false;
             }
             if (method_exists($this, 'before_save')) {
@@ -132,7 +133,9 @@ class MvcModel {
             $this->update($id, $model_data);
             $this->update_associations($id, $model_data);
         } else {
-            $id = $this->create($data);
+            if (!$id = $this->create($data)) {
+                return false;
+            }
         }
         if (method_exists($this, 'after_save')) {
             $object = $this->find_by_id($id);
@@ -491,13 +494,16 @@ class MvcModel {
         }
     }
     
-    private function validate_data($data) {
+    protected function validate_data($data) {
         $rules = $this->validate;
         if (!empty($rules)) {
             foreach ($rules as $field => $rule) {
                 if (isset($data[$field])) {
                     $valid = $this->data_validator->validate($field, $data[$field], $rule);
                     if ($valid !== true) {
+                        $this->validation_error = $valid;
+                        $this->validation_error_html = $this->validation_error->get_html();
+                        $this->invalid_data = $data;
                         return $valid;
                     }
                 }
