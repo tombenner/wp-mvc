@@ -2,8 +2,8 @@
 Contributors: tombenner, robertpeake
 Tags: mvc, framework, model, view, controller, development, plugin
 Requires at least: 3.0
-Tested up to: 4.3.1
-Stable tag: 1.3.4
+Tested up to: 4.4
+Stable tag: 1.3.5
 
 WP MVC is a full-fledged MVC framework, similar to CakePHP and Rails, that developers can use inside of WordPress.
 
@@ -71,9 +71,20 @@ If there's functionality that you'd like to use that isn't implemented in the ex
 
 == Changelog ==
 
+= 1.3.5 =
+ * Allow the form helper to change enctype
+ * Added HTML 5 number input type
+ * Allow blank value for text inputs
+ * Correct total count when grouping in query
+ * Preserve table aliases in nested where clauses
+ * Apply routes on plugin activation/deactivation (flush rewrite rules)
+ * Allow checking for NULL conditions in queries
+ * Allow IS and NOW() functions in queries
+ * Validate model on creation
+
 = 1.3.4 =
  * MvcDispatcher::dispatch() returns a value from controller methods to allow incorpation into widgets
- * Allow custom RoutParams (also allow users to not define any route params without a warning)
+ * Allow custom RouteParams (also allow users to not define any route params without a warning)
  * Allow multiple joins on a single table in has-many relations
  * Fixes to the has-many drop-down menu for remote objects
 
