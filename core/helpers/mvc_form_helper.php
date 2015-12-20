@@ -218,7 +218,7 @@ class MvcFormHelper extends MvcHelper {
         return $html;
     }
     
-    public function has_many_dropdown($model_name, $select_options, $options=array()) {
+    public function has_many_dropdown($model_name, $select_options, $options=array(), $associated_objects=false) {
         $defaults = array(
             'select_id' => $this->model_name.'_'.$model_name.'_select',
             'select_name' => $this->model_name.'_'.$model_name.'_select',
@@ -237,7 +237,9 @@ class MvcFormHelper extends MvcHelper {
 
         // Fetch all associated objects.
         // If there aren't any, return empty array
-        $associated_objects = $this->object->{MvcInflector::tableize($model_name)};
+        if($associated_objects === false){
+            $associated_objects = $this->object->{MvcInflector::tableize($model_name)};
+        }
         $associated_objects = empty($associated_objects) ? array() : $associated_objects;
         
         // An empty value is necessary to ensure that data with name $options['ids_input_name'] is submitted; otherwise,

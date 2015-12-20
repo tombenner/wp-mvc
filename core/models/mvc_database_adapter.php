@@ -111,7 +111,7 @@ class MvcDatabaseAdapter {
                     $values = implode(',', $values);
                     $sql_clauses[] = $this->escape($key).' IN ('.$values.')';
                 } else {
-                    $clauses = $this->get_where_sql_clauses($value);
+                    $clauses = $this->get_where_sql_clauses($value, $options);
                     $logical_operator = $key == 'OR' ? ' OR ' : ' AND ';
                     $sql_clauses[] = '('.implode($logical_operator, $clauses).')';
                 }
@@ -120,8 +120,23 @@ class MvcDatabaseAdapter {
             if (strpos($key, '.') === false && $use_table_alias) {
                 $key = $this->defaults['model_name'].'.'.$key;
             }
-            $operator = preg_match('/\s+(<|>|<=|>=|<>|\!=|[\w\s]+)/', $key) ? ' ' : ' = ';
-            $sql_clauses[] = $this->escape($key).$operator.'"'.$this->escape($value).'"';
+
+            $operator = preg_match('/\s+(<|>|<=|>=|<>|\!=|IS|[\w\s]+)/', $key) ? ' ' : ' = ';
+            
+            $functions = array('NULL', 'NOW()', 'CURDATE()', 'CURTIME()', 'CURRENT_TIMESTAMP()', 'CURRENT_TIMESTAMP()');
+            
+            if(in_array($value, $functions) || is_null($value)){
+                if((is_null($value) || $value === 'NULL')){
+                    if(trim($operator) == "=")
+                        $operator = " IS ";
+                    else if(trim($operator) == "!=")
+                        $operator = " IS NOT ";
+                }
+                $sql_clauses[] = $this->escape($key).$operator.$value;
+            }
+            else{
+                $sql_clauses[] = $this->escape($key).$operator.'"'.$this->escape($value).'"';
+            }
         }
         return $sql_clauses;
     }
@@ -148,6 +163,9 @@ class MvcDatabaseAdapter {
             if (is_string($value) || is_numeric($value)) {
                 $clauses[] = $key.' = "'.$this->escape($value).'"';
             }
+            else if($value == null){
+                $clauses[] = $key.' = NULL';
+            }
         }
         $sql = implode(', ', $clauses);
         return $sql;
@@ -163,7 +181,12 @@ class MvcDatabaseAdapter {
     public function get_insert_values_sql($data) {
         $values = array();
         foreach ($data as $value) {
-            $values[] = '"'.$this->escape($value).'"';
+            if($value == null){
+                $values[] = 'NULL';
+            }
+            else{
+                $values[] = '"'.$this->escape($value).'"';
+            }
         }
         $sql = '('.implode(', ', $values).')';
         return $sql;

@@ -60,6 +60,7 @@ class MvcAdminLoader extends MvcLoader {
         
         global $_registered_pages;
     
+        $sub_pages = array();
         $menu_position = 12;
         
         $menu_position = apply_filters('mvc_menu_position', $menu_position);
@@ -80,10 +81,12 @@ class MvcAdminLoader extends MvcLoader {
             $processed_pages = $this->process_admin_pages($controller_name, $pages);
             
             $hide_menu = isset($pages['hide_menu']) ? $pages['hide_menu'] : false;
+            $menu_position_current = isset($pages['position']) ? $pages['position'] : $menu_position;
             
             if (!$hide_menu) {
 
-                $menu_icon = 'dashicons-admin-generic'; 
+                $menu_icon = isset($pages['icon']) ? $pages['icon'] : 'dashicons-admin-generic'; 
+                
                 /* check if there is a corresponding model with a menu_icon post type argument */
                 try {
                     $model_name = MvcInflector::singularize(MvcInflector::camelize($controller_name));
@@ -105,16 +108,30 @@ class MvcAdminLoader extends MvcLoader {
                 $method = $admin_controller_name.'_index';
                 $this->dispatcher->{$method} = create_function('', 'MvcDispatcher::dispatch(array("controller" => "'.$admin_controller_name.'", "action" => "index"));');
                 $capability = $this->admin_controller_capabilities[ $controller_name ];
-                add_menu_page(
-                    $controller_titleized,
-                    $controller_titleized,
-                    $capability,
-                    $top_level_handle,
-                    array($this->dispatcher, $method),
-                    $menu_icon,
-                    $menu_position
-                );
-            
+                $label = !empty($pages['label']) ? $pages['label'] : $controller_titleized;
+                
+                if(empty($pages['parent_slug'])){
+                    add_menu_page(
+                        $label,
+                        $label,
+                        $capability,
+                        $top_level_handle,
+                        array($this->dispatcher, $method),
+                        $menu_icon,
+                        $menu_position_current
+                    );
+                }
+                else{
+                    $sub_pages[] = array(
+                        'parent_slug' => $pages['parent_slug'],
+                        'page_title' => $label,
+                        'menu_title' => $label,
+                        'capability' => $capability,
+                        'menu_slug' => $top_level_handle,
+                        'function' => array($this->dispatcher, $method),
+                        'order' => isset($pages['order']) ? $pages['order'] : 0
+                        );
+                }
                 foreach ($processed_pages as $key => $admin_page) {
                 
                     $method = $admin_controller_name.'_'.$admin_page['action'];
@@ -124,16 +141,18 @@ class MvcAdminLoader extends MvcLoader {
                     }
                 
                     $page_handle = $top_level_handle.'-'.$key;
-                    $parent_slug = empty($admin_page['parent_slug']) ? $top_level_handle : $admin_page['parent_slug'];
+                    $parent_slug = !empty($pages['parent_slug'])? $pages['parent_slug'] : $top_level_handle;
+                    $parent_slug = empty($admin_page['parent_slug']) ? $parent_slug : $admin_page['parent_slug'];
                 
                     if ($admin_page['in_menu']) {
-                        add_submenu_page(
-                            $parent_slug,
-                            $admin_page['label'].' &lsaquo; '.$controller_titleized,
-                            $admin_page['label'],
-                            $admin_page['capability'],
-                            $page_handle,
-                            array($this->dispatcher, $method)
+                        $sub_pages[] = array(
+                            'parent_slug' => $parent_slug,
+                            'page_title' => $admin_page['label'].' &lsaquo; '.$controller_titleized,
+                            'menu_title' => $admin_page['label'],
+                            'capability' => $admin_page['capability'],
+                            'menu_slug' => $page_handle,
+                            'function' => array($this->dispatcher, $method),
+                            'order' => isset($admin_page['order']) ? $admin_page['order'] : 0
                         );
                     } else {
                         // It looks like there isn't a more native way of creating an admin page without
@@ -153,6 +172,22 @@ class MvcAdminLoader extends MvcLoader {
             
         }
     
+        //sort sub pages
+        usort($sub_pages, function ($a, $b) {
+            return $a['order'] -$b['order'];
+          });
+          
+        //add sub pages
+        foreach($sub_pages as $page){
+            add_submenu_page(
+                $page['parent_slug'],
+                $page['page_title'],
+                $page['menu_title'],
+                $page['capability'],
+                $page['menu_slug'],
+                $page['function']
+            );
+        }
     }
     
     protected function process_admin_pages($controller_name, $pages) {

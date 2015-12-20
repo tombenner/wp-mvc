@@ -94,6 +94,10 @@ class MvcModel {
                 return false;
             }
         }
+        $valid = $this->validate_data($model_data);
+        if ($valid !== true) {
+            return false;
+        }
         $id = $this->insert($model_data);
         $this->update_associations($id, $model_data);
         if (method_exists($this, 'after_create') || method_exists($this, 'after_save')) {
@@ -119,9 +123,6 @@ class MvcModel {
             unset($model_data[$this->primary_key]);
             $valid = $this->validate_data($model_data);
             if ($valid !== true) {
-                $this->validation_error = $valid;
-                $this->validation_error_html = $this->validation_error->get_html();
-                $this->invalid_data = $model_data;
                 return false;
             }
             if (method_exists($this, 'before_save')) {
@@ -132,7 +133,9 @@ class MvcModel {
             $this->update($id, $model_data);
             $this->update_associations($id, $model_data);
         } else {
-            $id = $this->create($data);
+            if (!$id = $this->create($data)) {
+                return false;
+            }
         }
         if (method_exists($this, 'after_save')) {
             $object = $this->find_by_id($id);
@@ -261,6 +264,7 @@ class MvcModel {
         $total_count = $this->get_total_count($options);
         $response = array(
             'objects' => $objects,
+            'total_objects' => $total_count,
             'total_pages' => ceil($total_count/$options['per_page']),
             'page' => $options['page']
         );
@@ -332,9 +336,9 @@ class MvcModel {
     
     protected function get_total_count($options=array()) {
         $clauses = $this->db_adapter->get_sql_select_clauses($options);
-        $clauses['select'] = 'SELECT COUNT(*) AS count';
         unset($clauses['limit']);
         $sql = implode(' ', $clauses);
+        $sql = 'SELECT COUNT(*) FROM('.$sql.') AS count';
         $result = $this->db_adapter->get_var($sql);
         return $result;
     }
@@ -460,16 +464,46 @@ class MvcModel {
                     }
                 }
             }
+            //AR: improvement to add fields to join table
+            else if(is_array ($model_data[$association_name])){
+                $this->db_adapter->delete_all(array(
+                    'table_reference' => self::process_table_name($association['join_table']),
+                    'conditions' => array($association['foreign_key'] => $object_id)
+                ));
+                foreach ($model_data[$association_name] as $obj) {
+                    if(empty($obj['id']))
+                        continue;
+                    
+                    $fields = array(
+                        $association['foreign_key'] => $object_id,
+                    );
+                    //insert fields
+                    foreach ($obj as $field => $value) {
+                        $field = $field == 'id' ? $association['association_foreign_key'] : $field;
+                        $fields[$field] = $value;
+                    }
+                    
+                    $this->db_adapter->insert(
+                        $fields,
+                        array(
+                            'table_reference' => self::process_table_name($association['join_table'])
+                        )
+                    );
+                }
+            }
         }
     }
     
-    private function validate_data($data) {
+    protected function validate_data($data) {
         $rules = $this->validate;
         if (!empty($rules)) {
             foreach ($rules as $field => $rule) {
                 if (isset($data[$field])) {
                     $valid = $this->data_validator->validate($field, $data[$field], $rule);
                     if ($valid !== true) {
+                        $this->validation_error = $valid;
+                        $this->validation_error_html = $this->validation_error->get_html();
+                        $this->invalid_data = $data;
                         return $valid;
                     }
                 }
@@ -547,6 +581,7 @@ class MvcModel {
                             break;
                         
                         case 'has_and_belongs_to_many':
+                            
                             $join_alias = 'JoinTable';
                             $associated_objects = $model->find(array(
                                 'selects' => $association['fields'],
@@ -684,7 +719,14 @@ class MvcModel {
                     $association_name = $key;
                     if (isset($value['fields'])) {
                         foreach ($value['fields'] as $key => $field) {
-                            $value['fields'][$key] = $association_name.'.'.$field;
+                            if (strpos($field,'.') !== false) {
+                                //AR: contains '.', dont prepand a table
+                                $value['fields'][$key] = $field;
+                            }
+                            else{
+                                $value['fields'][$key] = $association_name.'.'.$field;
+                            }
+                            
                         }
                     }
                     $config = array(
