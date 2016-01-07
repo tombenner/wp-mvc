@@ -129,6 +129,7 @@ class MvcHelper {
                 'lang',
                 'multiple',
                 'name',
+		'required',
                 'size',
                 'style',
                 'tabindex',
