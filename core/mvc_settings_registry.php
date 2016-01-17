@@ -4,7 +4,7 @@ class MvcSettingsRegistry {
 
     var $__settings = array();
 
-    private function &get_instance() {
+    static private function &get_instance() {
         static $instance = array();
         if (!$instance) {
             $mvc_settings_registry = new MvcSettingsRegistry();
@@ -13,7 +13,7 @@ class MvcSettingsRegistry {
         return $instance[0];
     }
 
-    public function &get_settings($key) {
+    static function &get_settings($key) {
         $_this =& self::get_instance();
         $key = MvcInflector::camelize($key);
         $return = false;
