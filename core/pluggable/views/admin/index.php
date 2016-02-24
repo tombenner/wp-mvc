@@ -23,7 +23,7 @@
 
 <div class="clear"></div>
 
-<table class="widefat post fixed" cellspacing="0">
+<table class="widefat post fixed striped" cellspacing="0">
 
     <thead>
         <?php echo $helper->admin_header_cells($this); ?>
