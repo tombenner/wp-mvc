@@ -30,6 +30,24 @@ class MvcFormTagsHelper extends MvcHelper {
         $html .= self::after_input($field_name, $options);
         return $html;
     }
+
+    public function wp_editor_input($field_name, $options=array()) {
+        $defaults = array(
+            'id' => self::input_id($field_name),
+            'name' => self::input_name($field_name),
+            'value' => '',
+            'settings' => array('textarea_name' => self::input_name($field_name)),
+        );
+        $options = array_merge($defaults, $options);
+        $options['settings']['textarea_name'] = $options['name'];
+        $html = self::before_input($field_name, $options);
+        ob_start();
+        wp_editor( $options['value'], $options['id'], $options['settings'] );
+        $html .= ob_get_contents();
+        ob_end_clean();
+        $html .= self::after_input($field_name, $options);
+        return $html;
+    }
     
     public function textarea_input($field_name, $options=array()) {
         $defaults = array(
