@@ -25,7 +25,7 @@ class MvcHelper {
         require $filepath;
     }
     
-    public function esc_attr($string) {
+    static function esc_attr($string) {
         return esc_attr($string);
     }
     
@@ -129,6 +129,7 @@ class MvcHelper {
                 'lang',
                 'multiple',
                 'name',
+		'required',
                 'size',
                 'style',
                 'tabindex',
