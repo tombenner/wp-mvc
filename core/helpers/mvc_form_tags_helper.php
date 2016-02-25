@@ -17,7 +17,7 @@ class MvcFormTagsHelper extends MvcHelper {
         return $html;
     }
     
-    public function text_input($field_name, $options=array()) {
+    static function text_input($field_name, $options=array()) {
         $defaults = array(
             'id' => self::input_id($field_name),
             'name' => self::input_name($field_name),
@@ -31,7 +31,7 @@ class MvcFormTagsHelper extends MvcHelper {
         return $html;
     }
 
-    public function wp_editor_input($field_name, $options=array()) {
+    static function wp_editor_input($field_name, $options=array()) {
         $defaults = array(
             'id' => self::input_id($field_name),
             'name' => self::input_name($field_name),
@@ -49,7 +49,7 @@ class MvcFormTagsHelper extends MvcHelper {
         return $html;
     }
     
-    public function textarea_input($field_name, $options=array()) {
+    static function textarea_input($field_name, $options=array()) {
         $defaults = array(
             'id' => self::input_id($field_name),
             'name' => self::input_name($field_name),
@@ -63,7 +63,7 @@ class MvcFormTagsHelper extends MvcHelper {
         return $html;
     }
     
-    public function number_input($field_name, $options=array()) {
+    static function number_input($field_name, $options=array()) {
         $defaults = array(
             'id' => self::input_id($field_name),
             'name' => self::input_name($field_name),
@@ -77,7 +77,7 @@ class MvcFormTagsHelper extends MvcHelper {
         return $html;
     }
     
-    public function email_input($field_name, $options=array()) {
+    static function email_input($field_name, $options=array()) {
         $defaults = array(
             'id' => self::input_id($field_name),
             'name' => self::input_name($field_name),
@@ -117,7 +117,7 @@ class MvcFormTagsHelper extends MvcHelper {
         return $html;
     }
     
-    public function hidden_input($field_name, $options=array()) {
+    static function hidden_input($field_name, $options=array()) {
         $defaults = array(
             'id' => self::input_id($field_name),
             'name' => self::input_name($field_name),
@@ -164,7 +164,7 @@ class MvcFormTagsHelper extends MvcHelper {
         return $html;
     }
     
-    public function button($text, $options=array()) {
+    static function button($text, $options=array()) {
         $defaults = array(
             'id' => self::input_id($text),
             'type' => 'button',
