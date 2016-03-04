@@ -107,7 +107,7 @@ class MvcAdminLoader extends MvcLoader {
             
                 $method = $admin_controller_name.'_index';
                 $this->dispatcher->{$method} = create_function('', 'MvcDispatcher::dispatch(array("controller" => "'.$admin_controller_name.'", "action" => "index"));');
-                $capability = $this->admin_controller_capabilities[ $controller_name ];
+                $capability = !empty($pages['capability']) ? $pages['capability'] : $this->admin_controller_capabilities[ $controller_name ];
                 $label = !empty($pages['label']) ? $pages['label'] : $controller_titleized;
                 
                 if(empty($pages['parent_slug'])){
