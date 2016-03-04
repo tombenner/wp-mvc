@@ -172,20 +172,20 @@ class MvcHelper {
         return '<th scope="col" class="manage-column">'.$label.'</th>';
     }
     
-    public function admin_table_cells($controller, $objects) {
+    public function admin_table_cells($controller, $objects, $options = array()) {
         $html = '';
         foreach ($objects as $object) {
             $html .= '<tr>';
             foreach ($controller->default_columns as $key => $column) {
-                $html .= $this->admin_table_cell($controller, $object, $column);
+                $html .= $this->admin_table_cell($controller, $object, $column, $options);
             }
-            $html .= $this->admin_actions_cell($controller, $object);
+            $html .= $this->admin_actions_cell($controller, $object, $options);
             $html .= '</tr>';
         }
         return $html;
     }
     
-    public function admin_table_cell($controller, $object, $column) {
+    public function admin_table_cell($controller, $object, $column, $options = array()) {
         if (!empty($column['value_method'])) {
             $value = $controller->{$column['value_method']}($object);
         } else {
@@ -194,13 +194,34 @@ class MvcHelper {
         return '<td>'.$value.'</td>';
     }
     
-    public function admin_actions_cell($controller, $object) {
+    public function admin_actions_cell($controller, $object, $options = array()) {
+        
+        $default = array(
+            'actions' => array(
+                'edit' => true,
+                'view' => true,
+                'delete' => true,
+            )
+        );
+        
+        $options = array_merge($default, $options);
+        
         $links = array();
         $object_name = empty($object->__name) ? 'Item #'.$object->__id : $object->__name;
         $encoded_object_name = $this->esc_attr($object_name);
-        $links[] = '<a href="'.MvcRouter::admin_url(array('object' => $object, 'action' => 'edit')).'" title="Edit '.$encoded_object_name.'">Edit</a>';
-        $links[] = '<a href="'.MvcRouter::public_url(array('object' => $object)).'" title="View '.$encoded_object_name.'">View</a>';
-        $links[] = '<a href="'.MvcRouter::admin_url(array('object' => $object, 'action' => 'delete')).'" title="Delete '.$encoded_object_name.'" onclick="return confirm(&#039;Are you sure you want to delete '.$encoded_object_name.'?&#039;);">Delete</a>';
+        
+        if($options['actions']['edit']){
+            $links[] = '<a href="'.MvcRouter::admin_url(array('object' => $object, 'action' => 'edit')).'" title="Edit '.$encoded_object_name.'">Edit</a>';
+        }
+        
+        if($options['actions']['view']){
+            $links[] = '<a href="'.MvcRouter::public_url(array('object' => $object)).'" title="View '.$encoded_object_name.'">View</a>';
+        }
+        
+        if($options['actions']['delete']){
+            $links[] = '<a href="'.MvcRouter::admin_url(array('object' => $object, 'action' => 'delete')).'" title="Delete '.$encoded_object_name.'" onclick="return confirm(&#039;Are you sure you want to delete '.$encoded_object_name.'?&#039;);">Delete</a>';
+        }
+
         $html = implode(' | ', $links);
         return '<td>'.$html.'</td>';
     }
