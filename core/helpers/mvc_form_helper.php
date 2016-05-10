@@ -33,7 +33,7 @@ class MvcFormHelper extends MvcHelper {
     
     public function end($label='Submit') {
         $html = "";
-        // Allows the ommission of Submit button from end of form if $label == false. Useful for using custom submit buttons with more specific stylings etc..
+        // Allows the omission of Submit button from end of form if $label == false. Useful for using custom submit buttons with more specific stylings etc..
         if ($label) {
             $html = '<div><input type="submit" value="'.$this->esc_attr($label).'" /></div>';
         }
