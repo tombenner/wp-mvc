@@ -103,7 +103,7 @@ class Console_Color
      * @access public
      * @return string
      */
-    static function color($color = null, $style = null, $background = null) // {{{
+    public static function color($color = null, $style = null, $background = null) // {{{
     {
         $colors = &$GLOBALS['_CONSOLE_COLOR_CODES'];
         if (is_array($color)) {
@@ -145,7 +145,7 @@ class Console_Color
      * @access public
      * @return string
      */
-    function fgcolor($name)
+    public static function fgcolor($name)
     {
         $colors = &$GLOBALS['_CONSOLE_COLOR_CODES'];
         return "\033[".$colors['color'][$name].'m';
@@ -159,7 +159,7 @@ class Console_Color
      * @access public
      * @return string
      */
-    function style($name)
+    public static function style($name)
     {
         $colors = &$GLOBALS['_CONSOLE_COLOR_CODES'];
         return "\033[".$colors['style'][$name].'m';
@@ -173,7 +173,7 @@ class Console_Color
      * @access public
      * @return string
      */
-    function bgcolor($name)
+    public static function bgcolor($name)
     {
         $colors = &$GLOBALS['_CONSOLE_COLOR_CODES'];
         return "\033[".$colors['background'][$name].'m';
@@ -214,7 +214,7 @@ class Console_Color
      * @access public
      * @return string
      */
-    static function convert($string, $colored = true)
+    public static function convert($string, $colored = true)
     {
         static $conversions = array ( // static so the array doesn't get built
                                       // everytime
@@ -279,7 +279,7 @@ class Console_Color
      * @access public
      * @return string
      */
-    function escape($string) 
+    public static function escape($string) 
     {
         return str_replace('%', '%%', $string);
     }
@@ -292,7 +292,7 @@ class Console_Color
      * @acess public
      * @return string
      */
-    function strip($string) 
+    public static function strip($string) 
     {
         return preg_replace('/\033\[[\d;]+m/', '', $string);
     }
