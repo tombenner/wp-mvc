@@ -537,7 +537,7 @@ class MvcModel {
                 $object = $this->new_object($array);
             }
             
-            if ( (!empty($this->primary_key)) && (!empty($object->id)) ) {
+            if ( (!empty($this->primary_key)) && (!empty($object->{$this->primary_key})) ) {
                 $object->__id = $object->{$this->primary_key};
             }
             
