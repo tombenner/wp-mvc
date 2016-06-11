@@ -190,7 +190,7 @@ class MvcHelper {
         if (!empty($column['value_method'])) {
             $value = $controller->{$column['value_method']}($object);
         } else {
-	        $value = $object->{$column['key']};
+            $value = $object->$column['key'];
         }
         return '<td>'.$value.'</td>';
     }
