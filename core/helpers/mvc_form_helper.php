@@ -145,7 +145,7 @@ class MvcFormHelper extends MvcHelper {
         return $html;
     }
 
-    public function editor($field_name, array $options = []) {
+    public function editor($field_name, array $options = array()) {
         $id = $this->input_id($field_name);
 
         $defaults = array(
@@ -164,22 +164,22 @@ class MvcFormHelper extends MvcHelper {
 
         ob_start();
 
-        if ($options['label'])
+        if (!empty($options['label']))
             echo '<label for="' . $id . '">' . $options['label'] . '</label>';
 
-        wp_editor($options['content'], $id, [
+        wp_editor($options['content'], $id, array(
             'editor_class' => $options['required'],
             'media_buttons' => $options['media_buttons'],
             'textarea_name' => $options['name'],
             'textarea_rows' => $options['rows'],
             'teeny' => $options['minimal'],
-            'tinymce' => [
+            'tinymce' => array(
                 'statusbar' => $options['statusbar']
-            ],
+            ),
             'editor_css' => $options['editor_css'],
             'quicktags' => $options['quicktags'],
             'wpautop' => false
-        ]);
+        ));
 
         return ob_get_clean();
     }
