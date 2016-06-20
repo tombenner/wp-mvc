@@ -144,6 +144,45 @@ class MvcFormHelper extends MvcHelper {
         $html .= $this->after_input($field_name, $options);
         return $html;
     }
+
+    public function editor($field_name, array $options = array()) {
+        $id = $this->input_id($field_name);
+
+        $defaults = array(
+            'id' => $id,
+            'name' => $this->input_name($field_name),
+            'label' => MvcInflector::titleize($field_name),
+            'content' => empty($this->object->$field_name) ? '' : $this->object->$field_name,
+            'rows' => 10,
+            'editor_css' => '',
+            'media_buttons' => true,
+            'minimal' => false,
+            'statusbar' => true,
+            'quicktags' => true
+        );
+        $options = array_merge($defaults, $options);
+
+        ob_start();
+
+        if (!empty($options['label']))
+            echo '<label for="' . $id . '">' . $options['label'] . '</label>';
+
+        wp_editor($options['content'], $id, array(
+            'editor_class' => $options['required'],
+            'media_buttons' => $options['media_buttons'],
+            'textarea_name' => $options['name'],
+            'textarea_rows' => $options['rows'],
+            'teeny' => $options['minimal'],
+            'tinymce' => array(
+                'statusbar' => $options['statusbar']
+            ),
+            'editor_css' => $options['editor_css'],
+            'quicktags' => $options['quicktags'],
+            'wpautop' => false
+        ));
+
+        return ob_get_clean();
+    }
     
     public function select($field_name, $options=array()) {
         $html = $this->before_input($field_name, $options);
