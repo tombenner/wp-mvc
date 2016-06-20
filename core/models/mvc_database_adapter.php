@@ -163,12 +163,12 @@ class MvcDatabaseAdapter {
     public function get_set_sql($data) {
         $clauses = array();
         foreach ($data as $key => $value) {
-            if (is_string($value) || is_numeric($value)) {
-                $clauses[] = $key.' = "'.$this->escape($value).'"';
-            }
-            else if($value == null){
+            if ($value == null) {
                 $clauses[] = $key.' = NULL';
             }
+            else if (is_string($value) || is_numeric($value)) {
+                $clauses[] = $key . ' = "' . $this->escape($value) . '"';
+            }            
         }
         $sql = implode(', ', $clauses);
         return $sql;
