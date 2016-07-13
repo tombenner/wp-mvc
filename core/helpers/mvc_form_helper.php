@@ -6,7 +6,8 @@ class MvcFormHelper extends MvcHelper {
         $defaults = array(
             'action' => $this->controller->action,
             'controller' => MvcInflector::tableize($model_name),
-            'public' => false
+            'public' => false,
+            'enctype' => 'application/x-www-form-urlencoded'
         );
         $options = array_merge($defaults, $options);
         $this->model_name = $model_name;
@@ -18,11 +19,11 @@ class MvcFormHelper extends MvcHelper {
         if ($object_id) {
             $router_options['id'] = $object_id;
         }
-        
+
         if ($options['public']) {
-            $html = '<form action="'.MvcRouter::public_url($router_options).'" method="post">';
+            $html = '<form enctype="'.$options['enctype'].'" action="'.MvcRouter::public_url($router_options).'" method="post">';
         } else {
-            $html = '<form action="'.MvcRouter::admin_url($router_options).'" method="post">';
+            $html = '<form enctype="'.$options['enctype'].'" action="'.MvcRouter::admin_url($router_options).'" method="post">';
         }
         
         if ($object_id) {
@@ -65,6 +66,20 @@ class MvcFormHelper extends MvcHelper {
             return '';
         }
     }
+
+    public function file_input($field_name, $options=array()) {
+        $defaults = array(
+            'id' => $this->input_id($field_name),
+            'name' => $this->input_name($field_name),
+            'type' => 'file'
+        );
+        $options = array_merge($defaults, $options);
+        $attributes_html = self::attributes_html($options, 'input');
+        $html = $this->before_input($field_name, $options);
+        $html .= '<input'.$attributes_html.' />';
+        $html .= $this->after_input($field_name, $options);
+        return $html;
+    }
     
     public function text_input($field_name, $options=array()) {
         $defaults = array(
@@ -83,7 +98,7 @@ class MvcFormHelper extends MvcHelper {
     public function textarea_input($field_name, $options=array()) {
         $defaults = array(
             'id' => $this->input_id($field_name),
-            'name' => $this->input_name($field_name)
+            'name' => $this->input_name($field_name),
         );
         $options = array_merge($defaults, $options);
         $attributes_html = self::attributes_html($options, 'textarea');
