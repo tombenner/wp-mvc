@@ -98,7 +98,7 @@ class MvcFormHelper extends MvcHelper {
     public function textarea_input($field_name, $options=array()) {
         $defaults = array(
             'id' => $this->input_id($field_name),
-            'name' => $this->input_name($field_name),
+            'name' => $this->input_name($field_name)
         );
         $options = array_merge($defaults, $options);
         $attributes_html = self::attributes_html($options, 'textarea');
