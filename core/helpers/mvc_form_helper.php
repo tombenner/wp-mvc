@@ -191,6 +191,34 @@ class MvcFormHelper extends MvcHelper {
         return $html;
     }
     
+    function select_from_model($field_name, MvcModel $model, $find_options = array(), $select_options = array()) {
+    
+    	$default_find_options = array(
+    			'selects' => array($model->primary_key, $model->display_field),
+    			'order' => $model->display_field
+    	);
+    
+    	$find_options = array_merge($default_find_options, $find_options);
+    
+    	$values =  $model->find($find_options);
+    
+    	$key = $value->__id;
+    	$value = $value->__name;
+    
+    	$default_options = array(
+    			'id' => $this->model_name.'_'.$field_name.'_select',
+    			'name' => 'data['.$this->model_name.']['.$field_name.']',
+    			'label' => MvcInflector::titleize($field_name),
+    			'empty' => true,
+    			'value' => empty($this->object->$field_name) ? '' : $this->object->$field_name,
+    			'options' => $values
+    	);
+    
+    	$select_options = array_merge($default_options, $select_options);
+    
+    	return $this->select($default_options['name'], $select_options);
+    }
+
     public function select_tag($field_name, $options=array()) {
         $defaults = array(
             'empty' => false,
@@ -229,6 +257,7 @@ class MvcFormHelper extends MvcHelper {
         $html = '<button'.$attributes_html.'>'.$text.'</button>';
         return $html;
     }
+
     
     public function belongs_to_dropdown($model_name, $select_options, $options=array()) {
     
