@@ -120,10 +120,14 @@ class MvcFormHelper extends MvcHelper {
     }
     
     public function hidden_input($field_name, $options=array()) {
+    	
+    	$value = empty($this->object->{$field_name}) ? '' : $this->object->{$field_name};
+    	
         $defaults = array(
             'id' => $this->input_id($field_name),
             'name' => $this->input_name($field_name),
-            'type' => 'hidden'
+            'type' => 'hidden',
+            'value' => $value
         );
         $options = array_merge($defaults, $options);
         $attributes_html = self::attributes_html($options, 'input');
