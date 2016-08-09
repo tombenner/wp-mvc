@@ -87,7 +87,7 @@ class MvcFormTagsHelper extends MvcHelper {
         $attributes_html = self::attributes_html($options, 'input');
         $html = self::before_input($field_name, $options);
         $html .= '<input'.$attributes_html.' />';
-        $html .= $this->after_input($field_name, $options);
+        $html .= self::after_input($field_name, $options);
         return $html;
     }
     
