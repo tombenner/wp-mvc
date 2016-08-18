@@ -184,7 +184,7 @@ class MvcDatabaseAdapter {
     public function get_insert_values_sql($data) {
         $values = array();
         foreach ($data as $value) {
-            if($value == null){
+            if($value === null){
                 $values[] = 'NULL';
             }
             else{
