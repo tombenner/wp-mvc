@@ -114,6 +114,7 @@ class MvcHelper {
                 'maxlength',
                 'name',
                 'readonly',
+                'required',
                 'rows',
                 'style',
                 'tabindex',
