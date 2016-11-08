@@ -798,6 +798,8 @@ class MvcModel {
             if (isset($this->schema[$attribute])) {
                 $object = $this->find(array('conditions' => array($attribute => $args[0])));
                 return $object;
+            } else {
+                MvcError::fatal('Undefined attribute: '.$attribute.' for class: '.get_class($this).' when calling: '.$method.'.');
             }
         }
         if (substr($method, 0, 12) == 'find_one_by_') {
@@ -805,11 +807,11 @@ class MvcModel {
             if (isset($this->schema[$attribute])) {
                 $object = $this->find_one(array('conditions' => array($attribute => $args[0])));
                 return $object;
+            } else {
+                MvcError::fatal('Undefined attribute: '.$attribute.' for class: '.get_class($this).' when calling: '.$method.'.');
             }
         }
         MvcError::fatal('Undefined method: '.get_class($this).'::'.$method.'.');
     }
 
 }
-
-?>
