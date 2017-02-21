@@ -7,6 +7,10 @@ class MvcHelper {
     function __construct() {
         $this->file_includer = new MvcFileIncluder();
         $this->init();
+        $this->plugin_name = MvcObjectRegistry::get_object('plugin_name');
+        if (! isset($this->plugin_name)) {
+            $this->plugin_name = '';
+        }
     }
     
     public function init() {
@@ -163,7 +167,7 @@ class MvcHelper {
     public function admin_header_cells($controller) {
         $html = '';
         foreach ($controller->default_columns as $key => $column) {
-            $html .= $this->admin_header_cell($column['label']);
+            $html .= $this->admin_header_cell(__($column['label'], $this->plugin_name));
         }
         $html .= $this->admin_header_cell('');
         return '<tr>'.$html.'</tr>';
@@ -213,15 +217,15 @@ class MvcHelper {
         $encoded_object_name = $this->esc_attr($object_name);
         
         if($options['actions']['edit']){
-            $links[] = '<a href="'.MvcRouter::admin_url(array('object' => $object, 'action' => 'edit')).'" title="Edit '.$encoded_object_name.'">Edit</a>';
+            $links[] = '<a href="'.MvcRouter::admin_url(array('object' => $object, 'action' => 'edit')).'" title="' . __('Edit', 'wpmvc') . ' ' .$encoded_object_name.'">' . __('Edit', 'wpmvc') .'</a>';
         }
         
         if($options['actions']['view']){
-            $links[] = '<a href="'.MvcRouter::public_url(array('object' => $object)).'" title="View '.$encoded_object_name.'">View</a>';
+            $links[] = '<a href="'.MvcRouter::public_url(array('object' => $object)).'" title="' . __('View', 'wpmvc') . ' ' .$encoded_object_name.'">' . __('View', 'wpmvc') .'</a>';
         }
         
         if($options['actions']['delete']){
-            $links[] = '<a href="'.MvcRouter::admin_url(array('object' => $object, 'action' => 'delete')).'" title="Delete '.$encoded_object_name.'" onclick="return confirm(&#039;Are you sure you want to delete '.$encoded_object_name.'?&#039;);">Delete</a>';
+            $links[] = '<a href="'.MvcRouter::admin_url(array('object' => $object, 'action' => 'delete')).'" title="' . __('Delete', 'wpmvc') . ' ' .$encoded_object_name.'" onclick="return confirm(&#039;' . __('Are you sure you want to delete', 'wpmvc') . ' ' .$encoded_object_name.'?&#039;);">' . __('Delete', 'wpmvc') .'</a>';
         }
 
         $html = implode(' | ', $links);

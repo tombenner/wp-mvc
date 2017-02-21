@@ -3,10 +3,10 @@
 <form id="posts-filter" action="<?php echo MvcRouter::admin_url(); ?>" method="get">
 
     <p class="search-box">
-        <label class="screen-reader-text" for="post-search-input">Search:</label>
+        <label class="screen-reader-text" for="post-search-input"><?php _e("Search", 'wpmvc'); ?>:</label>
         <input type="hidden" name="page" value="<?php echo MvcRouter::admin_page_param($model->name); ?>" />
         <input type="text" name="q" value="<?php echo empty($params['q']) ? '' : $params['q']; ?>" />
-        <input type="submit" value="Search" class="button" />
+        <input type="submit" value="<?php _e("Search", 'wpmvc'); ?>" class="button" />
     </p>
 
 </form>

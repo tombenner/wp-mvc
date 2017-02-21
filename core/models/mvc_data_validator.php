@@ -18,7 +18,7 @@ class MvcDataValidator {
                 $error = new MvcDataValidationError($field, $message);
                 return $error;
             } else {
-                MvcError::fatal('The validation rule "'.$rule.'" wasn\'t found.');
+                MvcError::fatal(sprintf(__("The validation rule %s wasn't found.", 'wpmvc'), $rule));
             }
         }
         if (is_array($rule)) {
@@ -26,7 +26,7 @@ class MvcDataValidator {
                 return $this->validate_using_array_rule($field, $value, $rule);
             }
         }
-        MvcError::fatal('The validation rule "'.print_r($rule, true).'" wasn\'t defined correctly.');
+        MvcError::fatal(sprintf(__("The validation rule %s wasn't defined correctly.", 'wpmvc'), print_r($rule, true)));
     }
     
     private function validate_using_array_rule($field, $value, $rule) {
@@ -71,7 +71,7 @@ class MvcDataValidator {
         if ($this->matches_pattern($value, $pattern)) {
             return true;
         } else {
-            return '{field} must only contain letters and numbers.';
+            return __('{field} must only contain letters and numbers.', "wpmvc");
         }
     }
     
@@ -79,7 +79,7 @@ class MvcDataValidator {
         if (is_numeric($value)) {
             return true;
         } else {
-            return '{field} must be a number.';
+            return __('{field} must be a number.', 'wpmvc');
         }
     }
     
@@ -88,7 +88,7 @@ class MvcDataValidator {
         if ($this->matches_pattern($value, $pattern)) {
             return true;
         } else {
-            return '{field} must be a valid email address.';
+            return __('{field} must be a valid email address.', 'wpmvc');
         }
     }
     
@@ -97,7 +97,7 @@ class MvcDataValidator {
         if ($this->matches_pattern($value, $pattern)) {
             return true;
         } else {
-            return '{field} can\'t be empty.';
+            return __("{field} can't be empty.", 'wpmvc');
         }
     }
     
@@ -113,7 +113,7 @@ class MvcDataValidator {
         if ($this->matches_pattern($value, $pattern)) {
             return true;
         } else {
-            return '{field} must be a valid URL.';
+            return __('{field} must be a valid URL.', 'wpmvc');
         }
     }
     
