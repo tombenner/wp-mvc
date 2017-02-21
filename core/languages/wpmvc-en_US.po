@@ -61,3 +61,20 @@ msgstr "Add New"
 #: loaders/mvc_admin_loader.php:228
 msgid "Are you sure you want to delete"
 msgstr "Are you sure you want to delete"
+
+#: controllers/mvc_admin_controller.php:26
+msgid "Successfully deleted!"
+msgstr "Successfully deleted!"
+
+#: controllers/mvc_admin_controller.php:47
+#: controllers/mvc_admin_controller.php:68
+msgid "Successfully created!"
+msgstr "Successfully created!"
+
+#: controllers/mvc_admin_controller.php:55
+#: controllers/mvc_admin_controller.php:76
+msgid "Successfully saved!"
+msgstr "Successfully saved!"
+
+
+

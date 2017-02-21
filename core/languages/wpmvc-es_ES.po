@@ -63,5 +63,17 @@ msgstr "Nuevo"
 msgid "Are you sure you want to delete"
 msgstr "Está seguro que desea eliminar"
 
+#: controllers/mvc_admin_controller.php:26
+msgid "Successfully deleted!"
+msgstr "Eliminado satisfactoriamente!"
 
+#: controllers/mvc_admin_controller.php:47
+#: controllers/mvc_admin_controller.php:68
+msgid "Successfully created!"
+msgstr "Creado satisfactoriamente!"
+
+#: controllers/mvc_admin_controller.php:55
+#: controllers/mvc_admin_controller.php:76
+msgid "Successfully saved!"
+msgstr "Guardado satisfactoriamente!"
 
