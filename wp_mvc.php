@@ -5,6 +5,8 @@ Plugin URI: http://wordpress.org/extend/plugins/wp-mvc/
 Description: Sets up an MVC framework inside of WordPress.
 Author: Tom Benner
 Version: 1.3.8
+Text Domain: wpmvc
+Domain Path: /core/languages
 Author URI: https://github.com/tombenner
 */
 
@@ -43,4 +45,9 @@ function wp_mvc_load_global_functionality(&$loader) { //public or admin, dependi
     add_action('init', array($loader, 'init'));
     add_action('widgets_init', array($loader, 'register_widgets'));
     add_filter('post_type_link', array($loader, 'filter_post_link'), 10, 2);
+    add_action('plugins_loaded', 'wpmvc_load_plugin_textdomain' );
+}
+
+function wpmvc_load_plugin_textdomain() {
+    load_plugin_textdomain( 'wpmvc', FALSE, basename( dirname( __FILE__ ) ) . '/' . 'core/languages' );
 }
