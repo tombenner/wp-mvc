@@ -23,7 +23,7 @@ class MvcAdminController extends MvcController {
         $this->set_object();
         if (!empty($this->object)) {
             $this->model->delete($this->params['id']);
-            $this->flash('notice', 'Successfully deleted!');
+            $this->flash('notice', __('Successfully deleted!', 'wpmvc'));
         } else {
             $this->flash('warning', 'A '.MvcInflector::humanize($this->model->name).' with ID "'.$this->params['id'].'" couldn\'t be found.');
         }
@@ -44,7 +44,7 @@ class MvcAdminController extends MvcController {
                 if($this->model->create($this->params['data'])) {
                     $id = $this->model->insert_id;
                     $url = MvcRouter::admin_url(array('controller' => $this->name, 'action' => 'edit', 'id' => $id));
-                    $this->flash('notice', 'Successfully created!');
+                    $this->flash('notice', __('Successfully created!', 'wpmvc'));
                     $this->redirect($url);
                 } else {
                     $this->flash('error', $this->model->validation_error_html);
@@ -52,7 +52,7 @@ class MvcAdminController extends MvcController {
                 }
             } else {
                 if ($this->model->save($this->params['data'])) {
-                    $this->flash('notice', 'Successfully saved!');
+                    $this->flash('notice', __('Successfully saved!', 'wpvmc'));
                     $this->refresh();
                 } else {
                     $this->flash('error', $this->model->validation_error_html);
@@ -65,7 +65,7 @@ class MvcAdminController extends MvcController {
         if (!empty($this->params['data'][$this->model->name])) {
             $id = $this->model->create($this->params['data']);
             $url = MvcRouter::admin_url(array('controller' => $this->name, 'action' => 'edit', 'id' => $id));
-            $this->flash('notice', 'Successfully created!');
+            $this->flash('notice', __('Successfully created!', 'wpmvc'));
             $this->redirect($url);
         }
     }
@@ -73,7 +73,7 @@ class MvcAdminController extends MvcController {
     public function save() {
         if (!empty($this->params['data'][$this->model->name])) {
             if ($this->model->save($this->params['data'])) {
-                $this->flash('notice', 'Successfully saved!');
+                $this->flash('notice', __('Successfully saved!', 'wpvmc'));
                 $this->refresh();
             } else {
                 $this->flash('error', $this->model->validation_error_html);

@@ -31,6 +31,20 @@ class MvcFormTagsHelper extends MvcHelper {
         return $html;
     }
 
+     static function password_input($field_name, $options=array()) {
+        $defaults = array(
+            'id' => self::input_id($field_name),
+            'name' => self::input_name($field_name),
+            'type' => 'password'
+        );
+        $options = array_merge($defaults, $options);
+        $attributes_html = self::attributes_html($options, 'input');
+        $html = self::before_input($field_name, $options);
+        $html .= '<input'.$attributes_html.' />';
+        $html .= self::after_input($field_name, $options);
+        return $html;
+    }
+
     static function wp_editor_input($field_name, $options=array()) {
         $defaults = array(
             'id' => self::input_id($field_name),

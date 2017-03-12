@@ -98,7 +98,7 @@ class MvcAdminLoader extends MvcLoader {
                     ; //not every controller must have a corresponding model, continue silently
                 }
 
-                $controller_titleized = MvcInflector::titleize($controller_name);
+                $controller_titleized = __(MvcInflector::titleize($controller_name), $this->plugin_name);
         
                 $admin_controller_name = 'admin_'.$controller_name;
             
@@ -196,14 +196,14 @@ class MvcAdminLoader extends MvcLoader {
     
         $default_pages = array(
             'add' => array(
-                'label' => 'Add New'
+                'label' => __('Add New', 'wpmvc')
             ),
             'delete' => array(
-                'label' => 'Delete '.$titleized,
+                'label' => __('Delete', 'wpmvc'). ' '.$titleized,
                 'in_menu' => false
             ),
             'edit' => array(
-                'label' => 'Edit '.$titleized,
+                'label' => __('Edit', 'wpmvc'). ' '.$titleized,
                 'in_menu' => false
             )
         );
@@ -271,6 +271,7 @@ class MvcAdminLoader extends MvcLoader {
         foreach ($this->settings as $settings_name => $settings) {
             $title = MvcInflector::titleize($settings_name);
             $title = str_replace(' Settings', '', $title);
+            $title = __($title, $this->plugin_name);
             $instance = MvcSettingsRegistry::get_settings($settings_name);
             add_options_page($title, $title, 'manage_options', $instance->key, array($instance, 'page'));
         }

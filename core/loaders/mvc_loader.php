@@ -29,7 +29,12 @@ abstract class MvcLoader {
         $this->file_includer->include_all_app_files('config/routes.php');
 
         $this->dispatcher = new MvcDispatcher();
-        
+
+        $this->plugin_name = MvcObjectRegistry::get_object('plugin_name');
+        if (! isset($this->plugin_name)) {
+            $this->plugin_name = '';
+        }
+
     }
 
     

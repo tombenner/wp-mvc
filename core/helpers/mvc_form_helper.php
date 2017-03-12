@@ -51,7 +51,7 @@ class MvcFormHelper extends MvcHelper {
             $type = $this->get_type_from_sql_schema($schema);
             $defaults = array(
                 'type' => $type,
-                'label' => MvcInflector::titleize($schema['field']),
+                'label' => __(MvcInflector::titleize($schema['field']), $this->plugin_name),
                 'value' => empty($this->object->$field_name) ? '' : $this->object->$field_name
             );
             if ($type == 'checkbox') {
@@ -170,7 +170,7 @@ class MvcFormHelper extends MvcHelper {
         $defaults = array(
             'id' => $id,
             'name' => $this->input_name($field_name),
-            'label' => MvcInflector::titleize($field_name),
+            'label' => __(MvcInflector::titleize($field_name), $this->plugin_name),
             'content' => empty($this->object->$field_name) ? '' : $this->object->$field_name,
             'rows' => 10,
             'editor_css' => '',
@@ -227,7 +227,7 @@ class MvcFormHelper extends MvcHelper {
     	$default_options = array(
     			'id' => $this->model_name.'_'.$field_name.'_select',
     			'name' => 'data['.$this->model_name.']['.$field_name.']',
-    			'label' => MvcInflector::titleize($field_name),
+    			'label' => __(MvcInflector::titleize($field_name), $this->plugin_name),
     			'empty' => true,
     			'value' => empty($this->object->$field_name) ? '' : $this->object->$field_name,
     			'options' => $values
@@ -291,7 +291,7 @@ class MvcFormHelper extends MvcHelper {
         $defaults = array(
             'id' => $this->model_name.'_'.$model_name.'_select',
             'name' => 'data['.$this->model_name.']['.$foreign_key.']',
-            'label' => MvcInflector::titleize($model_name),
+            'label' => __(MvcInflector::titleize($model_name), $this->plugin_name),
             'value' => $value,
             'options' => $select_options,
             'empty' => true
@@ -317,7 +317,7 @@ class MvcFormHelper extends MvcHelper {
             'select_name' => $this->model_name.'_'.$model_name.'_select',
             'list_id' => $this->model_name.'_'.$model_name.'_list',
             'ids_input_name' => 'data['.$this->model_name.']['.$model_name.'][ids]',
-            'label' => MvcInflector::pluralize(MvcInflector::titleize($model_name)),
+            'label' => __(MvcInflector::pluralize(MvcInflector::titleize($model_name)), $this->plugin_name),
             'options' => $select_options
         );
         $options = array_merge($defaults, $options);
