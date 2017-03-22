@@ -252,7 +252,7 @@ class MvcController {
     }
     
     protected function include_view($path, $view_vars=array()) {
-        extract($view_vars);
+		extract($view_vars, EXTR_IF_EXISTS);
         $path = preg_replace('/^admin_([^\/]+)/', 'admin/$1', $path);
         $filepath = $this->file_includer->find_first_app_file_or_core_file('views/'.$path.'.php');
         if (!$filepath) {
