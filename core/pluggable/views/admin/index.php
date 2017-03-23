@@ -1,4 +1,4 @@
-<h2><?php echo MvcInflector::pluralize_titleize($model->name); ?></h2>
+<h2><?php _e(MvcInflector::pluralize_titleize($model->name), $this->helper->plugin_name); ?></h2>
 
 <form id="posts-filter" action="<?php echo MvcRouter::admin_url(); ?>" method="get">
 
