@@ -52,7 +52,7 @@ class MvcAdminController extends MvcController {
                 }
             } else {
                 if ($this->model->save($this->params['data'])) {
-                    $this->flash('notice', __('Successfully saved!', 'wpvmc'));
+                    $this->flash('notice', __('Successfully saved!', 'wpmvc'));
                     $this->refresh();
                 } else {
                     $this->flash('error', $this->model->validation_error_html);
@@ -100,6 +100,7 @@ class MvcAdminController extends MvcController {
             'format' => '?page_num=%#%',
             'total' => $collection['total_pages'],
             'current' => $collection['page'],
+            'total_objects' => $collection['total_objects'],
             'add_args' => $params
         ));
     }
