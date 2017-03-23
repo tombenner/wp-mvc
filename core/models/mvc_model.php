@@ -545,7 +545,9 @@ class MvcModel {
                 foreach ($includes as $include_key => $include) {
                     if (is_string($include)) {
                         $model_name = $include;
-                        $association = $this->associations[$model_name];
+                        if (isset($this->associations[$model_name])) {
+                            $association = $this->associations[$model_name];
+                        }
                     } else {
                         $model_name = $include_key;
                         $association = $include;
@@ -559,42 +561,44 @@ class MvcModel {
                             $association = array_merge($this->associations[$model_name], $association);
                         }
                     }
-                    if (empty($association['fields'])) {
+                    if (isset($association['fields']) and empty($association['fields'])) {
                         $association['fields'] = array($association['name'].'.*');
                     }
-                    $model = MvcModelRegistry::get_model($association['class']);
-                    switch ($association['type']) {
-                        case 'belongs_to':
-                            $associated_object = $model->find_by_id($object->{$association['foreign_key']}, array(
-                                'recursive' => $recursive
-                            ));
-                            $object->{MvcInflector::underscore($model_name)} = $associated_object;
-                            break;
-                            
-                        case 'has_many':
-                            $associated_objects = $model->find(array(
-                                'selects' => $association['fields'],
-                                'conditions' => array($association['foreign_key'] => $object->__id),
-                                'recursive' => $recursive
-                            ));
-                            $object->{MvcInflector::tableize($model_name)} = $associated_objects;
-                            break;
-                        
-                        case 'has_and_belongs_to_many':
-                            
-                            $join_alias = 'JoinTable';
-                            $associated_objects = $model->find(array(
-                                'selects' => $association['fields'],
-                                'joins' => array(
-                                    'table' => self::process_table_name($association['join_table']),
-                                    'on' => $join_alias.'.'.$association['association_foreign_key'].' = '.$model_name.'.'.$model->primary_key,
-                                    'alias' => $join_alias
-                                ),
-                                'conditions' => array($join_alias.'.'.$association['foreign_key'] => $object->__id),
-                                'recursive' => $recursive
-                            ));
-                            $object->{MvcInflector::tableize($model_name)} = $associated_objects;
-                            break;
+                    if (isset($association['class']) and $association['type']) {
+                        $model = MvcModelRegistry::get_model($association['class']);
+                        switch ($association['type']) {
+                            case 'belongs_to':
+                                $associated_object = $model->find_by_id($object->{$association['foreign_key']}, array(
+                                    'recursive' => $recursive
+                                ));
+                                $object->{MvcInflector::underscore($model_name)} = $associated_object;
+                                break;
+
+                            case 'has_many':
+                                $associated_objects = $model->find(array(
+                                    'selects' => $association['fields'],
+                                    'conditions' => array($association['foreign_key'] => $object->__id),
+                                    'recursive' => $recursive
+                                ));
+                                $object->{MvcInflector::tableize($model_name)} = $associated_objects;
+                                break;
+
+                            case 'has_and_belongs_to_many':
+
+                                $join_alias = 'JoinTable';
+                                $associated_objects = $model->find(array(
+                                    'selects' => $association['fields'],
+                                    'joins' => array(
+                                        'table' => self::process_table_name($association['join_table']),
+                                        'on' => $join_alias.'.'.$association['association_foreign_key'].' = '.$model_name.'.'.$model->primary_key,
+                                        'alias' => $join_alias
+                                    ),
+                                    'conditions' => array($join_alias.'.'.$association['foreign_key'] => $object->__id),
+                                    'recursive' => $recursive
+                                ));
+                                $object->{MvcInflector::tableize($model_name)} = $associated_objects;
+                                break;
+                        }
                     }
                 }
             }
