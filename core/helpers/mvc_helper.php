@@ -169,13 +169,13 @@ class MvcHelper {
         foreach ($controller->default_columns as $key => $column) {
             $html .= $this->admin_header_cell(__($column['label'], $this->plugin_name));
         }
-        $html .= $this->admin_header_cell('');
+        $html .= $this->admin_header_cell('', ' wpmvc-actions');
         return '<tr>'.$html.'</tr>';
         
     }
     
-    public function admin_header_cell($label) {
-        return '<th scope="col" class="manage-column">'.$label.'</th>';
+    public function admin_header_cell($label, $class=null) {
+        return '<th scope="col" class="manage-column'. $class . '">'.$label.'</th>';
     }
     
     public function admin_table_cells($controller, $objects, $options = array()) {
@@ -229,7 +229,7 @@ class MvcHelper {
         }
 
         $html = implode(' | ', $links);
-        return '<td>'.$html.'</td>';
+        return '<td class="wpmvc-actions">'.$html.'</td>';
     }
     
     // To do: move this into an MvcUtilities class (?)
