@@ -9,7 +9,11 @@ class MvcSettings {
     
     function __construct() {
         $this->name = get_class($this);
-        $this->title = MvcInflector::titleize($this->name);
+        $this->plugin_name = MvcObjectRegistry::get_object('plugin_name');
+        if (! isset($this->plugin_name)) {
+            $this->plugin_name = '';
+        }
+        $this->title = __(MvcInflector::titleize($this->name), $this->plugin_name);
         $this->key = 'mvc_'.MvcInflector::underscore($this->name);
         $this->init_settings();
     }
@@ -23,7 +27,7 @@ class MvcSettings {
         echo '<form action="options.php" method="post">';
         settings_fields($this->key);
         do_settings_sections($this->key);
-        echo '<input name="Submit" type="submit" value="'.esc_attr('Save Changes').'" />';
+        echo '<input name="Submit" type="submit" value="'.esc_attr(__('Save Changes', 'wpmvc')).'" />';
         echo '</form>';
         echo '</div>';
     }
@@ -47,7 +51,8 @@ class MvcSettings {
             'id' => $setting['key'],
             'name' => $this->key.'['.$setting['key'].']',
             'type' => $setting['type'],
-            'value' => $input_value
+            'value' => $input_value,
+            'class' => 'regular-text',
         );
         if ($setting['type'] == 'checkbox' && $value) {
             $input_options['checked'] = 'checked';
@@ -59,7 +64,7 @@ class MvcSettings {
                 $input_options['options'] = $this->{$setting['options_method']}();
             }
         }
-        $html = MvcFormTagsHelper::input($setting_key, $input_options);
+        $html = MvcFormTagsHelper::input($setting_key, $input_options) . "\n";
         echo $html;
     }
     

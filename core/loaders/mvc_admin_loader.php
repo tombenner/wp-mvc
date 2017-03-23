@@ -261,7 +261,7 @@ class MvcAdminLoader extends MvcLoader {
             add_settings_section($section_key, '', array($instance, 'description'), $settings_key);
             register_setting($settings_key, $settings_key, array($instance, 'validate_fields'));
             foreach ($instance->settings as $setting_key => $setting) {
-                add_settings_field($setting_key, $setting['label'], array($instance, 'display_field_'.$setting_key), $settings_key, $section_key);
+                add_settings_field($setting_key, $setting['label'], array($instance, 'display_field_'.$setting_key), $settings_key, $section_key, $setting['args']);
             }
         }
     }
