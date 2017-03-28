@@ -30,7 +30,7 @@ class MvcDispatcher {
         }
         
         $controller->params = $params;
-        $controller->set('this', $controller);
+        //$controller->set('this', $controller);
         if (!empty($controller->before)) {
             foreach ($controller->before as $method) {
                 $controller->{$method}();
