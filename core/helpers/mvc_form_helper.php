@@ -369,7 +369,7 @@ class MvcFormHelper extends MvcHelper {
                     return false;
                 });
                 
-                jQuery(".remove-item").live("click", function() {
+                jQuery(document).on("click", ".remove-item", function() {
                     jQuery(this).parents("li:first").remove();
                     return false;
                 });
