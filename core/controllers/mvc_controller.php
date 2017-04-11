@@ -13,7 +13,8 @@ class MvcController {
     public $view_vars = array();
     
     function __construct() {
-    
+
+        session_start();
         $this->set_meta();
         $this->file_includer = new MvcFileIncluder();
     

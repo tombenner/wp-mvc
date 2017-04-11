@@ -331,7 +331,7 @@ class MvcFormHelper extends MvcHelper {
         // Fetch all associated objects.
         // If there aren't any, return empty array
         if($associated_objects === false){
-            $associated_objects = $this->object->{MvcInflector::tableize($model_name)};
+            $associated_objects = isset($this->object->{MvcInflector::tableize($model_name)}) ? $this->object->{MvcInflector::tableize($model_name)} : '';
         }
         $associated_objects = empty($associated_objects) ? array() : $associated_objects;
         
@@ -369,7 +369,7 @@ class MvcFormHelper extends MvcHelper {
                     return false;
                 });
                 
-                jQuery(".remove-item").live("click", function() {
+                jQuery(document).on("click", ".remove-item", function() {
                     jQuery(this).parents("li:first").remove();
                     return false;
                 });
