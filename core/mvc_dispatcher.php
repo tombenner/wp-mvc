@@ -30,8 +30,9 @@ class MvcDispatcher {
         }
         
         $controller->params = $params;
-        //make it run under php7 - it's more like 'look mom, it's working now!' solution
-        //$controller->set('this', $controller);
+        if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 70000) { //prevent conflicts with php < 7.0
+            $controller->set('this', $controller);
+        }
         if (!empty($controller->before)) {
             foreach ($controller->before as $method) {
                 $controller->{$method}();
