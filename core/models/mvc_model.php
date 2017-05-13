@@ -126,7 +126,7 @@ class MvcModel {
                 return false;
             }
             if (method_exists($this, 'before_save')) {
-                if (!$this->before_save($model_data)) {
+                if (!$this->before_save($model_data, $id)) {
                     return false;
                 }
             }
