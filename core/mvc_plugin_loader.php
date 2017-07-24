@@ -56,7 +56,7 @@ class MvcPluginLoader {
     
     protected function update_registered_plugins($plugins) {
         $plugins = $this->filter_nonexistent_plugins($plugins);
-        update_option('mvc_plugins', $plugins);
+        update_site_option('mvc_plugins', $plugins);
     }
     
     protected function filter_nonexistent_plugins($plugins) {
@@ -79,7 +79,7 @@ class MvcPluginLoader {
     }
     
     protected function get_plugins() {
-        $plugins = get_option('mvc_plugins', array());
+        $plugins = get_site_option('mvc_plugins', array());
         return $plugins;
     }
     
@@ -91,7 +91,7 @@ class MvcPluginLoader {
             foreach ($settings_files as $file_path) {
                 $settings_class = MvcInflector::class_name_from_filename(basename($file_path));
                 $settings = new $settings_class();
-                $existing_values = get_option($settings->key);
+                $existing_values = get_site_option($settings->key);
                 if (!$existing_values) {
                     $values = array();
                     foreach ($settings->settings as $key => $setting) {
@@ -103,7 +103,7 @@ class MvcPluginLoader {
                         }
                         $values[$key] = $value;
                     }
-                    update_option($settings->key, $values);
+                    update_site_option($settings->key, $values);
                 }
             }
         }

@@ -3,7 +3,7 @@
 class Speaker extends MvcModel {
 
     var $order = 'Speaker.first_name, Speaker.last_name';
-    var $display_field = 'name';
+    var $display_field = 'first_name';
     var $has_many = array('Event');
     var $wp_post = array(
         'post_type' => array(
@@ -30,10 +30,6 @@ class Speaker extends MvcModel {
             'message' => 'Please enter a valid URL in the URL field!'
         )
     );
-    
-    public function after_find($object) {
-        $object->name = trim($object->first_name.' '.$object->last_name);
-    }
     
 }
 
