@@ -105,7 +105,7 @@ abstract class MvcLoader {
     
     protected function get_ordered_plugins() {
     
-        $plugins = get_option('mvc_plugins', array());
+        $plugins = get_site_option('mvc_plugins', array());
         $plugin_app_paths = array();
         
         // Allow plugins to be loaded in a specific order by setting a PluginOrder config value like

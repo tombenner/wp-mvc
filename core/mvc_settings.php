@@ -30,7 +30,7 @@ class MvcSettings {
     
     public function display_field($setting_key) {
         $setting = $this->settings[$setting_key];
-        $options = get_option($this->key);
+        $options = get_site_option($this->key);
         $value = isset($options[$setting_key]) ? $options[$setting_key] : null;
         if (is_null($value)) {
             if (!empty($setting['default'])) {

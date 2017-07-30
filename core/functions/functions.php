@@ -25,7 +25,7 @@ function mvc_model($model_name) {
 
 function mvc_setting($settings_name, $setting_key) {
     $settings_name = 'mvc_'.MvcInflector::underscore($settings_name);
-    $option = get_option($settings_name);
+    $option = get_site_option($settings_name);
     if (isset($option[$setting_key])) {
         return $option[$setting_key];
     }
@@ -98,7 +98,7 @@ function mvc_add_plugin($plugin) {
         $plugins[] = $plugin;
         $added = true;
     }
-    update_option('mvc_plugins', $plugins);
+    update_site_option('mvc_plugins', $plugins);
     return $added;
 }
 
@@ -114,12 +114,12 @@ function mvc_remove_plugin($plugin) {
         }
         $plugins = array_values($plugins);
     }
-    update_option('mvc_plugins', $plugins);
+    update_site_option('mvc_plugins', $plugins);
     return $removed;
 }
 
 function mvc_get_plugins() {
-    $plugins = get_option('mvc_plugins', array());
+    $plugins = get_site_option('mvc_plugins', array());
     return $plugins;
 }
 
