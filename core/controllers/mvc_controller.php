@@ -15,7 +15,7 @@ class MvcController {
     function __construct() {
 
         // Necessary for flash()-related functionality
-        if (session_id() == '') {
+        if (session_id() == '' && !headers_sent()) {
             session_start();
         }
 
