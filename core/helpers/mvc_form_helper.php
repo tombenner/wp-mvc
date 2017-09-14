@@ -103,7 +103,7 @@ class MvcFormHelper extends MvcHelper {
         $options = array_merge($defaults, $options);
         $attributes_html = self::attributes_html($options, 'textarea');
         $html = $this->before_input($field_name, $options);
-        $html .= '<textarea'.$attributes_html.'>'.$options['value'].'</textarea>';
+        $html .= '<textarea'.$attributes_html.'>'.$this->object->$field_name.'</textarea>';
         $html .= $this->after_input($field_name, $options);
         return $html;
     }
