@@ -76,7 +76,6 @@ If there's functionality that you'd like to use that isn't implemented in the ex
  * Ability to specify layouts in routes using `'layout' => 'whatever'`
  * Fix for textarea inputs in form helper
  * Added headers not sent check before setting cookies
- * Improve multisite compatibility
 
 = 1.3.10 =
 

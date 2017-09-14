@@ -19,8 +19,8 @@ abstract class MvcLoader {
         
         $this->core_path = MVC_CORE_PATH;
 
-        // mdc added mvc_layout to allow routes to specify a layout to use.
         $this->query_vars = array('mvc_controller','mvc_action','mvc_id','mvc_extra','mvc_layout');
+        
         $this->load_core();
         $this->load_plugins();
         
@@ -105,7 +105,7 @@ abstract class MvcLoader {
     
     protected function get_ordered_plugins() {
     
-        $plugins = get_site_option('mvc_plugins', array());
+        $plugins = get_option('mvc_plugins', array());
         $plugin_app_paths = array();
         
         // Allow plugins to be loaded in a specific order by setting a PluginOrder config value like
