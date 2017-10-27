@@ -349,6 +349,7 @@ class MvcModel {
                 $options['joins'] = array($options['joins']);
             }
             foreach ($options['joins'] as $key => $join) {
+                $join_extra_on = '';
                 if (is_string($join)) {
 					$join_name = $join;
 					$join_model_name = $join;
@@ -357,6 +358,11 @@ class MvcModel {
 					$join_name = $key;
 					$join_model_name = isset($join['class']) ? $join['class'] : $key;
 					$join_type  = isset($join['type']) ? $join['type'] : 'JOIN';
+                    if(isset($join['extra_on'])){
+                        $join_extra_on_clauses = $this->db_adapter->get_where_sql_clauses($join['extra_on']);
+                        $join_extra_on = ' AND (' . implode(' AND ', $join_extra_on_clauses) . ')';
+                    }
+
 				}
 
 				if (!empty($this->associations[$join_name])) {
@@ -368,7 +374,7 @@ class MvcModel {
 						case 'belongs_to':
 							$join = array(
 								'table' => $join_model->table,
-								'on' => $join_name.'.'.$join_model->primary_key.' = '.$this->name.'.'.$association['foreign_key'],
+								'on' => '('.$join_name.'.'.$join_model->primary_key.' = '.$this->name.'.'.$association['foreign_key'].$join_extra_on.')',
 								'alias' => $join_name,
 								'type' => $join_type
 							);
@@ -378,7 +384,7 @@ class MvcModel {
 						case 'has_many':
 							$join = array(
 								'table' => $join_model->table,
-								'on' => $join_name.'.'.$association['foreign_key'].' = '.$this->name.'.'.$this->primary_key,
+								'on' => '('.$join_name.'.'.$association['foreign_key'].' = '.$this->name.'.'.$this->primary_key.$join_extra_on.')',
 								'alias' => $join_name,
 								'type' => $join_type
 							);
@@ -390,14 +396,14 @@ class MvcModel {
 							// The join for the HABTM join table
 							$join = array(
 								'table' => self::process_table_name($association['join_table']),
-								'on' => $join_table_alias.'.'.$association['foreign_key'].' = '.$this->name.'.'.$this->primary_key,
+								'on' => '('.$join_table_alias.'.'.$association['foreign_key'].' = '.$this->name.'.'.$this->primary_key.')',
 								'alias' => $join_table_alias,
 								'type' => $join_type
 							);
 							// The join for the association model's table
 							$second_join = array(
 								'table' => $join_model->table,
-								'on' => $join_table_alias.'.'.$association['association_foreign_key'].' = '.$join_model_name.'.'.$join_model->primary_key,
+								'on' => '('.$join_table_alias.'.'.$association['association_foreign_key'].' = '.$join_model_name.'.'.$join_model->primary_key.$join_extra_on.')',
 								'alias' => $join_model_name,
 								'type' => $join_type
 							);
