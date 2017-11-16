@@ -2,8 +2,8 @@
 Contributors: tombenner, robertpeake
 Tags: mvc, framework, model, view, controller, development, plugin
 Requires at least: 3.0
-Tested up to: 4.7
-Stable tag: 1.3.11
+Tested up to: 4.9
+Stable tag: 1.3.12
 
 WP MVC is a full-fledged MVC framework, similar to CakePHP and Rails, that developers can use inside of WordPress.
 
@@ -70,6 +70,12 @@ If there's functionality that you'd like to use that isn't implemented in the ex
 5. The code of the "admin/add" view in the previous screenshot. Forms can be easily created using the form helper, which includes an `input()` method that automatically determines the data type of the field and shows an appropriate input tag. Methods for most types of inputs (textareas, hidden inputs, select tags, checkboxes, etc) are also available, as are association-related input methods like `belongs_to_dropdown()` and `has_many_dropdown()`.
 
 == Changelog ==
+
+= 1.3.12 =
+
+ * Fix null type comparison issue when updating data
+ * Only start session in admin
+ * Fixed select tag to be able to accept an array of values
 
 = 1.3.11 =
 
