@@ -90,7 +90,8 @@ class MvcModel {
         }
         $model_data = $data[$this->name];
         if (method_exists($this, 'before_save')) {
-            if (!$this->before_save($model_data)) {
+            // second parameter represents id
+            if( ! $this->before_save($model_data, null)) {
                 return false;
             }
         }
@@ -126,7 +127,7 @@ class MvcModel {
                 return false;
             }
             if (method_exists($this, 'before_save')) {
-                if (!$this->before_save($model_data)) {
+                if (!$this->before_save($model_data, $id)) {
                     return false;
                 }
             }
