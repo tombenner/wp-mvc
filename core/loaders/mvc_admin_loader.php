@@ -32,8 +32,8 @@ class MvcAdminLoader extends MvcLoader {
         
             global $title;
             
-            // Necessary for flash()-related functionality
-            if (session_id() == '') {
+            // Necessary for flash()-related functionality in the admin area only
+            if (is_admin() && session_id() == '' && !headers_sent()) {
                 session_start();
             }
 
