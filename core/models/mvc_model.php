@@ -13,6 +13,7 @@ class MvcModel {
     public $properties = null;
     public $validation_error = null;
     public $validation_error_html = null;
+    public $validation_mode = 'single';
     public $schema = null;
     public $wp_post = null;
     private $data_validator = null;
@@ -501,6 +502,9 @@ class MvcModel {
     }
     
     protected function validate_data($data) {
+        if($this->validation_mode == 'all'){
+            return $this->validate_all_data($data);
+        }
         $rules = $this->validate;
         if (!empty($rules)) {
             foreach ($rules as $field => $rule) {
@@ -513,6 +517,29 @@ class MvcModel {
                         return $valid;
                     }
                 }
+            }
+        }
+        return true;
+    }
+
+    protected function validate_all_data($data)
+    {
+        $rules = $this->validate;
+        if (!empty($rules)) {
+            $error_arr = array();
+            foreach ($rules as $field => $rule) {
+                if (isset($data[$field])) {
+                    $valid = $this->data_validator->validate($field, $data[$field], $rule);
+                    if ($valid !== true) {
+                        $error_arr[] = $valid;
+                    }
+                }
+            }
+            if (!empty($error_arr)) {
+                $this->validation_error = $error_arr;
+                $this->validation_error_html = '';
+                $this->invalid_data = $data;
+                return $error_arr;
             }
         }
         return true;
