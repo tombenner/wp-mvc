@@ -500,10 +500,13 @@ class MvcModel {
             }
         }
     }
-    
+
     protected function validate_data($data) {
         if($this->validation_mode == 'all'){
             return $this->validate_all_data($data);
+        }
+        if(!is_null($this->validation_error)){
+            return $this->validation_error;
         }
         $rules = $this->validate;
         if (!empty($rules)) {
@@ -536,13 +539,25 @@ class MvcModel {
                 }
             }
             if (!empty($error_arr)) {
-                $this->validation_error = $error_arr;
+                $this->validation_error = array_merge($this->validation_error,$error_arr);
                 $this->validation_error_html = '';
                 $this->invalid_data = $data;
                 return $error_arr;
             }
         }
         return true;
+    }
+
+    protected function invalidate( $data, $field, $message ){
+        if($this->validation_mode == 'all'){
+            $this->validation_error[] = new MvcDataValidationError($field, $message);
+            $this->validation_error_html = '';
+        }else{
+            $this->validation_error = new MvcDataValidationError($field, $message);
+            $this->validation_error_html = $this->validation_error->get_html();
+        }
+
+        $this->invalid_data = $data;
     }
     
     protected function process_objects($objects, $options=array()) {
