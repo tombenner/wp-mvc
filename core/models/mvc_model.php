@@ -539,11 +539,12 @@ class MvcModel {
                 }
             }
             if (!empty($error_arr)) {
-                $this->validation_error = array_merge($this->validation_error,$error_arr);
+                $this->validation_error = is_null($this->validation_error) ? $error_arr : array_merge($this->validation_error,$error_arr);
                 $this->validation_error_html = '';
                 $this->invalid_data = $data;
                 return $error_arr;
             }
+
         }
         return true;
     }
