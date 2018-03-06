@@ -2,8 +2,8 @@
 Contributors: tombenner, robertpeake
 Tags: mvc, framework, model, view, controller, development, plugin
 Requires at least: 3.0
-Tested up to: 4.9
-Stable tag: 1.3.13
+Tested up to: 4.9.4
+Stable tag: 1.3.14
 
 WP MVC is a full-fledged MVC framework, similar to CakePHP and Rails, that developers can use inside of WordPress.
 
@@ -71,7 +71,13 @@ If there's functionality that you'd like to use that isn't implemented in the ex
 
 == Changelog ==
 
-= 1.3. 13 =
+= 1.3.14
+ 
+ * Define join type (left, right, inner) using the extra_on parameter in find()
+ * Added 'CustomRoutePrefix' parameter in MvcConfiguration to prepend to URLs
+ * Allow child controllers to override magic methods via __call()
+
+= 1.3.13 =
 
  * Complete the job to only start session in admin
 
