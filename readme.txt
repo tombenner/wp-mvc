@@ -76,6 +76,7 @@ If there's functionality that you'd like to use that isn't implemented in the ex
  * Define join type (left, right, inner) using the extra_on parameter in find()
  * Added 'CustomRoutePrefix' parameter in MvcConfiguration to prepend to URLs
  * Allow child controllers to override magic methods via __call()
+ * New method to validate all fields at once and return errors in array
 
 = 1.3.13 =
 
