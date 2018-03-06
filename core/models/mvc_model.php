@@ -13,6 +13,7 @@ class MvcModel {
     public $properties = null;
     public $validation_error = null;
     public $validation_error_html = null;
+    public $validation_mode = 'single';
     public $schema = null;
     public $wp_post = null;
     private $data_validator = null;
@@ -499,8 +500,14 @@ class MvcModel {
             }
         }
     }
-    
+
     protected function validate_data($data) {
+        if($this->validation_mode == 'all'){
+            return $this->validate_all_data($data);
+        }
+        if(!is_null($this->validation_error)){
+            return $this->validation_error;
+        }
         $rules = $this->validate;
         if (!empty($rules)) {
             foreach ($rules as $field => $rule) {
@@ -516,6 +523,42 @@ class MvcModel {
             }
         }
         return true;
+    }
+
+    protected function validate_all_data($data)
+    {
+        $rules = $this->validate;
+        if (!empty($rules)) {
+            $error_arr = array();
+            foreach ($rules as $field => $rule) {
+                if (isset($data[$field])) {
+                    $valid = $this->data_validator->validate($field, $data[$field], $rule);
+                    if ($valid !== true) {
+                        $error_arr[] = $valid;
+                    }
+                }
+            }
+            if (!empty($error_arr) || !is_null($this->validation_error)) {
+                $this->validation_error = is_null($this->validation_error) ? $error_arr : array_merge($this->validation_error,$error_arr);
+                $this->validation_error_html = '';
+                $this->invalid_data = $data;
+                return $error_arr;
+            }
+
+        }
+        return true;
+    }
+
+    protected function invalidate( $data, $field, $message ){
+        if($this->validation_mode == 'all'){
+            $this->validation_error[] = new MvcDataValidationError($field, $message);
+            $this->validation_error_html = '';
+        }else{
+            $this->validation_error = new MvcDataValidationError($field, $message);
+            $this->validation_error_html = $this->validation_error->get_html();
+        }
+
+        $this->invalid_data = $data;
     }
     
     protected function process_objects($objects, $options=array()) {
