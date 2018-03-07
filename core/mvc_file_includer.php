@@ -4,10 +4,12 @@ class MvcFileIncluder {
 
     private $core_path = '';
     private $plugin_paths = array();
+    private $theme_path = '';
 
     function __construct() {
         $this->core_path = MVC_CORE_PATH;
         $this->plugin_app_paths = MvcConfiguration::get('PluginAppPaths');
+        $this->theme_path = get_stylesheet_directory();
     }
 
     public function find_theme_or_view_file($filepath)
