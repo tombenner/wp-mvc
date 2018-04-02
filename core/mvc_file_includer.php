@@ -4,12 +4,25 @@ class MvcFileIncluder {
 
     private $core_path = '';
     private $plugin_paths = array();
+    private $theme_path = '';
 
     function __construct() {
         $this->core_path = MVC_CORE_PATH;
         $this->plugin_app_paths = MvcConfiguration::get('PluginAppPaths');
+        $this->theme_path = get_stylesheet_directory();
     }
-    
+
+    public function find_theme_or_view_file($filepath)
+    {
+        foreach(MvcConfiguration::get('Plugins') as $plugin) {
+            if (file_exists($this->theme_path."/$plugin/$filepath.php")) {
+                return $this->theme_path."/$plugin/$filepath.php";
+            }
+        }
+
+        return $this->find_first_app_file_or_core_file("views/$filepath.php");
+    }
+
     public function find_first_app_file_or_core_file($filepath) {
         foreach ($this->plugin_app_paths as $plugin_app_path) {
             if (file_exists($plugin_app_path.$filepath)) {
