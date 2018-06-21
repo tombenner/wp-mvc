@@ -32,19 +32,27 @@ class MvcController {
         foreach ($models as $model_name => $model) {
             $underscore = MvcInflector::underscore($model_name);
             $tableize = MvcInflector::tableize($model_name);
-            // Add dynamicly created methods to HtmlHelper in the form speaker_url($object), speaker_link($object)
-            $method = $underscore.'_url';
-            $this->html->{$method} = create_function('$object, $options=array()', '
-                $defaults = array("controller" => "'.$tableize.'", "action" => "show");
+            // Add dynamically-created methods to HtmlHelper in the form speaker_url($object), speaker_link($object)
+            $method = $underscore . '_url';
+            $this->html->{$method} = function ($object, $options = array()) use ($tableize) {
+                $defaults = array(
+                    'controller' => $tableize,
+                    'action' => 'show'
+                );
                 $options = array_merge($defaults, $options);
+
                 return HtmlHelper::object_url($object, $options);
-            ');
-            $method = $underscore.'_link';
-            $this->html->{$method} = create_function('$object, $options=array()', '
-                $defaults = array("controller" => "'.$tableize.'", "action" => "show");
+            };
+            $method = $underscore . '_link';
+            $this->html->{$method} = function ($object, $options = array()) use ($tableize) {
+                $defaults = array(
+                    'controller' => $tableize,
+                    'action' => 'show'
+                );
                 $options = array_merge($defaults, $options);
+
                 return HtmlHelper::object_link($object, $options);
-            ');
+            };
         }
         
         if (is_admin()) {
