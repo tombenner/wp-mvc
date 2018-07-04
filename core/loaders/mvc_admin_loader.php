@@ -104,9 +104,13 @@ class MvcAdminLoader extends MvcLoader {
             
                 $top_level_handle = 'mvc_'.$controller_name;
 
-            
-                $method = $admin_controller_name.'_index';
-                $this->dispatcher->{$method} = create_function('', 'MvcDispatcher::dispatch(array("controller" => "'.$admin_controller_name.'", "action" => "index"));');
+                $method = $admin_controller_name . '_index';
+                $this->dispatcher->{$method} = function () use ($admin_controller_name) {
+                    MvcDispatcher::dispatch(array(
+                        'controller' => $admin_controller_name,
+                        'action' => 'index'
+                    ));
+                };
                 $capability = !empty($pages['capability']) ? $pages['capability'] : $this->admin_controller_capabilities[ $controller_name ];
                 $label = !empty($pages['label']) ? $pages['label'] : $controller_titleized;
                 
@@ -288,7 +292,13 @@ class MvcAdminLoader extends MvcLoader {
             foreach ($routes as $route) {
                 $route['is_admin_ajax'] = true;
                 $method = 'admin_ajax_'.$route['wp_action'];
-                $this->dispatcher->{$method} = create_function('', 'MvcDispatcher::dispatch(array("controller" => "'.$route['controller'].'", "action" => "'.$route['action'].'"));die();');
+                $this->dispatcher->{$method} = function () use ($route) {
+                    MvcDispatcher::dispatch(array(
+                        'controller' => $route['controller'],
+                        'action' => $route['action']
+                    ));
+                    die();
+                };
                 add_action('wp_ajax_'.$route['wp_action'], array($this->dispatcher, $method));
             }
         }
