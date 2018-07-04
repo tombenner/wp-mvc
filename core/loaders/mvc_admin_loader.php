@@ -137,11 +137,11 @@ class MvcAdminLoader extends MvcLoader {
                     $method = $admin_controller_name.'_'.$admin_page['action'];
                 
                     if (!method_exists($this->dispatcher, $method)) {
-                        $this->dispatcher->{$method} = function () use ( $admin_controller_name, $admin_page ) {
-                            MvcDispatcher::dispatch( [
+                        $this->dispatcher->{$method} = function () use ($admin_controller_name, $admin_page) {
+                            MvcDispatcher::dispatch(array(
                                 'controller' => $admin_controller_name,
                                 'action' => $admin_page['action']
-                            ] );
+                            ));
                         };
                     }
                 
