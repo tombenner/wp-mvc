@@ -19,8 +19,8 @@ class MvcModel {
     private $data_validator = null;
     protected $db_adapter = null;
     private $wp_post_adapter = null;
-    protected static $describe_cache = [];
-    
+    protected static $describe_cache = array();
+
     function __construct() {
         
         global $wpdb;
