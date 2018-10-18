@@ -74,6 +74,12 @@ class MvcPublicLoader extends MvcLoader {
         // and append them to the match string for use in a WP rewrite rule
         preg_match_all('/{:(.+?)(:.*?)?}/', $rewrite_path, $matches);
         foreach ($matches[1] as $query_var) {
+            if (preg_match('/([\w_]+)(-(\d+))?/', $query_var, $match)){
+                if(isset($match[3])){
+                    $query_var_counter = $match[3];
+                    $query_var = $match[1];
+                }
+            }
             $query_var = 'mvc_'.$query_var;
             if ($query_var != 'mvc_controller') {
                 $query_var_match_string .= '&'.$query_var.'=$matches['.$query_var_counter.']';
