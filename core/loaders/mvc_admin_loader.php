@@ -159,7 +159,7 @@ class MvcAdminLoader extends MvcLoader {
                             'page_title' => $admin_page['label'].' &lsaquo; '.$controller_titleized,
                             'menu_title' => $admin_page['label'],
                             'capability' => $admin_page['capability'],
-                            'menu_slug' => $page_handle,
+                            'menu_slug' => isset($admin_page['menu_slug'])? $admin_page['menu_slug'] : $page_handle,
                             'function' => array($this->dispatcher, $method),
                             'order' => isset($admin_page['order']) ? $admin_page['order'] : 0
                         );
