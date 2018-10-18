@@ -139,7 +139,7 @@ abstract class MvcLoader {
         $this->load_models();
         $this->load_settings();
         $this->load_functions();
-    
+		$this->register_shortcodes();
     }
     
     public function filter_post_link($permalink, $post) {
@@ -267,6 +267,90 @@ abstract class MvcLoader {
     
     }
 
+	protected function register_shortcodes() {
+
+		$shortcodes = MvcConfiguration::get('ShortCodes');
+		if (empty($shortcodes) || !is_array($shortcodes))
+			return;
+
+		foreach ($shortcodes as $shortcode => $options){
+			add_shortcode($shortcode, array($this, 'dispatch_shortcode'));
+		}
+	}
+
+	public function dispatch_shortcode($atts, $content, $shortcode) {
+		$shortcodes = MvcConfiguration::get('ShortCodes');
+		if (isset($shortcodes[$shortcode])) {
+
+			$default_config = array(
+				// by default, only allow actions that start with sc_
+				'allow_actions' => '/sc_\w*|shortcode/',
+				// by default, deny actions that don't start with sc_
+				'deny_actions' => '',
+			);
+			$defaults_options = array(
+				'is_shortcode' => true,
+				'shortcode' => $shortcode,
+				'action' => 'shortcode',
+				'content' => $content,
+			);
+
+			// get shortcodes config from MvcConfiguration
+			$shortcode_config = $shortcodes[$shortcode];
+			// merge with default shortcodes config
+			$config = array_merge($default_config, $shortcode_config);
+
+			// pick up controller and possibly action from options in config
+			if (isset($config['options'])) {
+				$configured_options = $config['options'];
+			} else {
+				// if no options section in config - assume whole config is an options section
+				$configured_options = $config;
+			}
+
+			// merge config options with default options
+			$options = array_merge($defaults_options, $configured_options);
+
+			// merge shortcode parameter options
+            if($atts) {
+                $options = array_merge($options, $atts);
+            }
+
+			// check the action against allowed and denied
+			$action = $options['action'];
+			$allowed = $config['allow_actions'];
+			$denied = $config['deny_actions'];
+			if ($this->checkActionAgainstPattern($action, $allowed, true) === false) {
+				$content = 'MvcError: Action "'.$action.'" is not allowed for shortcodes by configuration allow_actions:['.$allowed.']';
+			} else if ($this->checkActionAgainstPattern($action, $denied, false) === true) {
+				$content = 'MvcError: Action "'.$action.'" is denied for shortcodes by configuration deny_actions:['.$denied.']';
+			} else {
+				// passed allowed and denied - dispatch the action
+				$content = $this->dispatcher->dispatch($options);
+			}
+		}
+		return do_shortcode($content);
+	}
+
+	protected function checkActionAgainstPattern($action, $pattern, $defaultMatch) {
+		if (empty($pattern)) {
+			return $defaultMatch;
+		}
+
+		if (is_string($pattern)) {
+			$pattern = array($pattern);
+		}
+
+		$patterns = $pattern;
+		foreach ($patterns as $pattern) {
+			if ($action === $pattern) {
+				return true;
+            } else if (preg_match('/'.$pattern.'/', $action) === 1) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
 
 ?>
