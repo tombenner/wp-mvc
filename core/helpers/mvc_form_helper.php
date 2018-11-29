@@ -211,7 +211,7 @@ class MvcFormHelper extends MvcHelper {
 
     public function select($field_name, $options=array()) {
         $html = $this->before_input($field_name, $options);
-        $html .= $this->select_tag($field_name, $options);
+        $html .= $this->select_tag('data['.$this->model_name.']['.$field_name.']', $options);
         $html .= $this->after_input($field_name, $options);
         return $html;
     }
