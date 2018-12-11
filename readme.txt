@@ -2,8 +2,8 @@
 Contributors: tombenner, robertpeake
 Tags: mvc, framework, model, view, controller, development, plugin
 Requires at least: 3.0
-Tested up to: 4.9.7
-Stable tag: 1.3.15
+Tested up to: 5.0
+Stable tag: 1.3.17
 
 WP MVC is a full-fledged MVC framework, similar to CakePHP and Rails, that developers can use inside of WordPress.
 
@@ -71,9 +71,15 @@ If there's functionality that you'd like to use that isn't implemented in the ex
 
 == Changelog ==
 
+= 1.3.17 =
+ * Tested with 5.0
+
+= 1.3.16 =
+ * Replace create_function (deprecated in php 7.2.0) with lambda function
+ * Improve ability to override views from template files
+
 = 1.3.15 =
 
- * Replace create_function (deprecated in php 7.2.0) with lambda function
  * Cache describe table queries
  * Minor bugfixes
 
