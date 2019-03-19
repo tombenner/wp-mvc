@@ -542,6 +542,11 @@ class MvcModel {
             if (!empty($error_arr) || !is_null($this->validation_error)) {
                 $this->validation_error = is_null($this->validation_error) ? $error_arr : array_merge($this->validation_error,$error_arr);
                 $this->validation_error_html = '';
+				if ( is_array($this->validation_error) && !empty($this->validation_error) ) {
+					foreach ( $this->validation_error as $error ) {
+						$this->validation_error_html .= $error->get_html();
+					}
+				}
                 $this->invalid_data = $data;
                 return $error_arr;
             }
