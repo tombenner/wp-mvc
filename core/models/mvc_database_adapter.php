@@ -112,7 +112,7 @@ class MvcDatabaseAdapter {
                     $sql_clauses[] = $this->escape($key).' IN ('.$values.')';
                 } else {
                     $clauses = $this->get_where_sql_clauses($value, $options);
-                    $logical_operator = $key == 'OR' ? ' OR ' : ' AND ';
+                    $logical_operator = $key === 'OR' ? ' OR ' : ' AND ';
                     $sql_clauses[] = '('.implode($logical_operator, $clauses).')';
                 }
                 continue;
