@@ -413,7 +413,7 @@ class MvcFormHelper extends MvcHelper {
 
     private function after_input($field_name, $options) {
         $defaults = array(
-            'after' => ($this->is_in_admin_table) ? '</td><tr>' : '</div>',
+            'after' => ($this->is_in_admin_table) ? '</td></tr>' : '</div>',
         );
         $options = array_merge($defaults, $options);
         $html = $options['after'];
