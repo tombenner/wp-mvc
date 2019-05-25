@@ -4,7 +4,6 @@ Plugin Name: WP MVC
 Plugin URI: http://wordpress.org/extend/plugins/wp-mvc/
 Description: Sets up an MVC framework inside of WordPress.
 Author: Tom Benner
-Modifications: Sergio Guzman
 Version: 1.3.7.2
 Text Domain: wpmvc
 Domain Path: /core/languages
