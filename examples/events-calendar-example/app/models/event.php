@@ -17,7 +17,7 @@ class Event extends MvcModel {
         if (isset($object->speakers)) {
             $speaker_names = array();
             foreach($object->speakers as $speaker) {
-                $speaker_names[] = $speaker->name;
+                $speaker_names[] = "{$speaker->first_name} {$speaker->last_name}";
             }
             $object->speaker_names = implode(', ', $speaker_names);
             $object->name = $object->speaker_names;

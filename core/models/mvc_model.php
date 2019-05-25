@@ -13,12 +13,14 @@ class MvcModel {
     public $properties = null;
     public $validation_error = null;
     public $validation_error_html = null;
+    public $validation_mode = 'single';
     public $schema = null;
     public $wp_post = null;
     private $data_validator = null;
     protected $db_adapter = null;
     private $wp_post_adapter = null;
-    
+    protected static $describe_cache = array();
+
     function __construct() {
         
         global $wpdb;
@@ -349,6 +351,7 @@ class MvcModel {
                 $options['joins'] = array($options['joins']);
             }
             foreach ($options['joins'] as $key => $join) {
+                $join_extra_on = '';
                 if (is_string($join)) {
 					$join_name = $join;
 					$join_model_name = $join;
@@ -357,6 +360,11 @@ class MvcModel {
 					$join_name = $key;
 					$join_model_name = isset($join['class']) ? $join['class'] : $key;
 					$join_type  = isset($join['type']) ? $join['type'] : 'JOIN';
+                    if(isset($join['extra_on'])){
+                        $join_extra_on_clauses = $this->db_adapter->get_where_sql_clauses($join['extra_on']);
+                        $join_extra_on = ' AND (' . implode(' AND ', $join_extra_on_clauses) . ')';
+                    }
+
 				}
 
 				if (!empty($this->associations[$join_name])) {
@@ -368,7 +376,7 @@ class MvcModel {
 						case 'belongs_to':
 							$join = array(
 								'table' => $join_model->table,
-								'on' => $join_name.'.'.$join_model->primary_key.' = '.$this->name.'.'.$association['foreign_key'],
+								'on' => '('.$join_name.'.'.$join_model->primary_key.' = '.$this->name.'.'.$association['foreign_key'].$join_extra_on.')',
 								'alias' => $join_name,
 								'type' => $join_type
 							);
@@ -378,7 +386,7 @@ class MvcModel {
 						case 'has_many':
 							$join = array(
 								'table' => $join_model->table,
-								'on' => $join_name.'.'.$association['foreign_key'].' = '.$this->name.'.'.$this->primary_key,
+								'on' => '('.$join_name.'.'.$association['foreign_key'].' = '.$this->name.'.'.$this->primary_key.$join_extra_on.')',
 								'alias' => $join_name,
 								'type' => $join_type
 							);
@@ -390,14 +398,14 @@ class MvcModel {
 							// The join for the HABTM join table
 							$join = array(
 								'table' => self::process_table_name($association['join_table']),
-								'on' => $join_table_alias.'.'.$association['foreign_key'].' = '.$this->name.'.'.$this->primary_key,
+								'on' => '('.$join_table_alias.'.'.$association['foreign_key'].' = '.$this->name.'.'.$this->primary_key.')',
 								'alias' => $join_table_alias,
 								'type' => $join_type
 							);
 							// The join for the association model's table
 							$second_join = array(
 								'table' => $join_model->table,
-								'on' => $join_table_alias.'.'.$association['association_foreign_key'].' = '.$join_model_name.'.'.$join_model->primary_key,
+								'on' => '('.$join_table_alias.'.'.$association['association_foreign_key'].' = '.$join_model_name.'.'.$join_model->primary_key.$join_extra_on.')',
 								'alias' => $join_model_name,
 								'type' => $join_type
 							);
@@ -493,8 +501,14 @@ class MvcModel {
             }
         }
     }
-    
+
     protected function validate_data($data) {
+        if($this->validation_mode == 'all'){
+            return $this->validate_all_data($data);
+        }
+        if(!is_null($this->validation_error)){
+            return $this->validation_error;
+        }
         $rules = $this->validate;
         if (!empty($rules)) {
             foreach ($rules as $field => $rule) {
@@ -510,6 +524,47 @@ class MvcModel {
             }
         }
         return true;
+    }
+
+    protected function validate_all_data($data)
+    {
+        $rules = $this->validate;
+        if (!empty($rules)) {
+            $error_arr = array();
+            foreach ($rules as $field => $rule) {
+                if (isset($data[$field])) {
+                    $valid = $this->data_validator->validate($field, $data[$field], $rule);
+                    if ($valid !== true) {
+                        $error_arr[] = $valid;
+                    }
+                }
+            }
+            if (!empty($error_arr) || !is_null($this->validation_error)) {
+                $this->validation_error = is_null($this->validation_error) ? $error_arr : array_merge($this->validation_error,$error_arr);
+                $this->validation_error_html = '';
+				if ( is_array($this->validation_error) && !empty($this->validation_error) ) {
+					foreach ( $this->validation_error as $error ) {
+						$this->validation_error_html .= $error->get_html();
+					}
+				}
+                $this->invalid_data = $data;
+                return $error_arr;
+            }
+
+        }
+        return true;
+    }
+
+    protected function invalidate( $data, $field, $message ){
+        if($this->validation_mode == 'all'){
+            $this->validation_error[] = new MvcDataValidationError($field, $message);
+            $this->validation_error_html = '';
+        }else{
+            $this->validation_error = new MvcDataValidationError($field, $message);
+            $this->validation_error_html = $this->validation_error->get_html();
+        }
+
+        $this->invalid_data = $data;
     }
     
     protected function process_objects($objects, $options=array()) {
@@ -627,10 +682,14 @@ class MvcModel {
     }
     
     protected function init_schema() {
-        $sql = '
-            DESCRIBE
-                '.$this->table_reference;
-        $results = $this->db_adapter->get_results($sql);
+        if ( isset( self::$describe_cache[ $this->table ] ) ) {
+            $results = self::$describe_cache[ $this->table ];
+        } else {
+            $results = $this->db_adapter->get_results(
+                "DESCRIBE {$this->table_reference}"
+            );
+            self::$describe_cache[ $this->table ] = $results;
+        }
         
         $schema = array();
         

@@ -1,19 +1,23 @@
 <?php
 
 class MvcFormHelper extends MvcHelper {
-    
+
+	protected $is_in_admin_table = false;
+
     public function create($model_name, $options=array()) {
         $defaults = array(
             'action' => $this->controller->action,
             'controller' => MvcInflector::tableize($model_name),
             'public' => false,
-            'enctype' => 'application/x-www-form-urlencoded'
+            'enctype' => 'application/x-www-form-urlencoded',
+            'is_admin' => false,
         );
         $options = array_merge($defaults, $options);
         $this->model_name = $model_name;
         $this->object = MvcObjectRegistry::get_object($model_name);
         $this->model = MvcModelRegistry::get_model($model_name);
         $this->schema = $this->model->schema;
+        $this->is_admin = (bool) $options['is_admin'];
         $object_id = !empty($this->object) && !empty($this->object->__id) ? $this->object->__id : null;
         $router_options = array('controller' => $options['controller'], 'action' => $options['action']);
         if ($object_id) {
@@ -25,25 +29,26 @@ class MvcFormHelper extends MvcHelper {
         } else {
             $html = '<form enctype="'.$options['enctype'].'" action="'.MvcRouter::admin_url($router_options).'" method="post">';
         }
-        
+
         if ($object_id) {
             $html .= '<input type="hidden" id="'.$this->input_id('hidden_id').'" name="'.$this->input_name('id').'" value="'.$object_id.'" />';
         }
         return $html;
     }
-    
+
     public function end($label='Submit') {
         $html = "";
         // Allows the omission of Submit button from end of form if $label == false. Useful for using custom submit buttons with more specific stylings etc..
         if ($label) {
-            $html = '<div><input type="submit" value="'.$this->esc_attr($label).'" /></div>';
+			$class = ($this->is_admin) ? 'class="button button-primary"' : '';
+            $html = '<div><input type="submit" value="'.$this->esc_attr($label).'"'.$class.' /></div>';
         }
 
         $html .= '</form>';
 
         return $html;
     }
-    
+
     // Generalized method that chooses the appropriate input type based on the SQL type of the field
     public function input($field_name, $options=array()) {
         if (!empty($this->schema[$field_name])) {
@@ -80,7 +85,7 @@ class MvcFormHelper extends MvcHelper {
         $html .= $this->after_input($field_name, $options);
         return $html;
     }
-    
+
     public function text_input($field_name, $options=array()) {
         $defaults = array(
             'id' => $this->input_id($field_name),
@@ -94,7 +99,7 @@ class MvcFormHelper extends MvcHelper {
         $html .= $this->after_input($field_name, $options);
         return $html;
     }
-    
+
     public function textarea_input($field_name, $options=array()) {
         $defaults = array(
             'id' => $this->input_id($field_name),
@@ -102,12 +107,13 @@ class MvcFormHelper extends MvcHelper {
         );
         $options = array_merge($defaults, $options);
         $attributes_html = self::attributes_html($options, 'textarea');
+        $textarea_content = $this->object ? $this->object->$field_name : '';
         $html = $this->before_input($field_name, $options);
-        $html .= '<textarea'.$attributes_html.'>'.$options['value'].'</textarea>';
+        $html .= '<textarea'.$attributes_html.'>'.$textarea_content.'</textarea>';
         $html .= $this->after_input($field_name, $options);
         return $html;
     }
-    
+
     public function checkbox_input($field_name, $options=array()) {
         $defaults = array(
             'id' => $this->input_id($field_name),
@@ -133,11 +139,11 @@ class MvcFormHelper extends MvcHelper {
         $html .= $this->after_input($field_name, $options);
         return $html;
     }
-    
+
     public function hidden_input($field_name, $options=array()) {
-    	
+
     	$value = empty($this->object->{$field_name}) ? '' : $this->object->{$field_name};
-    	
+
         $defaults = array(
             'id' => $this->input_id($field_name),
             'name' => $this->input_name($field_name),
@@ -149,7 +155,7 @@ class MvcFormHelper extends MvcHelper {
         $html = '<input'.$attributes_html.' />';
         return $html;
     }
-    
+
     public function password_input($field_name, $options=array()) {
         $defaults = array(
             'id' => $this->input_id($field_name),
@@ -202,28 +208,28 @@ class MvcFormHelper extends MvcHelper {
 
         return ob_get_clean();
     }
-    
+
     public function select($field_name, $options=array()) {
         $html = $this->before_input($field_name, $options);
         $html .= $this->select_tag($field_name, $options);
         $html .= $this->after_input($field_name, $options);
         return $html;
     }
-    
+
     function select_from_model($field_name, MvcModel $model, $find_options = array(), $select_options = array()) {
-    
+
     	$default_find_options = array(
     			'selects' => array($model->primary_key, $model->display_field),
     			'order' => $model->display_field
     	);
-    
+
     	$find_options = array_merge($default_find_options, $find_options);
-    
+
     	$values =  $model->find($find_options);
-    
+
     	$key = $value->__id;
     	$value = $value->__name;
-    
+
     	$default_options = array(
     			'id' => $this->model_name.'_'.$field_name.'_select',
     			'name' => 'data['.$this->model_name.']['.$field_name.']',
@@ -232,9 +238,9 @@ class MvcFormHelper extends MvcHelper {
     			'value' => empty($this->object->$field_name) ? '' : $this->object->$field_name,
     			'options' => $values
     	);
-    
+
     	$select_options = array_merge($default_options, $select_options);
-    
+
     	return $this->select($default_options['name'], $select_options);
     }
 
@@ -243,7 +249,7 @@ class MvcFormHelper extends MvcHelper {
             'empty' => false,
             'value' => null
         );
-        
+
         $options = array_merge($defaults, $options);
         $options['options'] = empty($options['options']) ? array() : $options['options'];
         $options['name'] = $field_name;
@@ -258,13 +264,18 @@ class MvcFormHelper extends MvcHelper {
                 $key = $value->__id;
                 $value = $value->__name;
             }
-            $selected_attribute = $options['value'] == $key ? ' selected="selected"' : '';
+            if (is_array($options['value'])) {
+                $selected_attribute = in_array($key, $options['value']) ? ' selected="selected"' : '';
+            } else {
+                $selected_attribute = $options['value'] == $key ? ' selected="selected"' : '';
+            }
+
             $html .= '<option value="'.$this->esc_attr($key).'"'.$selected_attribute.'>'.$value.'</option>';
         }
         $html .= '</select>';
         return $html;
     }
-    
+
     public function button($text, $options=array()) {
         $defaults = array(
             'id' => $this->input_id($text),
@@ -277,17 +288,17 @@ class MvcFormHelper extends MvcHelper {
         return $html;
     }
 
-    
+
     public function belongs_to_dropdown($model_name, $select_options, $options=array()) {
-    
+
         if (!empty($this->model->associations[$model_name])) {
             $foreign_key = $this->model->associations[$model_name]['foreign_key'];
         } else {
             $foreign_key = MvcInflector::underscore($model_name).'_id';
         }
-        
+
         $value = empty($this->object->{$foreign_key}) ? '' : $this->object->{$foreign_key};
-        
+
         $defaults = array(
             'id' => $this->model_name.'_'.$model_name.'_select',
             'name' => 'data['.$this->model_name.']['.$foreign_key.']',
@@ -301,16 +312,16 @@ class MvcFormHelper extends MvcHelper {
         $select_options['label'] = null;
         $select_options['before'] = null;
         $select_options['after'] = null;
-        
+
         $field_name = $options['name'];
-        
+
         $html = $this->before_input($field_name, $options);
         $html .= $this->select_tag($field_name, $select_options);
         $html .= $this->after_input($field_name, $options);
-        
+
         return $html;
     }
-    
+
     public function has_many_dropdown($model_name, $select_options, $options=array(), $associated_objects=false) {
         $defaults = array(
             'select_id' => $this->model_name.'_'.$model_name.'_select',
@@ -321,25 +332,25 @@ class MvcFormHelper extends MvcHelper {
             'options' => $select_options
         );
         $options = array_merge($defaults, $options);
-        
+
         $select_options = $options;
         $select_options['id'] = $select_options['select_id'];
-        
+
         $html = $this->before_input($options['select_name'], $select_options);
         $html .= $this->select_tag($options['select_name'], $select_options);
 
         // Fetch all associated objects.
         // If there aren't any, return empty array
         if($associated_objects === false){
-            $associated_objects = $this->object->{MvcInflector::tableize($model_name)};
+            $associated_objects = isset($this->object->{MvcInflector::tableize($model_name)}) ? $this->object->{MvcInflector::tableize($model_name)} : '';
         }
         $associated_objects = empty($associated_objects) ? array() : $associated_objects;
-        
+
         // An empty value is necessary to ensure that data with name $options['ids_input_name'] is submitted; otherwise,
         // if no association objects were selected the save() method wouldn't know that this association data is being
         // updated and that it should, as a result, delete existing association data.
         $html .= '<input type="hidden" name="'.$options['ids_input_name'].'[]" value="" />';
-        
+
         $html .= '<ul id="'.$options['list_id'].'">';
         foreach ($associated_objects as $associated_object) {
             $html .= '
@@ -350,13 +361,13 @@ class MvcFormHelper extends MvcHelper {
                 </li>';
         }
         $html .= '</ul>';
-        
+
         $html .= '
-        
+
             <script type="text/javascript">
-    
+
             jQuery(document).ready(function(){
-            
+
                 jQuery("#'.$options['select_id'].'").change(function() {
                     var option = jQuery(this).find("option:selected");
                     var id = option.attr("value");
@@ -368,64 +379,77 @@ class MvcFormHelper extends MvcHelper {
                     }
                     return false;
                 });
-                
-                jQuery(".remove-item").live("click", function() {
+
+                jQuery(document).on("click", ".remove-item", function() {
                     jQuery(this).parents("li:first").remove();
                     return false;
                 });
-            
+
             });
-            
+
             </script>
-        
+
         ';
         $html .= $this->after_input($options['select_name'], $select_options);
-        
+
         return $html;
-        
+
     }
-    
+
     private function before_input($field_name, $options) {
         $defaults = array(
-            'before' => '<div>'
+            'before' => ($this->is_in_admin_table) ? '<tr>' : '<div>',
         );
         $options = array_merge($defaults, $options);
         $html = $options['before'];
         if (!empty($options['label'])) {
-            $html .= '<label for="'.$options['id'].'">'.$options['label'].'</label>';
-        }
+            $label = '<label for="'.$options['id'].'">'.$options['label'].'</label>';
+			$html .= ($this->is_in_admin_table) ? "<th scope='row'>{$label}</th><td>" : $label;
+        } else {
+			$html .= '<td colspan="2">';
+		}
         return $html;
     }
-    
+
     private function after_input($field_name, $options) {
         $defaults = array(
-            'after' => '</div>'
+            'after' => ($this->is_in_admin_table) ? '</td></tr>' : '</div>',
         );
         $options = array_merge($defaults, $options);
         $html = $options['after'];
         return $html;
     }
-    
+
     private function input_id($field_name) {
         return $this->model_name.MvcInflector::camelize($field_name);
     }
-    
+
     private function input_name($field_name) {
         return 'data['.$this->model_name.']['.MvcInflector::underscore($field_name).']';
     }
-    
+
     private function get_type_from_sql_schema($schema) {
         switch($schema['type']) {
             case 'varchar':
                 return 'text';
             case 'text':
                 return 'textarea';
-        
+
         }
         if ($schema['type'] == 'tinyint' && $schema['length'] == '1') {
             return 'checkbox';
         }
     }
+
+	public function open_admin_table() {
+		$this->is_in_admin_table = true;
+		return '<table class="form-table"><tbody>';
+	}
+
+	public function close_admin_table() {
+		$this->is_in_admin_table = false;
+		return '</tbody></table>';
+	}
 
 }
 

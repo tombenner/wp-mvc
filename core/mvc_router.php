@@ -26,9 +26,12 @@ class MvcRouter {
             }
             $model = MvcModelRegistry::get_model($model_name);
             if (!empty($model) && method_exists($model, 'to_url')) {
-                $url = home_url('/');
+                $route_prefix = self::get_route_prefix();
+                $url = home_url((string)$route_prefix . '/');
+
                 $method = new ReflectionMethod(get_class($model), 'to_url');
                 $parameter_count = $method->getNumberOfParameters();
+
                 if ($parameter_count == 2) {
                     $url .= $model->to_url($options['object'], $options);
                 } else {
@@ -49,7 +52,8 @@ class MvcRouter {
                 }
             }
         }
-        $url = home_url('/');
+        $route_prefix = self::get_route_prefix();
+        $url = home_url((string)$route_prefix . '/');
         if ($matched_route) {
             $path_pattern = $matched_route[0];
             preg_match_all('/{:([\w]+).*?}/', $path_pattern, $matches, PREG_SET_ORDER);
@@ -124,8 +128,9 @@ class MvcRouter {
         return false;
     }
 
-    static function public_connect($route, $defaults=array()) {
+    static function public_connect( $route, $defaults = array() ) {
         $_this =& MvcRouter::get_instance();
+        $_this->maybe_add_route_prefix($route);
         $_this->add_public_route($route, $defaults);
     }
     
@@ -170,6 +175,17 @@ class MvcRouter {
             $route['wp_action'] = $route['controller'].'_'.$route['action'];
         }
         $_this->routes['admin_ajax'][] = $route;
+    }
+
+    static function maybe_add_route_prefix(&$route){
+        $route_prefix = MvcConfiguration::get( 'CustomRoutePrefix' );
+        if ( ! empty( $route_prefix ) ) {
+            $route = $route_prefix . '/' . $route;
+        }
+    }
+
+    static function get_route_prefix(){
+        return MvcConfiguration::get( 'CustomRoutePrefix' );
     }
 
 }

@@ -16,7 +16,7 @@ class MvcDispatcher {
         $controller->action = $action;
         $controller->init();
         
-        if (!method_exists($controller, $action)) {
+        if (!is_callable(array($controller, $action))) {
             MvcError::fatal('A method for the action "'.$action.'" doesn\'t exist in "'.$controller_class.'"');
         }
         
@@ -30,7 +30,9 @@ class MvcDispatcher {
         }
         
         $controller->params = $params;
-        $controller->set('this', $controller);
+        if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 70000) { //prevent conflicts with php < 7.0
+            $controller->set('this', $controller);
+        }
         if (!empty($controller->before)) {
             foreach ($controller->before as $method) {
                 $controller->{$method}();

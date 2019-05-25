@@ -2,8 +2,8 @@
 Contributors: tombenner, robertpeake
 Tags: mvc, framework, model, view, controller, development, plugin
 Requires at least: 3.0
-Tested up to: 4.6.1
-Stable tag: 1.3.7
+Tested up to: 5.2
+Stable tag: 1.3.19
 
 WP MVC is a full-fledged MVC framework, similar to CakePHP and Rails, that developers can use inside of WordPress.
 
@@ -70,6 +70,59 @@ If there's functionality that you'd like to use that isn't implemented in the ex
 5. The code of the "admin/add" view in the previous screenshot. Forms can be easily created using the form helper, which includes an `input()` method that automatically determines the data type of the field and shows an appropriate input tag. Methods for most types of inputs (textareas, hidden inputs, select tags, checkboxes, etc) are also available, as are association-related input methods like `belongs_to_dropdown()` and `has_many_dropdown()`.
 
 == Changelog ==
+
+= 1.3.18 =
+ * Tested with 5.2
+ * Minor admin html/code fixes
+
+= 1.3.18 =
+ * Tested with 5.1
+ 
+= 1.3.17 =
+ * Tested with 5.0
+
+= 1.3.16 =
+ * Replace create_function (deprecated in php 7.2.0) with lambda function
+ * Improve ability to override views from template files
+
+= 1.3.15 =
+
+ * Cache describe table queries
+ * Minor bugfixes
+
+= 1.3.14
+ 
+ * Define join type (left, right, inner) using the extra_on parameter in find()
+ * Added 'CustomRoutePrefix' parameter in MvcConfiguration to prepend to URLs
+ * Allow child controllers to override magic methods via __call()
+ * New method to validate all fields at once and return errors in array
+
+= 1.3.13 =
+
+ * Complete the job to only start session in admin
+
+= 1.3.12 =
+
+ * Fix null type comparison issue when updating data
+ * Only start session in admin
+ * Fixed select tag to be able to accept an array of values
+
+= 1.3.11 =
+
+ * Ability to specify layouts in routes using `'layout' => 'whatever'`
+ * Fix for textarea inputs in form helper
+ * Added headers not sent check before setting cookies
+
+= 1.3.10 =
+
+ * php7 compatibility improvements
+
+= 1.3.9 =
+ * Added multi-language support
+
+= 1.3.8 =
+ * Added required input attribute type
+ * Slightly better error messages for magic methods 
 
 = 1.3.7 =
  * Better model validation in admin

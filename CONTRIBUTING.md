@@ -1,0 +1,1 @@
+This project welcomes bug fixes and obvious/necessary functionality improvements. Stability and backwards compatibility are our main concern, as this project is currently in production on a number of high-traffic commercial websites.

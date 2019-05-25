@@ -1,11 +1,11 @@
 <?php echo "<?php\n"; ?>
 /*
 Plugin Name: <?php echo $name_titleized."\n"; ?>
-Plugin URI: 
-Description: 
-Author: 
-Version: 
-Author URI: 
+Plugin URI:
+Description:
+Author:
+Version:
+Author URI:
 */
 
 register_activation_hook(__FILE__, '<?php echo $name_underscored; ?>_activate');
@@ -26,5 +26,3 @@ function <?php echo $name_underscored; ?>_deactivate() {
     $loader->deactivate();
     $wp_rewrite->flush_rules( true );
 }
-
-<?php echo '?>'; ?>
