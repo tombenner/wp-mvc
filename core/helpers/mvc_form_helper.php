@@ -85,6 +85,62 @@ class MvcFormHelper extends MvcHelper {
         $html .= $this->after_input($field_name, $options);
         return $html;
     }
+	
+    public function url_input($field_name, $options=array()) {
+        $defaults = array(
+            'id' => $this->input_id($field_name),
+            'name' => $this->input_name($field_name),
+            'type' => 'url'
+        );
+        $options = array_merge($defaults, $options);
+        $attributes_html = self::attributes_html($options, 'input');
+        $html = $this->before_input($field_name, $options);
+        $html .= '<input'.$attributes_html.' />';
+        $html .= $this->after_input($field_name, $options);
+        return $html;
+    }
+
+    public function email_input($field_name, $options=array()) {
+        $defaults = array(
+            'id' => $this->input_id($field_name),
+            'name' => $this->input_name($field_name),
+            'type' => 'email'
+        );
+        $options = array_merge($defaults, $options);
+        $attributes_html = self::attributes_html($options, 'input');
+        $html = $this->before_input($field_name, $options);
+        $html .= '<input'.$attributes_html.' />';
+        $html .= $this->after_input($field_name, $options);
+        return $html;
+    }
+
+    public function time_input($field_name, $options=array()) {
+        $defaults = array(
+            'id' => $this->input_id($field_name),
+            'name' => $this->input_name($field_name),
+            'type' => 'time'
+        );
+        $options = array_merge($defaults, $options);
+        $attributes_html = self::attributes_html($options, 'input');
+        $html = $this->before_input($field_name, $options);
+        $html .= '<input'.$attributes_html.' />';
+        $html .= $this->after_input($field_name, $options);
+        return $html;
+    }
+
+    public function date_input($field_name, $options=array()) {
+        $defaults = array(
+            'id' => $this->input_id($field_name),
+            'name' => $this->input_name($field_name),
+            'type' => 'date'
+        );
+        $options = array_merge($defaults, $options);
+        $attributes_html = self::attributes_html($options, 'input');
+        $html = $this->before_input($field_name, $options);
+        $html .= '<input'.$attributes_html.' />';
+        $html .= $this->after_input($field_name, $options);
+        return $html;
+    }
 
     public function text_input($field_name, $options=array()) {
         $defaults = array(
