@@ -278,10 +278,9 @@ class MvcAdminLoader extends MvcLoader {
     public function add_settings_pages() {
         $this->init_settings();
         foreach ($this->settings as $settings_name => $settings) {
-            $title = MvcInflector::titleize($settings_name);
-            $title = str_replace(' Settings', '', $title);
-            $title = __($title, $this->plugin_name);
             $instance = MvcSettingsRegistry::get_settings($settings_name);
+            $title = $instance->title;
+            $title = __($title, $this->plugin_name);
             add_options_page($title, $title, 'manage_options', $instance->key, array($instance, 'page'));
         }
     }
