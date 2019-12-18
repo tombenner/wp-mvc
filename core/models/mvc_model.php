@@ -35,7 +35,7 @@ class MvcModel {
             'model_name' => $this->name,
             'table' => $table,
             'table_reference' => empty($this->database) ? '`'.$table.'`' : '`'.$this->database.'`.`'.$table.'`',
-            'selects' => empty($this->selects) ? array('`'.$this->name.'`.*') : $this->default_selects,
+            'selects' => empty($this->selects) ? array('`'.$this->name.'`.*') : $this->selects,
             'order' => empty($this->order) ? null : $this->order,
             'joins' => empty($this->joins) ? null : $this->joins,
             'conditions' => empty($this->conditions) ? null : $this->conditions,
