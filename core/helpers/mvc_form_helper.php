@@ -85,7 +85,7 @@ class MvcFormHelper extends MvcHelper {
         $html .= $this->after_input($field_name, $options);
         return $html;
     }
-	
+
     public function url_input($field_name, $options=array()) {
         $defaults = array(
             'id' => $this->input_id($field_name),
@@ -163,7 +163,8 @@ class MvcFormHelper extends MvcHelper {
         );
         $options = array_merge($defaults, $options);
         $attributes_html = self::attributes_html($options, 'textarea');
-        $textarea_content = $this->object ? $this->object->$field_name : '';
+        $textarea_content = !empty($options['value']) ? $options['value'] : '';
+        $textarea_content = $this->object ? $this->object->$field_name : $textarea_content;
         $html = $this->before_input($field_name, $options);
         $html .= '<textarea'.$attributes_html.'>'.$textarea_content.'</textarea>';
         $html .= $this->after_input($field_name, $options);
