@@ -143,11 +143,14 @@ class MvcFormHelper extends MvcHelper {
     }
 
     public function text_input($field_name, $options=array()) {
+        $value = empty($this->object->{$field_name}) ? '' : $this->object->{$field_name};
         $defaults = array(
             'id' => $this->input_id($field_name),
             'name' => $this->input_name($field_name),
-            'type' => 'text'
+            'type' => 'text',
+            'value' => $value
         );
+
         $options = array_merge($defaults, $options);
         $attributes_html = self::attributes_html($options, 'input');
         $html = $this->before_input($field_name, $options);
@@ -157,14 +160,15 @@ class MvcFormHelper extends MvcHelper {
     }
 
     public function textarea_input($field_name, $options=array()) {
+        $value = empty($this->object->{$field_name}) ? '' : $this->object->{$field_name};
         $defaults = array(
             'id' => $this->input_id($field_name),
-            'name' => $this->input_name($field_name)
+            'name' => $this->input_name($field_name),
+            'value' => $value
         );
         $options = array_merge($defaults, $options);
         $attributes_html = self::attributes_html($options, 'textarea');
         $textarea_content = !empty($options['value']) ? $options['value'] : '';
-        $textarea_content = $this->object ? $this->object->$field_name : $textarea_content;
         $html = $this->before_input($field_name, $options);
         $html .= '<textarea'.$attributes_html.'>'.$textarea_content.'</textarea>';
         $html .= $this->after_input($field_name, $options);
