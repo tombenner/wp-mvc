@@ -308,12 +308,12 @@ class MvcFormHelper extends MvcHelper {
     public function select_tag($field_name, $options=array()) {
         $defaults = array(
             'empty' => false,
-            'value' => null
+            'value' => null,
+            'name' => $this->input_name($field_name)
         );
 
         $options = array_merge($defaults, $options);
         $options['options'] = empty($options['options']) ? array() : $options['options'];
-        $options['name'] = $field_name;
         $attributes_html = self::attributes_html($options, 'select');
         $html = '<select'.$attributes_html.'>';
         if ($options['empty']) {
