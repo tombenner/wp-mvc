@@ -486,7 +486,7 @@ class MvcFormHelper extends MvcHelper {
     }
 
     private function input_name($field_name) {
-        return 'data['.$this->model_name.']['.MvcInflector::underscore($field_name).']';
+        return !empty($this->model_name) ? 'data[' . $this->model_name . '][' . MvcInflector::underscore($field_name) . ']' : 'data[' . MvcInflector::underscore($field_name) . ']';
     }
 
     private function get_type_from_sql_schema($schema) {
@@ -513,5 +513,3 @@ class MvcFormHelper extends MvcHelper {
 	}
 
 }
-
-?>
