@@ -100,6 +100,7 @@ class MvcHelper {
                 'size',
                 'src',
                 'style',
+                'step',
                 'tabindex',
                 'title',
                 'type',
