@@ -85,7 +85,7 @@ class MvcFormHelper extends MvcHelper {
         $html .= $this->after_input($field_name, $options);
         return $html;
     }
-	
+
     public function url_input($field_name, $options=array()) {
         $defaults = array(
             'id' => $this->input_id($field_name),
@@ -143,11 +143,14 @@ class MvcFormHelper extends MvcHelper {
     }
 
     public function text_input($field_name, $options=array()) {
+        $value = empty($this->object->{$field_name}) ? '' : $this->object->{$field_name};
         $defaults = array(
             'id' => $this->input_id($field_name),
             'name' => $this->input_name($field_name),
-            'type' => 'text'
+            'type' => 'text',
+            'value' => $value
         );
+
         $options = array_merge($defaults, $options);
         $attributes_html = self::attributes_html($options, 'input');
         $html = $this->before_input($field_name, $options);
@@ -157,13 +160,15 @@ class MvcFormHelper extends MvcHelper {
     }
 
     public function textarea_input($field_name, $options=array()) {
+        $value = empty($this->object->{$field_name}) ? '' : $this->object->{$field_name};
         $defaults = array(
             'id' => $this->input_id($field_name),
-            'name' => $this->input_name($field_name)
+            'name' => $this->input_name($field_name),
+            'value' => $value
         );
         $options = array_merge($defaults, $options);
         $attributes_html = self::attributes_html($options, 'textarea');
-        $textarea_content = $this->object ? $this->object->$field_name : '';
+        $textarea_content = !empty($options['value']) ? $options['value'] : '';
         $html = $this->before_input($field_name, $options);
         $html .= '<textarea'.$attributes_html.'>'.$textarea_content.'</textarea>';
         $html .= $this->after_input($field_name, $options);
@@ -303,12 +308,12 @@ class MvcFormHelper extends MvcHelper {
     public function select_tag($field_name, $options=array()) {
         $defaults = array(
             'empty' => false,
-            'value' => null
+            'value' => empty($this->object->{$field_name}) ? '' : $this->object->{$field_name}
         );
 
         $options = array_merge($defaults, $options);
         $options['options'] = empty($options['options']) ? array() : $options['options'];
-        $options['name'] = $field_name;
+        $options['name'] = $this->input_name($field_name);
         $attributes_html = self::attributes_html($options, 'select');
         $html = '<select'.$attributes_html.'>';
         if ($options['empty']) {
@@ -481,7 +486,7 @@ class MvcFormHelper extends MvcHelper {
     }
 
     private function input_name($field_name) {
-        return 'data['.$this->model_name.']['.MvcInflector::underscore($field_name).']';
+        return !empty($this->model_name) ? 'data[' . $this->model_name . '][' . MvcInflector::underscore($field_name) . ']' : 'data[' . MvcInflector::underscore($field_name) . ']';
     }
 
     private function get_type_from_sql_schema($schema) {
@@ -508,5 +513,3 @@ class MvcFormHelper extends MvcHelper {
 	}
 
 }
-
-?>
