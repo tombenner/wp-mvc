@@ -377,7 +377,7 @@ class MvcFormHelper extends MvcHelper {
         $field_name = $options['name'];
 
         $html = $this->before_input($field_name, $options);
-        $html .= $this->select_tag($field_name, $select_options);
+        $html .= $this->select_tag($foreign_key, $select_options);
         $html .= $this->after_input($field_name, $options);
 
         return $html;
