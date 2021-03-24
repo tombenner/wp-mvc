@@ -12,18 +12,18 @@ abstract class MvcLoader {
     protected $query_vars = array();
 
     function __construct() {
-    
+
         if (!defined('MVC_CORE_PATH')) {
             define('MVC_CORE_PATH', MVC_PLUGIN_PATH.'core/');
         }
-        
+
         $this->core_path = MVC_CORE_PATH;
 
-        $this->query_vars = array('mvc_controller','mvc_action','mvc_id','mvc_extra','mvc_layout');
+        $this->query_vars = array('mvc_controller','mvc_action','mvc_extra','mvc_layout');
         
         $this->load_core();
         $this->load_plugins();
-        
+
         $this->file_includer = new MvcFileIncluder();
         $this->file_includer->include_all_app_files('config/bootstrap.php');
         $this->file_includer->include_all_app_files('config/routes.php');
@@ -37,9 +37,9 @@ abstract class MvcLoader {
 
     }
 
-    
+
     protected function load_core() {
-        
+
         $files = array(
             'mvc_error',
             'mvc_configuration',
@@ -79,15 +79,15 @@ abstract class MvcLoader {
             'shells/mvc_shell',
             'shells/mvc_shell_dispatcher'
         );
-        
+
         foreach ($files as $file) {
             require_once $this->core_path.$file.'.php';
         }
-        
+
     }
-    
+
     protected function load_plugins() {
-    
+
         $plugins = $this->get_ordered_plugins();
         $plugin_app_paths = array();
         foreach ($plugins as $plugin) {
@@ -100,14 +100,14 @@ abstract class MvcLoader {
         ));
 
         $this->plugin_app_paths = $plugin_app_paths;
-    
+
     }
-    
+
     protected function get_ordered_plugins() {
-    
+
         $plugins = get_option('mvc_plugins', array());
         $plugin_app_paths = array();
-        
+
         // Allow plugins to be loaded in a specific order by setting a PluginOrder config value like
         // this ('all' is an optional token; it includes all unenumerated plugins):
         // MvcConfiguration::set(array(
@@ -127,11 +127,11 @@ abstract class MvcLoader {
                 $plugins = array_merge($plugin_order, $unordered_plugins);
             }
         }
-        
+
         return $plugins;
-        
+
     }
-    
+
     public function init() {
 
         $this->load_controllers();
@@ -139,9 +139,9 @@ abstract class MvcLoader {
         $this->load_models();
         $this->load_settings();
         $this->load_functions();
-    
+
     }
-    
+
     public function filter_post_link($permalink, $post) {
         if (substr($post->post_type, 0, 4) == 'mvc_') {
             $model_name = substr($post->post_type, 4);
@@ -158,12 +158,12 @@ abstract class MvcLoader {
         }
         return $permalink;
     }
-    
+
     public function register_widgets() {
         foreach ($this->plugin_app_paths as $plugin_app_path) {
             $directory = $plugin_app_path.'widgets/';
             $widget_filenames = $this->file_includer->require_php_files_in_directory($directory);
-  
+
             $path_segments_to_remove = array(WP_CONTENT_DIR, '/plugins/', '/app/');
             $plugin = str_replace($path_segments_to_remove, '', $plugin_app_path);
 
@@ -174,14 +174,14 @@ abstract class MvcLoader {
             }
         }
     }
-    
+
     protected function load_controllers() {
-    
+
         foreach ($this->plugin_app_paths as $plugin_app_path) {
-        
+
             $admin_controller_filenames = $this->file_includer->require_php_files_in_directory($plugin_app_path.'controllers/admin/');
             $public_controller_filenames = $this->file_includer->require_php_files_in_directory($plugin_app_path.'controllers/');
-            
+
             foreach ($admin_controller_filenames as $filename) {
                 if (preg_match('/admin_([^\/]+)_controller\.php/', $filename, $match)) {
                     $controller_name = $match[1];
@@ -193,78 +193,78 @@ abstract class MvcLoader {
                     $this->admin_controller_capabilities[$controller_name] = $capabilities[$controller_name];
                 }
             }
-            
+
             foreach ($public_controller_filenames as $filename) {
                 if (preg_match('/([^\/]+)_controller\.php/', $filename, $match)) {
                     $this->public_controller_names[] = $match[1];
                 }
             }
-        
+
         }
-        
+
     }
-    
+
     protected function load_libs() {
-        
+
         foreach ($this->plugin_app_paths as $plugin_app_path) {
-        
+
             $this->file_includer->require_php_files_in_directory($plugin_app_path.'libs/');
-            
+
         }
-        
+
     }
-    
+
     protected function load_models() {
-        
+
         $models = array();
-        
+
         foreach ($this->plugin_app_paths as $plugin_app_path) {
-        
+
             $model_filenames = $this->file_includer->require_php_files_in_directory($plugin_app_path.'models/');
-            
+
             foreach ($model_filenames as $filename) {
                 $models[] = MvcInflector::class_name_from_filename($filename);
             }
-        
+
         }
-        
+
         $this->model_names = array();
-        
+
         foreach ($models as $model) {
             $this->model_names[] = $model;
             $model_class = MvcInflector::camelize($model);
             $model_instance = new $model_class();
             MvcModelRegistry::add_model($model, $model_instance);
         }
-        
+
     }
-    
+
     protected function load_settings() {
-        
+
         $settings_names = array();
-        
+
         foreach ($this->plugin_app_paths as $plugin_app_path) {
-        
+
             $settings_filenames = $this->file_includer->require_php_files_in_directory($plugin_app_path.'settings/');
-            
+
             foreach ($settings_filenames as $filename) {
                 $settings_names[] = MvcInflector::class_name_from_filename($filename);
             }
-        
+
         }
-        
+
         $this->settings_names = $settings_names;
-        
+
     }
-    
+
     protected function load_functions() {
-        
+
         foreach ($this->plugin_app_paths as $plugin_app_path) {
-        
+
             $this->file_includer->require_php_files_in_directory($plugin_app_path.'functions/');
-            
+
         }
-    
+
     }
 
 }
