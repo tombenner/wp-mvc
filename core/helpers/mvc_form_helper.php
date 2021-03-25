@@ -362,7 +362,7 @@ class MvcFormHelper extends MvcHelper {
 
         $defaults = array(
             'id' => $this->model_name.'_'.$model_name.'_select',
-            'name' => 'data['.$this->model_name.']['.$foreign_key.']',
+            'name' => $foreign_key,
             'label' => __(MvcInflector::titleize($model_name), $this->plugin_name),
             'value' => $value,
             'options' => $select_options,
