@@ -2,33 +2,40 @@
 
 class MvcDispatcher {
 
-    static function dispatch($options=array()) {
-        
-        $controller_name = $options['controller'];
-        $action = $options['action'];
+    static function dispatch($options=array())
+    {
+        $controller_name = sanitize_text_field( $options['controller'] );
+        $action = sanitize_text_field( $options['action'] );
+
+        if(array_key_exists( 'id', $options))
+        {
+            $options['id'] = intval( $options['id']);
+        }
+
         $params = $options;
-        
+
+
         $controller_class = MvcInflector::camelize($controller_name).'Controller';
-        
+
         $controller = new $controller_class();
-        
+
         $controller->name = $controller_name;
         $controller->action = $action;
         $controller->init();
-        
+
         if (!is_callable(array($controller, $action))) {
             MvcError::fatal('A method for the action "'.$action.'" doesn\'t exist in "'.$controller_class.'"');
         }
-        
+
         $request_params = $_REQUEST;
         $request_params = self::escape_params($request_params);
-        
+
         $params = array_merge($request_params, $params);
-        
+
         if (is_admin()) {
             unset($params['page']);
         }
-        
+
         $controller->params = $params;
         if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 70000) { //prevent conflicts with php < 7.0
             $controller->set('this', $controller);
@@ -38,7 +45,7 @@ class MvcDispatcher {
                 $controller->{$method}();
             }
         }
-        
+
         // If we can access the response from our controller's actions (methods)
         // we can use them (the actions) as Widgets in the both sides - outside of wp-mvc plugin and inside of it.
         // The action should return whatever you want, except $this->render_view('view_name').
@@ -58,22 +65,22 @@ class MvcDispatcher {
         // 			'action'	 => 'list'
         // ));
         $response = $controller->{$action}();
-        
+
         if (!empty($controller->after)) {
             foreach ($controller->after as $method) {
                 $controller->{$method}();
             }
         }
         $controller->after_action($action);
-        
+
         if (!$controller->view_rendered) {
             $controller->render_view($controller->views_path.$action, $options);
         }
-        
+
         return $response;
-    
+
     }
-    
+
     static function escape_params($params) {
         if (is_array($params)) {
             foreach ($params as $key => $value) {

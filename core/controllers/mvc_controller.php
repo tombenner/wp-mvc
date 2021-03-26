@@ -144,9 +144,6 @@ class MvcController {
 
     public function set_object()
     {
-        error_log( '***DEBUG CANNAROCKS****');
-        error_log( print_r( $this->params, true));
-        error_log( '***END DEBUG CANNAROCKS****');
         if (!empty($this->model->invalid_data))
         {
             if (!empty(intval( $this->params['id'] )) && empty($this->model->invalid_data[$this->model->primary_key]))
