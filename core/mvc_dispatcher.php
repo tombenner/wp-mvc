@@ -13,8 +13,7 @@ class MvcDispatcher {
         }
 
         $params = $options;
-
-
+        
         $controller_class = MvcInflector::camelize($controller_name).'Controller';
 
         $controller = new $controller_class();
@@ -83,8 +82,12 @@ class MvcDispatcher {
 
     static function escape_params($params) {
         if (is_array($params)) {
-            foreach ($params as $key => $value) {
-                if (is_string($value)) {
+            foreach ($params as $key => $value)
+            {
+                if($key == "id" || $key == "mvc_id")
+                {
+                    $params[$key] = intval($value);
+                }else if (is_string($value)) {
                     $params[$key] = stripslashes($value);
                 } else if (is_array($value)) {
                     $params[$key] = self::escape_params($value);
