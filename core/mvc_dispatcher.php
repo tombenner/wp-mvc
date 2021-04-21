@@ -13,7 +13,7 @@ class MvcDispatcher {
         }
 
         $params = $options;
-        
+
         $controller_class = MvcInflector::camelize($controller_name).'Controller';
 
         $controller = new $controller_class();
@@ -84,7 +84,7 @@ class MvcDispatcher {
         if (is_array($params)) {
             foreach ($params as $key => $value)
             {
-                if($key == "id" || $key == "mvc_id")
+                if($key === "id" || $key === "mvc_id")
                 {
                     $params[$key] = intval($value);
                 }else if (is_string($value)) {
