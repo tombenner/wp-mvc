@@ -331,7 +331,7 @@ class MvcFormHelper extends MvcHelper {
                 $selected_attribute = $options['value'] == $key ? ' selected="selected"' : '';
             }
 
-            $html .= '<option value="'.$this->esc_attr($key).'"'.$selected_attribute.'>'.$value.'</option>';
+            $html .= '<option value="'.$this->esc_attr($key).'"'.$selected_attribute.'>'.esc_html($value).'</option>';
         }
         $html .= '</select>';
         return $html;
