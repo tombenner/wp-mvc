@@ -2,6 +2,8 @@
 
 class MvcShellDispatcher {
 
+    private $dynamic = array();
+
     function __construct($args) {
     
         $this->file_includer = new MvcFileIncluder();
@@ -10,6 +12,22 @@ class MvcShellDispatcher {
         
         $this->dispatch($args);
     
+    }
+
+    public function __get($name) {
+        return isset($this->dynamic[$name]) ? $this->dynamic[$name] : null;
+    }
+
+    public function __set($name, $value) {
+        $this->dynamic[$name] = $value;
+    }
+
+    public function __isset($name) {
+        return isset($this->dynamic[$name]);
+    }
+
+    public function __unset($name) {
+        unset($this->dynamic[$name]);
     }
     
     private function dispatch($args) {

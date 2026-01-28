@@ -10,6 +10,8 @@ abstract class MvcLoader {
     protected $model_names = array();
     protected $public_controller_names = array();
     protected $query_vars = array();
+    protected $settings_names = array();
+    private $dynamic = array();
 
     function __construct() {
     
@@ -31,10 +33,26 @@ abstract class MvcLoader {
         $this->dispatcher = new MvcDispatcher();
 
         $this->plugin_name = MvcObjectRegistry::get_object('plugin_name');
-        if (! isset($this->plugin_name)) {
+        if (!isset($this->plugin_name)) {
             $this->plugin_name = '';
         }
 
+    }
+
+    public function __get($name) {
+        return isset($this->dynamic[$name]) ? $this->dynamic[$name] : null;
+    }
+
+    public function __set($name, $value) {
+        $this->dynamic[$name] = $value;
+    }
+
+    public function __isset($name) {
+        return isset($this->dynamic[$name]);
+    }
+
+    public function __unset($name) {
+        unset($this->dynamic[$name]);
     }
 
     
