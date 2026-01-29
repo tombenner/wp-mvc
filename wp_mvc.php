@@ -4,7 +4,7 @@ Plugin Name: WP MVC
 Plugin URI: http://wordpress.org/extend/plugins/wp-mvc/
 Description: Sets up an MVC framework inside of WordPress.
 Author: Tom Benner
-Modifications: Robert Peake, AR-General, Jonathan Gruber, Linda Furstenberger, Jordan Enev, Alastair, Chris Snyder, Fred Isaacs, Ceelo, Dangerous Dan, Eric Maziade, Fantasy1125, Glade, Derrick Hammer, Sam Wilson, Damiano Porta, Juuso Leinonen, David Eugene Pratt, David Lundgren, Victor Albert, Simon vom Eyser, Alvin Bunk, Jeffrey Fisher, Sergio Guzman, aleextra, Michał Krawczyk, mikehike123, polcodemichalkrawczyk, ptrkcsk, felipeelia, dlundgren, akamadr, gumster, konafet
+Modifications: Robert Peake, AR-General, Jonathan Gruber, Linda Furstenberger, Jordan Enev, Alastair, Chris Snyder, Fred Isaacs, Ceelo, Dangerous Dan, Eric Maziade, Fantasy1125, Glade, Derrick Hammer, Sam Wilson, Damiano Porta, Juuso Leinonen, David Eugene Pratt, David Lundgren, Victor Albert, Simon vom Eyser, Alvin Bunk, Jeffrey Fisher, Sergio Guzman, aleextra, Michał Krawczyk, mikehike123, polcodemichalkrawczyk, ptrkcsk, felipeelia, dlundgren, akamadr, gumster, konafet, andrevabo
 Version: 1.3.21
 Text Domain: wpmvc
 Domain Path: /core/languages
