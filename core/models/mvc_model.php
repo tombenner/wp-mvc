@@ -20,6 +20,7 @@ class MvcModel {
     protected $db_adapter = null;
     private $wp_post_adapter = null;
     protected static $describe_cache = array();
+    private $dynamic = array();
 
     function __construct() {
         
@@ -74,6 +75,22 @@ class MvcModel {
         $this->init_associations();
         $this->init_properties();
     
+    }
+
+    public function __get($name) {
+        return isset($this->dynamic[$name]) ? $this->dynamic[$name] : null;
+    }
+
+    public function __set($name, $value) {
+        $this->dynamic[$name] = $value;
+    }
+
+    public function __isset($name) {
+        return isset($this->dynamic[$name]);
+    }
+
+    public function __unset($name) {
+        unset($this->dynamic[$name]);
     }
     
     public function new_object($data) {
