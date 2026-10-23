@@ -5,6 +5,7 @@ class MvcModelObject {
     
     public $__model_name = null;
     private $__settings = null;
+    private $dynamic = array();
     
     function __construct($model) {
         $this->__settings = array();
@@ -17,10 +18,15 @@ class MvcModelObject {
     }
     
     public function to_array() {
-        return get_object_vars($this);
+        $vars = get_object_vars($this);
+        unset($vars['dynamic']);
+        return array_merge($this->dynamic, $vars);
     }
     
     public function __get($property_name) {
+        if (isset($this->dynamic[$property_name])) {
+            return $this->dynamic[$property_name];
+        }
         if (!empty($this->__settings['properties'][$property_name])) {
             $property = $this->__settings['properties'][$property_name];
             if ($property['type'] == 'association') {
@@ -45,6 +51,18 @@ class MvcModelObject {
         }
         $class = empty($this->__model_name) ? 'MvcModelObject' : $this->__model_name;
         MvcError::warning('Undefined property: '.$class.'::'.$property_name.'.');
+    }
+
+    public function __set($name, $value) {
+        $this->dynamic[$name] = $value;
+    }
+
+    public function __isset($name) {
+        return isset($this->dynamic[$name]);
+    }
+
+    public function __unset($name) {
+        unset($this->dynamic[$name]);
     }
     
     private function get_associated_objects($association) {
@@ -82,5 +100,3 @@ class MvcModelObject {
     }
     
 }
-
-?>

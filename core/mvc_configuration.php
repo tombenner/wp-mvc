@@ -3,6 +3,8 @@
 #[\AllowDynamicProperties]
 class MvcConfiguration {
 
+    private $config = array();
+
     static function &get_instance($boot = true) {
         static $instance = array();
         
@@ -23,11 +25,14 @@ class MvcConfiguration {
 
         foreach ($config as $name => $value) {
             if (strpos($name, '.') === false) {
-                $_this->{$name} = $value;
+                $_this->config[$name] = $value;
             } else {
                 $names = explode('.', $name, 2);
                 if (count($names) == 2) {
-                    $_this->{$names[0]}[$names[1]] = $value;
+                    if (!isset($_this->config[$names[0]]) || !is_array($_this->config[$names[0]])) {
+                        $_this->config[$names[0]] = array();
+                    }
+                    $_this->config[$names[0]][$names[1]] = $value;
                 }
             }
         }
@@ -43,10 +48,10 @@ class MvcConfiguration {
         }
 
         foreach ($config as $name => $value) {
-            if (empty($_this->{$name})) {
-                $_this->{$name} = $value;
+            if (empty($_this->config[$name])) {
+                $_this->config[$name] = $value;
             } else {
-                $_this->{$name} = array_merge($_this->{$name}, $value);
+                $_this->config[$name] = array_merge($_this->config[$name], $value);
             }
         }
         
@@ -60,18 +65,30 @@ class MvcConfiguration {
             $names = explode('.', $config, 2);
             $config = $names[0];
         }
-        if (!isset($_this->{$config})) {
+        if (!isset($_this->config[$config])) {
             return null;
         }
         if (!isset($names[1])) {
-            return $_this->{$config};
+            return $_this->config[$config];
         }
         if (count($names) == 2) {
-            if (isset($_this->{$config}[$names[1]])) {
-                return $_this->{$config}[$names[1]];
+            if (isset($_this->config[$config][$names[1]])) {
+                return $_this->config[$config][$names[1]];
             }
         }
         return null;
+    }
+
+    public function __get($name) {
+        return isset($this->config[$name]) ? $this->config[$name] : null;
+    }
+
+    public function __set($name, $value) {
+        $this->config[$name] = $value;
+    }
+
+    public function __isset($name) {
+        return isset($this->config[$name]);
     }
 
 }
