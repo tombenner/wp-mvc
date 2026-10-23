@@ -1,5 +1,6 @@
 <?php
 
+#[\AllowDynamicProperties]
 class MvcShellDispatcher {
 
     private $dynamic = array();

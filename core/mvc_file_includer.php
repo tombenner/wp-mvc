@@ -1,5 +1,6 @@
 <?php
 
+#[\AllowDynamicProperties]
 class MvcFileIncluder {
 
     private $core_path = '';

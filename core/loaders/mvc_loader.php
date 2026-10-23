@@ -1,5 +1,6 @@
 <?php
 
+#[\AllowDynamicProperties]
 abstract class MvcLoader {
 
     protected $admin_controller_names = array();
