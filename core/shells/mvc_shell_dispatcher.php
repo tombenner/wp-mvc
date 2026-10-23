@@ -1,5 +1,6 @@
 <?php
 
+#[\AllowDynamicProperties]
 class MvcShellDispatcher {
 
     function __construct($args) {

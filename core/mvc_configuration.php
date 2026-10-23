@@ -1,5 +1,6 @@
 <?php
 
+#[\AllowDynamicProperties]
 class MvcConfiguration {
 
     static function &get_instance($boot = true) {

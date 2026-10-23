@@ -1,5 +1,6 @@
 <?php
 
+#[\AllowDynamicProperties]
 class MvcHelper {
 
     protected $file_includer = null;
