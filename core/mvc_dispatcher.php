@@ -3,8 +3,6 @@
 #[\AllowDynamicProperties]
 class MvcDispatcher {
 
-    private $dynamic = array();
-
     static function dispatch($options=array()) {
         
         $controller_name = $options['controller'];
@@ -95,22 +93,6 @@ class MvcDispatcher {
             $function = $this->$method;
             $function();
         }
-    }
-
-    public function __get($name) {
-        return isset($this->dynamic[$name]) ? $this->dynamic[$name] : null;
-    }
-
-    public function __set($name, $value) {
-        $this->dynamic[$name] = $value;
-    }
-
-    public function __isset($name) {
-        return isset($this->dynamic[$name]);
-    }
-
-    public function __unset($name) {
-        unset($this->dynamic[$name]);
     }
 
 }
