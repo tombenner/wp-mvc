@@ -1,11 +1,15 @@
 <?php
 
+// Each row column is stored as a real public property, which is why dynamic properties
+// are allowed. Application code relies on that: get_object_vars(), foreach, (array) casts,
+// json_encode() and property_exists() all see the columns, writes such as
+// $object->list[] = $x persist, and a NULL column is read directly rather than through
+// __get(). __get() only resolves associations and genuinely missing properties.
 #[\AllowDynamicProperties]
 class MvcModelObject {
     
     public $__model_name = null;
     private $__settings = null;
-    private $dynamic = array();
     
     function __construct($model) {
         $this->__settings = array();
@@ -18,15 +22,10 @@ class MvcModelObject {
     }
     
     public function to_array() {
-        $vars = get_object_vars($this);
-        unset($vars['dynamic']);
-        return array_merge($this->dynamic, $vars);
+        return get_object_vars($this);
     }
     
     public function __get($property_name) {
-        if (isset($this->dynamic[$property_name])) {
-            return $this->dynamic[$property_name];
-        }
         if (!empty($this->__settings['properties'][$property_name])) {
             $property = $this->__settings['properties'][$property_name];
             if ($property['type'] == 'association') {
@@ -53,18 +52,6 @@ class MvcModelObject {
         MvcError::warning('Undefined property: '.$class.'::'.$property_name.'.');
     }
 
-    public function __set($name, $value) {
-        $this->dynamic[$name] = $value;
-    }
-
-    public function __isset($name) {
-        return isset($this->dynamic[$name]);
-    }
-
-    public function __unset($name) {
-        unset($this->dynamic[$name]);
-    }
-    
     private function get_associated_objects($association) {
         $model_name = $association['class'];
         $model = MvcModelRegistry::get_model($model_name);
